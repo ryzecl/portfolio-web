@@ -34,6 +34,11 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: site.identity.name, url: baseUrl }],
     keywords: [
       site.identity.name,
+      'Ferry Noer Hendriawan',
+      'Ferry Hendriawan',
+      'Ferry N. Hendriawan',
+      'ferryhendriawan',
+      'ferryhendriawan.my.id',
       'software developer',
       'web developer',
       'full-stack developer',
@@ -101,6 +106,10 @@ export default function RootLayout({
       '@context': 'https://schema.org',
       '@type': 'Person',
       name: site.identity.name,
+      alternateName: [
+        'Ferry Hendriawan',
+        'Ferry N. Hendriawan',
+      ],
       url: baseUrl,
       image: `${baseUrl}/images/ferry.png`,
       jobTitle: site.identity.title,

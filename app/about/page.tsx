@@ -64,6 +64,10 @@ export default function AboutPage() {
     mainEntity: {
       '@type': 'Person',
       name: site.identity.name,
+      alternateName: [
+        'Ferry Hendriawan',
+        'Ferry N. Hendriawan',
+      ],
       jobTitle: site.identity.title,
       description: site.about.paragraphs[0],
       url: baseUrl,
