@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Send, CheckCircle2 } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,15 +15,46 @@ export function ContactForm() {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
 
-    // Simulate submission delay
-    setTimeout(() => {
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key:
+            process.env.NEXT_PUBLIC_WEB3FORMS_KEY ||
+            '22850c15-9843-4a16-a079-44371a863d40',
+          name: formData.name,
+          email: formData.email,
+          subject: `[Portfolio Inquiry] ${formData.subject} · ${formData.name}`,
+          message: formData.message,
+          from_name: 'Ferry Portfolio Contact Form',
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        setErrorMessage(
+          result.message || 'Failed to deliver message. Please try again or reach out via email directly.'
+        );
+      }
+    } catch (err) {
+      setErrorMessage(
+        'Network error encountered. Please check your connection or contact me via email.'
+      );
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-    }, 600);
+    }
   };
 
   if (submitted) {
@@ -32,10 +64,10 @@ export function ContactForm() {
           <CheckCircle2 className="w-6 h-6" />
         </div>
         <h4 className="text-lg font-bold text-zinc-900">
-          Message Received
+          Message Delivered
         </h4>
         <p className="text-sm text-zinc-600 max-w-sm mx-auto leading-relaxed">
-          Thank you for reaching out, {formData.name || 'there'}. I have received your message and will review it shortly.
+          Thank you for reaching out, {formData.name || 'there'}. Your message has been sent directly to my inbox and I will review it shortly.
         </p>
         <button
           type="button"
@@ -58,6 +90,18 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {errorMessage && (
+        <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2.5">
+          <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-semibold">{errorMessage}</p>
+            <p className="text-[11px] text-red-600">
+              Alternative: You can write directly to <a href="mailto:ferrynoerhendriawan18@gmail.com" className="underline font-mono">ferrynoerhendriawan18@gmail.com</a>.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <label
@@ -156,7 +200,10 @@ export function ContactForm() {
         className="w-full rounded-xl"
       >
         {loading ? (
-          <span>Sending...</span>
+          <span className="inline-flex items-center gap-2">
+            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            <span>Delivering message...</span>
+          </span>
         ) : (
           <>
             <Send className="w-3.5 h-3.5 mr-1.5" />

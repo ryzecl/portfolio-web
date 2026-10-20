@@ -2,7 +2,7 @@
   "identity": {
     "name": "Ferry Noer Hendriawan",
     "wordmark": "FNH.",
-    "domain": "ferrynoer.dev",
+    "domain": "ferryhendriawan.my.id",
     "title": "Information Systems Student · Software Developer",
     "location": "Indonesia",
     "statusLabel": "Open to internship opportunities"
@@ -48,16 +48,16 @@
       "program": "Information Systems",
       "startDate": "2024-09",
       "endDate": "",
-      "gpa": "4.00",
+      "gpa": "3.69",
       "note": "Confirm GPA and graduation details before publishing."
     }
   ],
   "contact": {
-    "email": "",
-    "github": "",
-    "linkedin": "",
-    "whatsapp": "",
-    "cv": ""
+    "email": "ferrynoerhendriawan18@gmail.com",
+    "github": "https://github.com/ryzecl",
+    "linkedin": "https://linkedin.com/in/ferry-noer-hendriawan",
+    "whatsapp": "https://wa.me/6283161218295",
+    "cv": "/cv.pdf"
   },
   "footer": {
     "copyrightName": "Ferry Noer Hendriawan",
