@@ -19,26 +19,58 @@ const jetbrainsMono = JetBrains_Mono({
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
+  const title = `${site.identity.name} — Software Developer & Information Systems Student`;
+  const description = site.hero.description;
+
   return {
-    title: `${site.identity.name} · ${site.identity.title}`,
-    description: site.hero.description,
-    authors: [{ name: site.identity.name }],
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: title,
+      template: `%s · ${site.identity.name}`,
+    },
+    description,
+    authors: [{ name: site.identity.name, url: baseUrl }],
+    keywords: [
+      site.identity.name,
+      'software developer',
+      'web developer',
+      'full-stack developer',
+      'information systems',
+      'Next.js',
+      'Laravel',
+      'Indonesia',
+      'portfolio',
+    ],
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true },
+    },
     icons: {
       icon: [
         { url: '/favicon.ico' },
         { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
         { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       ],
-      apple: [
-        { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
-      ],
+      apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
     },
     manifest: '/site.webmanifest',
     openGraph: {
-      title: `${site.identity.name} · ${site.identity.title}`,
-      description: site.hero.description,
+      title,
+      description,
+      url: baseUrl,
+      siteName: site.identity.name,
       type: 'website',
       locale: 'en_US',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: baseUrl,
     },
   };
 }

@@ -6,10 +6,26 @@ import { SectionHeading } from '@/components/ui/section-heading';
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
+  const title = `Projects by ${site.identity.name}`;
+  const description =
+    'A catalog of client software, full-stack web applications, backend APIs, and personal engineering projects built by Ferry Noer Hendriawan.';
   return {
-    title: `Projects · ${site.identity.name}`,
-    description:
-      'Complete portfolio of client software, full-stack web applications, APIs, and mobile experiments.',
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: '/projects',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: '/projects',
+    },
   };
 }
 

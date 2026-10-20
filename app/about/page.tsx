@@ -18,9 +18,25 @@ import {
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
+  const title = `About ${site.identity.name}`;
+  const description = `${site.identity.name} is an Information Systems student and software developer based in ${site.identity.location}. Learn about his background, work experience, education, and technical skills.`;
   return {
-    title: `About · ${site.identity.name}`,
-    description: `Profile, education, background, and experience of ${site.identity.name}.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: '/about',
+      type: 'profile',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: '/about',
+    },
   };
 }
 

@@ -8,9 +8,25 @@ import { GithubIcon, LinkedinIcon } from '@/components/ui/icons';
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
+  const title = `Contact ${site.identity.name}`;
+  const description = `Reach out to ${site.identity.name} for internship opportunities, software engineering collaborations, or project inquiries. Based in ${site.identity.location}.`;
   return {
-    title: `Contact · ${site.identity.name}`,
-    description: `Get in touch with ${site.identity.name} for internship opportunities and software collaborations.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: '/contact',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: '/contact',
+    },
   };
 }
 

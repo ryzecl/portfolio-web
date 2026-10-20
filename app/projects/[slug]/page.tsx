@@ -42,9 +42,31 @@ export async function generateMetadata({
     };
   }
 
+  const title = `${project.title} — Project by ${site.identity.name}`;
+  const description = project.summary;
+  const canonical = `/projects/${slug}`;
+
   return {
-    title: `${project.title} · ${site.identity.name}`,
-    description: project.summary,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: 'article',
+      ...(project.coverImage
+        ? { images: [{ url: project.coverImage, alt: project.title }] }
+        : {}),
+    },
+    twitter: {
+      card: project.coverImage ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      ...(project.coverImage ? { images: [project.coverImage] } : {}),
+    },
+    alternates: {
+      canonical,
+    },
   };
 }
 
