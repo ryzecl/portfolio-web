@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getSiteData } from '@/lib/data';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { ContactForm } from '@/components/contact/contact-form';
+import { JsonLd } from '@/components/ui/json-ld';
 import { Mail, MapPin } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '@/components/ui/icons';
 
@@ -32,9 +33,26 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function ContactPage() {
   const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
+
+  const contactPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: `Contact ${site.identity.name}`,
+    url: `${baseUrl}/contact`,
+    description: `Reach out to ${site.identity.name} for internship opportunities and software collaborations.`,
+    mainEntity: {
+      '@type': 'Person',
+      name: site.identity.name,
+      email: site.contact.email,
+      url: baseUrl,
+      sameAs: [site.contact.github, site.contact.linkedin].filter(Boolean),
+    },
+  };
 
   return (
     <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground">
+      <JsonLd data={contactPageSchema} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         <SectionHeading
           number="CONTACT"

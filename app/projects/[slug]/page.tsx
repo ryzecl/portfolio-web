@@ -9,6 +9,7 @@ import {
   getSiteData,
 } from '@/lib/data';
 import { ProjectMediaViewer } from '@/components/projects/project-media-viewer';
+import { JsonLd } from '@/components/ui/json-ld';
 import {
   ArrowLeft,
   ArrowRight,
@@ -78,6 +79,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
   const allProjects = getAllProjects();
   const currentIndex = allProjects.findIndex((p) => p.slug === slug);
   const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
@@ -92,8 +95,32 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const hasRepo = Boolean(project.links?.repository && project.links.repository.trim() !== '');
   const hasAnyLink = hasDemo || hasRepo;
 
+  const projectSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: project.title,
+    description: project.summary,
+    url: `${baseUrl}/projects/${slug}`,
+    programmingLanguage: project.technologies,
+    abstract: project.problem,
+    teaches: project.solution,
+    author: {
+      '@type': 'Person',
+      name: site.identity.name,
+      url: baseUrl,
+      sameAs: [site.contact.github, site.contact.linkedin].filter(Boolean),
+    },
+    ...(project.links?.repository ? { codeRepository: project.links.repository } : {}),
+    ...(project.links?.demo ? { url: project.links.demo } : {}),
+    ...(project.coverImage
+      ? { image: { '@type': 'ImageObject', url: `${baseUrl}${project.coverImage}`, name: project.title } }
+      : {}),
+    ...(project.year ? { dateCreated: project.year } : {}),
+  };
+
   return (
     <div className="pt-28 pb-24 sm:pt-36 sm:pb-32 bg-background text-foreground">
+      <JsonLd data={projectSchema} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Top Back Navigation & Index */}
         <div className="flex items-center justify-between pb-6 border-b border-border">

@@ -8,6 +8,7 @@ import {
 } from '@/lib/data';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
+import { JsonLd } from '@/components/ui/json-ld';
 import {
   GraduationCap,
   Briefcase,
@@ -44,9 +45,40 @@ export default function AboutPage() {
   const site = getSiteData();
   const experiences = getAllExperiences();
   const skillGroups = getAllSkillGroups();
+  const baseUrl = `https://${site.identity.domain}`;
+
+  const profilePageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    name: `About ${site.identity.name}`,
+    url: `${baseUrl}/about`,
+    mainEntity: {
+      '@type': 'Person',
+      name: site.identity.name,
+      jobTitle: site.identity.title,
+      description: site.about.paragraphs[0],
+      url: baseUrl,
+      sameAs: [site.contact.github, site.contact.linkedin].filter(Boolean),
+      alumniOf: site.education.map((edu) => ({
+        '@type': 'CollegeOrUniversity',
+        name: edu.institution,
+        department: edu.program,
+      })),
+      hasCredential: experiences.map((exp) => ({
+        '@type': 'EducationalOccupationalCredential',
+        credentialCategory: exp.type,
+        recognizedBy: {
+          '@type': 'Organization',
+          name: exp.organization,
+          ...(exp.url ? { url: exp.url } : {}),
+        },
+      })),
+    },
+  };
 
   return (
     <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground">
+      <JsonLd data={profilePageSchema} />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
         {/* Profile Header */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">

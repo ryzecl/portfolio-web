@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getAllProjects, getProjectCategories, getSiteData } from '@/lib/data';
 import { ProjectFilters } from '@/components/projects/project-filters';
 import { SectionHeading } from '@/components/ui/section-heading';
+import { JsonLd } from '@/components/ui/json-ld';
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
@@ -32,9 +33,35 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ProjectsPage() {
   const projects = getAllProjects();
   const categories = getProjectCategories();
+  const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
+
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `Projects by ${site.identity.name}`,
+    url: `${baseUrl}/projects`,
+    description:
+      'A catalog of client software, full-stack web applications, backend APIs, and personal engineering projects.',
+    author: {
+      '@type': 'Person',
+      name: site.identity.name,
+      url: baseUrl,
+    },
+    hasPart: projects.map((p) => ({
+      '@type': 'SoftwareSourceCode',
+      name: p.title,
+      description: p.summary,
+      url: `${baseUrl}/projects/${p.slug}`,
+      programmingLanguage: p.technologies,
+      ...(p.links?.repository ? { codeRepository: p.links.repository } : {}),
+      ...(p.links?.demo ? { runtimePlatform: p.links.demo } : {}),
+    })),
+  };
 
   return (
     <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground">
+      <JsonLd data={collectionSchema} />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           number="CATALOG"

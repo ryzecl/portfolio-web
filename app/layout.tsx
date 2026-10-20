@@ -4,6 +4,7 @@ import './globals.css';
 import { getSiteData } from '@/lib/data';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
+import { JsonLd } from '@/components/ui/json-ld';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -81,10 +82,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
+
+  const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: site.identity.name,
+    url: baseUrl,
+    jobTitle: site.identity.title,
+    description: site.hero.description,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'ID',
+      addressRegion: site.identity.location,
+    },
+    sameAs: [
+      site.contact.github,
+      site.contact.linkedin,
+    ].filter(Boolean),
+  };
 
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans bg-background text-foreground min-h-screen flex flex-col">
+        <JsonLd data={personSchema} />
         <SiteHeader site={site} />
         <main className="flex-grow">{children}</main>
         <SiteFooter site={site} />
