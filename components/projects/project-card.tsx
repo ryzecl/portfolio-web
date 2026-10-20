@@ -2,8 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ProjectItem } from '@/lib/types';
-import { ProjectPreview } from './project-preview';
-import { ArrowUpRight, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { GithubIcon } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
@@ -40,20 +39,25 @@ export function ProjectCard({
       >
         <div className="w-full">
           {hasCoverImage ? (
-            <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-border bg-surface">
+            <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-border bg-surface">
               <Image
                 src={project.coverImage!}
-                alt={project.visual?.alt || `${project.title} Cover`}
+                alt={project.visual?.alt || `${project.title} Thumbnail`}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                 sizes="(max-width: 1024px) 100vw, 800px"
               />
             </div>
           ) : (
-            <ProjectPreview
-              type={project.visual?.type || project.slug}
-              title={project.title}
-            />
+            <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-dashed border-border bg-surface flex flex-col items-center justify-center p-6 text-center group-hover:border-accent/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-surface-raised border border-border flex items-center justify-center text-muted mb-2 shadow-xs">
+                <ImageIcon className="w-5 h-5 text-muted" />
+              </div>
+              <p className="text-xs font-semibold text-foreground/90">{project.title}</p>
+              <span className="text-[10px] font-mono text-muted/70 mt-1">
+                16:10 Thumbnail
+              </span>
+            </div>
           )}
         </div>
       </div>

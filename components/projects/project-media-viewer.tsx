@@ -9,7 +9,6 @@ interface ProjectMediaViewerProps {
   title: string;
   coverImage?: string;
   previewImages?: string[];
-  fallbackVisual?: React.ReactNode;
   className?: string;
 }
 
@@ -17,7 +16,6 @@ export function ProjectMediaViewer({
   title,
   coverImage,
   previewImages = [],
-  fallbackVisual,
   className,
 }: ProjectMediaViewerProps) {
   // Aggregate images: coverImage followed by previewImages (filtering out empty strings and duplicates)
@@ -82,40 +80,27 @@ export function ProjectMediaViewer({
     setTouchStartX(null);
   };
 
-  // 1. Fallback: No real images uploaded yet -> render fallback visual
+  // 1. Fallback: No real images uploaded yet -> 16:10 thumbnail frame placeholder
   if (total === 0) {
-    if (fallbackVisual) {
-      return (
-        <div
-          className={cn(
-            'w-full rounded-2xl border border-border bg-surface overflow-hidden',
-            className
-          )}
-        >
-          {fallbackVisual}
-        </div>
-      );
-    }
-
     return (
       <div
         className={cn(
-          'w-full aspect-video rounded-2xl border border-border bg-surface-raised flex flex-col items-center justify-center p-8 text-center',
+          'w-full aspect-[16/10] rounded-2xl border border-dashed border-border bg-surface-raised flex flex-col items-center justify-center p-8 text-center',
           className
         )}
       >
-        <div className="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center text-muted mb-3">
-          <ImageIcon className="w-6 h-6" />
+        <div className="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center text-muted mb-3 shadow-xs">
+          <ImageIcon className="w-6 h-6 text-muted" />
         </div>
         <p className="text-sm font-semibold text-foreground">{title}</p>
         <p className="text-xs font-mono text-muted mt-1">
-          Project preview imagery will be updated soon
+          16:10 Project Thumbnail / Preview Image
         </p>
       </div>
     );
   }
 
-  // 2. Single Image (Cover only)
+  // 2. Single Image (16:10 Cover only)
   if (total === 1) {
     return (
       <div
@@ -124,7 +109,7 @@ export function ProjectMediaViewer({
           className
         )}
       >
-        <div className="relative aspect-video w-full bg-surface-raised">
+        <div className="relative aspect-[16/10] w-full bg-surface-raised">
           <Image
             src={allImages[0]}
             alt={`${title} - Cover`}
@@ -138,7 +123,7 @@ export function ProjectMediaViewer({
     );
   }
 
-  // 3. Multi-image Interactive Carousel / Slider
+  // 3. Multi-image Interactive Carousel / Slider (16:10 Aspect Ratio)
   return (
     <div
       className={cn('w-full space-y-3 select-none', className)}
@@ -148,12 +133,12 @@ export function ProjectMediaViewer({
       aria-label={`${title} screenshot carousel`}
     >
       {/* Main Viewport */}
-      <div className="relative aspect-video w-full rounded-2xl border border-border bg-surface-raised overflow-hidden shadow-sm group">
+      <div className="relative aspect-[16/10] w-full rounded-2xl border border-border bg-surface-raised overflow-hidden shadow-sm group">
         <Image
           src={allImages[currentIndex]}
           alt={`${title} - Preview ${currentIndex + 1} of ${total}`}
           fill
-          className="object-contain sm:object-cover transition-opacity duration-300"
+          className="object-cover transition-opacity duration-300"
           sizes="(max-width: 1024px) 100vw, 1200px"
           priority
         />
@@ -198,7 +183,7 @@ export function ProjectMediaViewer({
               onClick={() => setCurrentIndex(idx)}
               aria-label={`Jump to slide ${idx + 1}`}
               className={cn(
-                'relative w-16 h-10 sm:w-20 sm:h-12 rounded-lg border overflow-hidden shrink-0 transition-all cursor-pointer',
+                'relative w-16 h-10 sm:w-20 sm:h-12 aspect-[16/10] rounded-lg border overflow-hidden shrink-0 transition-all cursor-pointer',
                 currentIndex === idx
                   ? 'border-accent ring-1 ring-accent'
                   : 'border-border opacity-50 hover:opacity-85'

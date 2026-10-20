@@ -8,7 +8,6 @@ import {
   getProjectBySlug,
   getSiteData,
 } from '@/lib/data';
-import { ProjectPreview } from '@/components/projects/project-preview';
 import { ProjectMediaViewer } from '@/components/projects/project-media-viewer';
 import {
   ArrowLeft,
@@ -196,12 +195,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             title={project.title}
             coverImage={project.coverImage}
             previewImages={project.previewImages}
-            fallbackVisual={
-              <ProjectPreview
-                type={project.visual?.type || project.slug}
-                title={project.title}
-              />
-            }
           />
         </div>
 
