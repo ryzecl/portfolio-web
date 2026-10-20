@@ -44,6 +44,8 @@ export function SiteHeader({ site }: SiteHeaderProps) {
   }, [mobileMenuOpen]);
 
   const navLinks = site.navigation || [];
+  // Primary navigation for center pill (exclude contact which lives in the right CTA cluster)
+  const primaryNavLinks = navLinks.filter((item) => item.href !== '/contact');
 
   return (
     <>
@@ -54,11 +56,11 @@ export function SiteHeader({ site }: SiteHeaderProps) {
         )}
       >
         <div className="w-full max-w-6xl mx-auto flex items-center justify-between">
-          {/* Mobile brand indicator */}
-          <div className="pointer-events-auto md:hidden">
+          {/* Brand Wordmark (visible on both mobile and desktop) */}
+          <div className="pointer-events-auto flex items-center">
             <Link
               href="/"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/95 border border-border shadow-sm backdrop-blur-md text-foreground font-medium text-xs hover:border-accent/40 transition-colors"
+              className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-surface/90 border border-border shadow-xs backdrop-blur-md text-foreground font-medium text-xs hover:border-accent/40 transition-colors"
             >
               <div className="w-5 h-5 rounded-full overflow-hidden border border-border relative shrink-0">
                 <Image
@@ -70,104 +72,69 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                   priority
                 />
               </div>
-              <span className="font-mono tracking-tight font-medium text-foreground">
+              <span className="font-mono tracking-tight font-semibold text-foreground">
                 {site.identity.wordmark}
               </span>
             </Link>
           </div>
 
-          {/* Floating Pill Nav Bar */}
+          {/* Center Floating Pill Nav Bar (Desktop) */}
           <nav
             aria-label="Main Navigation"
-            className="pointer-events-auto hidden md:flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-200 mx-auto"
+            className="pointer-events-auto hidden md:flex items-center gap-1 px-2 py-1.5 rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-200"
           >
-            {/* Identity badge inside pill */}
-            <Link
-              href="/"
-              className="flex items-center gap-2.5 pl-1.5 pr-3 py-1 rounded-full text-foreground hover:opacity-85 transition-opacity"
-            >
-              <div className="w-6 h-6 rounded-full overflow-hidden border border-border relative shrink-0">
-                <Image
-                  src="/images/ferry.png"
-                  alt="Ferry logo"
-                  fill
-                  className="object-cover"
-                  sizes="24px"
-                  priority
-                />
-              </div>
-              <span className="text-xs font-semibold tracking-tight whitespace-nowrap text-foreground">
-                {site.identity.name}
-              </span>
-            </Link>
+            {primaryNavLinks.map((item) => {
+              const isActive =
+                item.href === '/'
+                  ? pathname === '/'
+                  : pathname.startsWith(item.href);
 
-            <div className="h-3.5 w-[1px] bg-border mx-1" />
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'text-xs font-medium px-4 py-1.5 rounded-full transition-all duration-200',
+                    isActive
+                      ? 'bg-surface-raised text-foreground font-semibold border border-border shadow-2xs'
+                      : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-            {/* Links */}
-            <div className="flex items-center gap-1">
-              {navLinks.map((item) => {
-                const isActive =
-                  item.href === '/'
-                    ? pathname === '/'
-                    : pathname.startsWith(item.href);
-
-                if (item.href === '/contact') {
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        'text-xs font-medium px-3.5 py-1.5 rounded-full border transition-all duration-200',
-                        isActive
-                          ? 'bg-foreground text-background border-foreground font-semibold shadow-xs'
-                          : 'bg-surface-raised text-foreground border-border hover:border-accent/40'
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-200',
-                      isActive
-                        ? 'bg-surface-raised text-foreground font-semibold border border-border'
-                        : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Optional CV if present */}
+          {/* Right Action Cluster (CV & Contact Bubble CTA) */}
+          <div className="pointer-events-auto hidden md:flex items-center gap-2">
+            {/* CV Action */}
             {site.contact.cv && (
               <a
                 href={site.contact.cv}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 inline-flex items-center gap-1 text-xs font-mono px-3 py-1 rounded-full bg-surface-raised border border-border text-foreground hover:text-accent hover:border-accent/40 transition-all"
+                className="inline-flex items-center gap-1.5 text-xs font-mono px-3.5 py-1.5 rounded-full bg-surface/90 backdrop-blur-md border border-border text-foreground hover:text-accent hover:border-accent/40 shadow-xs transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                title="Curriculum Vitae"
               >
                 <span>CV</span>
-                <ArrowUpRight className="w-3 h-3 text-accent" />
+                <ArrowUpRight className="w-3.5 h-3.5 text-accent" />
               </a>
             )}
-          </nav>
 
-          {/* Right Action Button */}
-          <div className="pointer-events-auto hidden md:flex items-center">
+            {/* Contact Bubble CTA */}
             <Link
               href="/contact"
-              className="w-10 h-10 rounded-2xl bg-surface border border-border hover:border-accent/50 text-foreground transition-all duration-200 flex items-center justify-center shadow-sm active:translate-y-[1px]"
+              className={cn(
+                'inline-flex items-center gap-2 text-xs font-medium px-4 py-1.5 rounded-full border shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0',
+                pathname === '/contact'
+                  ? 'bg-foreground text-background border-foreground font-semibold shadow-sm'
+                  : 'bg-surface/90 text-foreground border-border hover:border-accent/50 hover:text-accent'
+              )}
               title="Get in touch"
-              aria-label="Contact Ferry"
             >
-              <Mail className="w-4 h-4 text-accent" />
+              <Mail className="w-3.5 h-3.5 text-accent" />
+              <span>Contact</span>
             </Link>
           </div>
 
@@ -246,6 +213,17 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             </nav>
 
             <div className="pt-3 border-t border-border flex flex-col gap-2">
+              {site.contact.cv && (
+                <a
+                  href={site.contact.cv}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 rounded-full bg-surface-raised border border-border text-foreground text-sm font-medium text-center flex items-center justify-center gap-1.5 hover:text-accent hover:border-accent/40 transition-colors"
+                >
+                  <span>View CV</span>
+                  <ArrowUpRight className="w-4 h-4 text-accent" />
+                </a>
+              )}
               <Link
                 href="/contact"
                 onClick={() => setMobileMenuOpen(false)}
