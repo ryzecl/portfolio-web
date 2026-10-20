@@ -47,6 +47,11 @@ export async function generateMetadata({
   const description = project.summary;
   const canonical = `/projects/${slug}`;
 
+  const ogImage =
+    project.coverImage && project.coverImage.trim() !== ''
+      ? project.coverImage
+      : '/images/project-placeholder.png';
+
   return {
     title,
     description,
@@ -55,15 +60,18 @@ export async function generateMetadata({
       description,
       url: canonical,
       type: 'article',
-      ...(project.coverImage
-        ? { images: [{ url: project.coverImage, alt: project.title }] }
-        : {}),
+      images: [
+        {
+          url: ogImage,
+          alt: project.title,
+        },
+      ],
     },
     twitter: {
-      card: project.coverImage ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title,
       description,
-      ...(project.coverImage ? { images: [project.coverImage] } : {}),
+      images: [ogImage],
     },
     alternates: {
       canonical,

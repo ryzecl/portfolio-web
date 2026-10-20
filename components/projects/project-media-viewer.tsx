@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProjectMediaViewerProps {
@@ -80,22 +80,25 @@ export function ProjectMediaViewer({
     setTouchStartX(null);
   };
 
-  // 1. Fallback: No real images uploaded yet -> 16:10 thumbnail frame placeholder
+  // 1. Fallback: No real images uploaded yet -> 16:10 default project preview
   if (total === 0) {
     return (
       <div
         className={cn(
-          'w-full aspect-[16/10] rounded-2xl border border-dashed border-border bg-surface-raised flex flex-col items-center justify-center p-8 text-center',
+          'w-full rounded-2xl border border-border bg-surface overflow-hidden shadow-sm',
           className
         )}
       >
-        <div className="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center text-muted mb-3 shadow-xs">
-          <ImageIcon className="w-6 h-6 text-muted" />
+        <div className="relative aspect-[16/10] w-full bg-surface-raised">
+          <Image
+            src="/images/project-placeholder.png"
+            alt={`${title} - Preview Placeholder`}
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 1200px) 100vw, 1200px"
+          />
         </div>
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="text-xs font-mono text-muted mt-1">
-          16:10 Project Thumbnail / Preview Image
-        </p>
       </div>
     );
   }

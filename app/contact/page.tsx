@@ -19,11 +19,20 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       url: '/contact',
       type: 'website',
+      images: [
+        {
+          url: '/images/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: `Contact ${site.identity.name}`,
+        },
+      ],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: ['/images/og-image.png'],
     },
     alternates: {
       canonical: '/contact',

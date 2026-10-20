@@ -64,11 +64,23 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: site.identity.name,
       type: 'website',
       locale: 'en_US',
+      alternateLocale: ['id_ID'],
+      images: [
+        {
+          url: '/images/og-image.png',
+          secureUrl: `${baseUrl}/images/og-image.png`,
+          width: 1200,
+          height: 630,
+          type: 'image/png',
+          alt: `${site.identity.name} — Software Developer & Information Systems`,
+        },
+      ],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: ['/images/og-image.png'],
     },
     alternates: {
       canonical: baseUrl,
@@ -84,28 +96,55 @@ export default function RootLayout({
   const site = getSiteData();
   const baseUrl = `https://${site.identity.domain}`;
 
-  const personSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: site.identity.name,
-    url: baseUrl,
-    jobTitle: site.identity.title,
-    description: site.hero.description,
-    address: {
-      '@type': 'PostalAddress',
-      addressCountry: 'ID',
-      addressRegion: site.identity.location,
+  const structuredSchemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: site.identity.name,
+      url: baseUrl,
+      image: `${baseUrl}/images/ferry.png`,
+      jobTitle: site.identity.title,
+      description: site.hero.description,
+      knowsAbout: [
+        'Full-Stack Web Development',
+        'Next.js',
+        'TypeScript',
+        'React',
+        'Laravel',
+        'REST API',
+        'Database Design',
+        'Information Systems',
+      ],
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'ID',
+        addressRegion: site.identity.location,
+      },
+      sameAs: [
+        site.contact.github,
+        site.contact.linkedin,
+      ].filter(Boolean),
     },
-    sameAs: [
-      site.contact.github,
-      site.contact.linkedin,
-    ].filter(Boolean),
-  };
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: site.identity.name,
+      url: baseUrl,
+      description: site.hero.description,
+      inLanguage: 'en-US',
+      author: {
+        '@type': 'Person',
+        name: site.identity.name,
+      },
+    },
+  ];
 
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans bg-background text-foreground min-h-screen flex flex-col">
-        <JsonLd data={personSchema} />
+        {structuredSchemas.map((schema, i) => (
+          <JsonLd key={i} data={schema} />
+        ))}
         <SiteHeader site={site} />
         <main className="flex-grow">{children}</main>
         <SiteFooter site={site} />
