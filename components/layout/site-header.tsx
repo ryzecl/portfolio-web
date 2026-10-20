@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ArrowUpRight, Bookmark, Mail } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Mail } from 'lucide-react';
 import { SiteData } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -57,36 +58,50 @@ export function SiteHeader({ site }: SiteHeaderProps) {
           <div className="pointer-events-auto md:hidden">
             <Link
               href="/"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 border border-zinc-200 shadow-sm backdrop-blur-md text-zinc-900 font-medium text-xs hover:border-zinc-300 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface/95 border border-border shadow-sm backdrop-blur-md text-foreground font-medium text-xs hover:border-accent/40 transition-colors"
             >
-              <span className="w-5 h-5 rounded-full bg-zinc-900 text-white font-mono text-[10px] flex items-center justify-center font-bold">
-                {site.identity.wordmark.slice(0, 2)}
-              </span>
-              <span className="font-mono tracking-tight font-medium">
+              <div className="w-5 h-5 rounded-full overflow-hidden border border-border relative shrink-0">
+                <Image
+                  src="/images/ferry.png"
+                  alt="Ferry logo"
+                  fill
+                  className="object-cover"
+                  sizes="20px"
+                  priority
+                />
+              </div>
+              <span className="font-mono tracking-tight font-medium text-foreground">
                 {site.identity.wordmark}
               </span>
             </Link>
           </div>
 
-          {/* Floating Pill Nav Bar (Inspired by the reference screenshot) */}
+          {/* Floating Pill Nav Bar */}
           <nav
             aria-label="Main Navigation"
-            className="pointer-events-auto hidden md:flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-zinc-200/90 shadow-sm shadow-zinc-200/40 transition-all duration-200 mx-auto"
+            className="pointer-events-auto hidden md:flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-200 mx-auto"
           >
             {/* Identity badge inside pill */}
             <Link
               href="/"
-              className="flex items-center gap-2.5 pl-1.5 pr-3 py-1 rounded-full text-zinc-900 hover:opacity-85 transition-opacity"
+              className="flex items-center gap-2.5 pl-1.5 pr-3 py-1 rounded-full text-foreground hover:opacity-85 transition-opacity"
             >
-              <div className="w-6 h-6 rounded-full bg-zinc-900 text-white font-mono text-[11px] font-bold flex items-center justify-center">
-                FN
+              <div className="w-6 h-6 rounded-full overflow-hidden border border-border relative shrink-0">
+                <Image
+                  src="/images/ferry.png"
+                  alt="Ferry logo"
+                  fill
+                  className="object-cover"
+                  sizes="24px"
+                  priority
+                />
               </div>
-              <span className="text-xs font-semibold tracking-tight whitespace-nowrap text-zinc-900">
+              <span className="text-xs font-semibold tracking-tight whitespace-nowrap text-foreground">
                 {site.identity.name}
               </span>
             </Link>
 
-            <div className="h-3.5 w-[1px] bg-zinc-200 mx-1" />
+            <div className="h-3.5 w-[1px] bg-border mx-1" />
 
             {/* Links */}
             <div className="flex items-center gap-1">
@@ -96,7 +111,6 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                     ? pathname === '/'
                     : pathname.startsWith(item.href);
 
-                // If link is Contact, style as a clean button capsule
                 if (item.href === '/contact') {
                   return (
                     <Link
@@ -105,8 +119,8 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                       className={cn(
                         'text-xs font-medium px-3.5 py-1.5 rounded-full border transition-all duration-200',
                         isActive
-                          ? 'bg-zinc-900 text-white border-zinc-900 shadow-xs'
-                          : 'bg-white text-zinc-800 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
+                          ? 'bg-foreground text-background border-foreground font-semibold shadow-xs'
+                          : 'bg-surface-raised text-foreground border-border hover:border-accent/40'
                       )}
                     >
                       {item.label}
@@ -121,8 +135,8 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                     className={cn(
                       'text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-200',
                       isActive
-                        ? 'bg-zinc-100 text-zinc-900 font-semibold shadow-xs'
-                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/60'
+                        ? 'bg-surface-raised text-foreground font-semibold border border-border'
+                        : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
                     )}
                   >
                     {item.label}
@@ -131,29 +145,29 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               })}
             </div>
 
-            {/* Optional CV or Quick Action if available */}
+            {/* Optional CV if present */}
             {site.contact.cv && (
               <a
                 href={site.contact.cv}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 inline-flex items-center gap-1 text-xs font-mono px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 hover:text-zinc-900 hover:bg-zinc-200/70 transition-all"
+                className="ml-1 inline-flex items-center gap-1 text-xs font-mono px-3 py-1 rounded-full bg-surface-raised border border-border text-foreground hover:text-accent hover:border-accent/40 transition-all"
               >
                 <span>CV</span>
-                <ArrowUpRight className="w-3 h-3" />
+                <ArrowUpRight className="w-3 h-3 text-accent" />
               </a>
             )}
           </nav>
 
-          {/* Right Action Button (Dark rounded squircle from reference screenshot) */}
+          {/* Right Action Button */}
           <div className="pointer-events-auto hidden md:flex items-center">
             <Link
               href="/contact"
-              className="w-10 h-10 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-white transition-all duration-200 flex items-center justify-center shadow-sm active:translate-y-[1px]"
+              className="w-10 h-10 rounded-2xl bg-surface border border-border hover:border-accent/50 text-foreground transition-all duration-200 flex items-center justify-center shadow-sm active:translate-y-[1px]"
               title="Get in touch"
               aria-label="Contact Ferry"
             >
-              <Bookmark className="w-4 h-4 fill-white" />
+              <Mail className="w-4 h-4 text-accent" />
             </Link>
           </div>
 
@@ -163,12 +177,12 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
-              className="p-2.5 rounded-full bg-white/95 backdrop-blur-md border border-zinc-200 text-zinc-900 hover:bg-zinc-100 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-900 shadow-sm"
+              className="p-2.5 rounded-full bg-surface/95 backdrop-blur-md border border-border text-foreground hover:bg-surface-raised transition-colors focus:outline-none focus:ring-2 focus:ring-accent shadow-sm"
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 text-zinc-900" />
+                <X className="w-5 h-5 text-foreground" />
               ) : (
-                <Menu className="w-5 h-5 text-zinc-900" />
+                <Menu className="w-5 h-5 text-foreground" />
               )}
             </button>
           </div>
@@ -180,18 +194,24 @@ export function SiteHeader({ site }: SiteHeaderProps) {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-40 bg-zinc-900/40 backdrop-blur-xs md:hidden flex flex-col pt-20 px-6 pb-8 animate-in fade-in duration-200"
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden flex flex-col pt-20 px-6 pb-8 animate-in fade-in duration-200"
         >
-          <div className="flex flex-col gap-2 bg-white border border-zinc-200 rounded-2xl p-6 shadow-xl">
-            <div className="flex items-center gap-3 pb-4 border-b border-zinc-100">
-              <div className="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-sm">
-                FN
+          <div className="flex flex-col gap-2 bg-surface border border-border rounded-2xl p-6 shadow-xl">
+            <div className="flex items-center gap-3 pb-4 border-b border-border">
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-border relative shrink-0">
+                <Image
+                  src="/images/ferry.png"
+                  alt="Ferry portrait"
+                  fill
+                  className="object-cover"
+                  sizes="40px"
+                />
               </div>
               <div>
-                <p className="text-sm font-semibold text-zinc-900">
+                <p className="text-sm font-semibold text-foreground">
                   {site.identity.name}
                 </p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-muted">
                   {site.identity.statusLabel}
                 </p>
               </div>
@@ -212,24 +232,24 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                     className={cn(
                       'px-4 py-3 rounded-xl text-sm font-medium transition-colors flex items-center justify-between',
                       isActive
-                        ? 'bg-zinc-100 text-zinc-900 font-semibold'
-                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50'
+                        ? 'bg-surface-raised text-accent font-semibold border border-border'
+                        : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
                     )}
                   >
                     <span>{item.label}</span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                     )}
                   </Link>
                 );
               })}
             </nav>
 
-            <div className="pt-3 border-t border-zinc-100 flex flex-col gap-2">
+            <div className="pt-3 border-t border-border flex flex-col gap-2">
               <Link
                 href="/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-2.5 rounded-full bg-zinc-900 text-white text-sm font-medium text-center hover:bg-zinc-800 transition-colors"
+                className="w-full py-2.5 rounded-full bg-foreground text-background text-sm font-semibold text-center hover:bg-white/90 transition-colors"
               >
                 Get in touch
               </Link>

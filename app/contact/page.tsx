@@ -18,7 +18,7 @@ export default function ContactPage() {
   const site = getSiteData();
 
   return (
-    <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-white">
+    <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         <SectionHeading
           number="CONTACT"
@@ -30,35 +30,32 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Direct channels & Availability status */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="p-6 rounded-2xl bg-zinc-50 border border-zinc-200/90 space-y-4 shadow-xs">
+            <div className="p-6 rounded-2xl bg-surface border border-border space-y-4 shadow-sm">
               <div className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <span className="text-xs font-mono uppercase tracking-wider text-zinc-500 font-medium">
+                <span className="w-2 h-2 rounded-full bg-accent" />
+                <span className="text-xs font-mono uppercase tracking-wider text-muted font-medium">
                   Current Availability
                 </span>
               </div>
 
               <div>
-                <p className="text-base font-bold text-zinc-900">
+                <p className="text-base font-bold text-foreground">
                   {site.identity.statusLabel}
                 </p>
-                <p className="text-xs text-zinc-600 mt-1 leading-relaxed">
-                  Open to full-stack / backend developer internships and selective freelance engagements.
+                <p className="text-xs text-muted mt-1 leading-relaxed">
+                  Open to full-stack and backend developer internships, engineering roles, and selective projects.
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-zinc-200/80 flex items-center gap-2 text-xs font-mono text-zinc-500">
-                <MapPin className="w-3.5 h-3.5 text-zinc-900" />
+              <div className="pt-3 border-t border-border-subtle flex items-center gap-2 text-xs font-mono text-muted">
+                <MapPin className="w-3.5 h-3.5 text-accent" />
                 <span>Location: {site.identity.location} (Remote / Hybrid)</span>
               </div>
             </div>
 
             {/* Direct Connect Options */}
-            <div className="p-6 rounded-2xl bg-zinc-50 border border-zinc-200/90 space-y-4 shadow-xs">
-              <h3 className="text-sm font-bold text-zinc-900">
+            <div className="p-6 rounded-2xl bg-surface border border-border space-y-4 shadow-sm">
+              <h3 className="text-sm font-bold text-foreground">
                 Direct Channels
               </h3>
 
@@ -66,22 +63,22 @@ export default function ContactPage() {
                 {site.contact.email ? (
                   <a
                     href={`mailto:${site.contact.email}`}
-                    className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-zinc-200 hover:border-zinc-300 transition-colors group shadow-xs"
+                    className="flex items-center justify-between p-3.5 rounded-xl bg-surface-raised border border-border hover:border-accent/40 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-zinc-900" />
-                      <span className="text-xs font-mono text-zinc-800">
+                      <Mail className="w-4 h-4 text-accent" />
+                      <span className="text-xs font-mono text-foreground/90">
                         {site.contact.email}
                       </span>
                     </div>
-                    <span className="text-[11px] font-mono text-zinc-500 group-hover:text-zinc-900">
-                      Email ›
+                    <span className="text-[11px] font-mono text-muted group-hover:text-accent">
+                      Email
                     </span>
                   </a>
                 ) : (
-                  <div className="p-3 rounded-xl bg-white border border-zinc-200 text-xs font-mono text-zinc-500">
-                    <p className="text-zinc-900 font-semibold mb-0.5">Direct Message</p>
-                    <p className="text-[11px] text-zinc-400">Use the contact form to connect directly.</p>
+                  <div className="p-3 rounded-xl bg-surface-raised border border-border text-xs font-mono text-muted">
+                    <p className="text-foreground font-semibold mb-0.5">Direct Message</p>
+                    <p className="text-[11px] text-muted">Use the contact form to connect directly.</p>
                   </div>
                 )}
 
@@ -90,14 +87,14 @@ export default function ContactPage() {
                     href={site.contact.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-zinc-200 hover:border-zinc-300 transition-colors group shadow-xs"
+                    className="flex items-center justify-between p-3.5 rounded-xl bg-surface-raised border border-border hover:border-accent/40 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <GithubIcon className="w-4 h-4 text-zinc-900" />
-                      <span className="text-xs font-mono text-zinc-800">GitHub</span>
+                      <GithubIcon className="w-4 h-4 text-foreground" />
+                      <span className="text-xs font-mono text-foreground/90">GitHub</span>
                     </div>
-                    <span className="text-[11px] font-mono text-zinc-500 group-hover:text-zinc-900">
-                      Visit ›
+                    <span className="text-[11px] font-mono text-muted group-hover:text-accent">
+                      Profile
                     </span>
                   </a>
                 )}
@@ -107,14 +104,14 @@ export default function ContactPage() {
                     href={site.contact.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-zinc-200 hover:border-zinc-300 transition-colors group shadow-xs"
+                    className="flex items-center justify-between p-3.5 rounded-xl bg-surface-raised border border-border hover:border-accent/40 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <LinkedinIcon className="w-4 h-4 text-zinc-900" />
-                      <span className="text-xs font-mono text-zinc-800">LinkedIn</span>
+                      <LinkedinIcon className="w-4 h-4 text-accent" />
+                      <span className="text-xs font-mono text-foreground/90">LinkedIn</span>
                     </div>
-                    <span className="text-[11px] font-mono text-zinc-500 group-hover:text-zinc-900">
-                      Connect ›
+                    <span className="text-[11px] font-mono text-muted group-hover:text-accent">
+                      Connect
                     </span>
                   </a>
                 )}
@@ -123,12 +120,12 @@ export default function ContactPage() {
           </div>
 
           {/* Form */}
-          <div className="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-zinc-50 border border-zinc-200/90 shadow-xs">
-            <div className="mb-6 space-y-1">
-              <h3 className="text-lg font-bold text-zinc-900">
+          <div className="lg:col-span-7 space-y-3">
+            <div className="mb-2 space-y-1">
+              <h3 className="text-lg font-bold text-foreground">
                 Send a Message
               </h3>
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-muted">
                 Direct inquiry regarding projects, internships, or engineering discussions.
               </p>
             </div>

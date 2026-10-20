@@ -45,12 +45,12 @@ export function ContactForm() {
         setSubmitted(true);
       } else {
         setErrorMessage(
-          result.message || 'Failed to deliver message. Please try again or reach out via email directly.'
+          result.message || 'Failed to deliver message. Please reach out via email directly.'
         );
       }
-    } catch (err) {
+    } catch {
       setErrorMessage(
-        'Network error encountered. Please check your connection or contact me via email.'
+        'Network error encountered. Please check your connection or contact me via email directly.'
       );
     } finally {
       setLoading(false);
@@ -59,15 +59,15 @@ export function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="py-12 text-center space-y-4 animate-in fade-in bg-white p-6 rounded-2xl border border-zinc-200 shadow-xs">
-        <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto">
+      <div className="py-12 text-center space-y-4 bg-surface p-6 sm:p-8 rounded-2xl border border-border shadow-sm">
+        <div className="w-12 h-12 rounded-full bg-accent/10 border border-accent/30 text-accent flex items-center justify-center mx-auto">
           <CheckCircle2 className="w-6 h-6" />
         </div>
-        <h4 className="text-lg font-bold text-zinc-900">
-          Message Delivered
+        <h4 className="text-lg font-bold text-foreground">
+          Message Received
         </h4>
-        <p className="text-sm text-zinc-600 max-w-sm mx-auto leading-relaxed">
-          Thank you for reaching out, {formData.name || 'there'}. Your message has been sent directly to my inbox and I will review it shortly.
+        <p className="text-sm text-muted max-w-sm mx-auto leading-relaxed">
+          Thank you for getting in touch, {formData.name || 'there'}. I have received your message and will review it shortly.
         </p>
         <button
           type="button"
@@ -80,7 +80,7 @@ export function ContactForm() {
               message: '',
             });
           }}
-          className="text-xs font-mono text-zinc-900 font-semibold hover:underline pt-2 cursor-pointer"
+          className="text-xs font-mono text-accent font-semibold hover:underline pt-2 cursor-pointer"
         >
           Send another message
         </button>
@@ -89,14 +89,20 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-surface p-6 sm:p-8 rounded-2xl border border-border shadow-sm">
       {errorMessage && (
-        <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-xl bg-red-950/30 border border-red-800/80 text-xs text-red-200 flex items-start gap-2.5">
+          <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <p className="font-semibold">{errorMessage}</p>
-            <p className="text-[11px] text-red-600">
-              Alternative: You can write directly to <a href="mailto:ferrynoerhendriawan18@gmail.com" className="underline font-mono">ferrynoerhendriawan18@gmail.com</a>.
+            <p className="text-[11px] text-red-300">
+              Direct email:{' '}
+              <a
+                href="mailto:ferrynoerhendriawan18@gmail.com"
+                className="underline font-mono text-red-200"
+              >
+                ferrynoerhendriawan18@gmail.com
+              </a>
             </p>
           </div>
         </div>
@@ -106,7 +112,7 @@ export function ContactForm() {
         <div className="space-y-1.5">
           <label
             htmlFor="name"
-            className="block text-xs font-mono text-zinc-500 uppercase tracking-wider font-medium"
+            className="block text-xs font-mono text-muted uppercase tracking-wider font-medium"
           >
             Your Name
           </label>
@@ -118,15 +124,15 @@ export function ContactForm() {
             onChange={(e) =>
               setFormData({ ...formData, name: e.target.value })
             }
-            placeholder="Alex Morgan"
-            className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors shadow-xs"
+            placeholder="Name or Organization"
+            className="w-full bg-surface-raised border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
           />
         </div>
 
         <div className="space-y-1.5">
           <label
             htmlFor="email"
-            className="block text-xs font-mono text-zinc-500 uppercase tracking-wider font-medium"
+            className="block text-xs font-mono text-muted uppercase tracking-wider font-medium"
           >
             Email Address
           </label>
@@ -138,8 +144,8 @@ export function ContactForm() {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            placeholder="alex@company.com"
-            className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors shadow-xs"
+            placeholder="name@example.com"
+            className="w-full bg-surface-raised border border-border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
           />
         </div>
       </div>
@@ -147,9 +153,9 @@ export function ContactForm() {
       <div className="space-y-1.5">
         <label
           htmlFor="subject"
-          className="block text-xs font-mono text-zinc-500 uppercase tracking-wider font-medium"
+          className="block text-xs font-mono text-muted uppercase tracking-wider font-medium"
         >
-          Subject
+          Inquiry Type
         </label>
         <select
           id="subject"
@@ -157,25 +163,27 @@ export function ContactForm() {
           onChange={(e) =>
             setFormData({ ...formData, subject: e.target.value })
           }
-          className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors shadow-xs"
+          className="w-full bg-surface-raised border border-border rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
         >
-          <option value="Internship Opportunity">
+          <option value="Internship Opportunity" className="bg-surface text-foreground">
             Internship Opportunity
           </option>
-          <option value="Client Project Inquiry">
+          <option value="Client Project Inquiry" className="bg-surface text-foreground">
             Client Project Inquiry
           </option>
-          <option value="Technical Collaboration">
+          <option value="Technical Collaboration" className="bg-surface text-foreground">
             Technical Collaboration
           </option>
-          <option value="General Question">General Question</option>
+          <option value="General Inquiry" className="bg-surface text-foreground">
+            General Inquiry
+          </option>
         </select>
       </div>
 
       <div className="space-y-1.5">
         <label
           htmlFor="message"
-          className="block text-xs font-mono text-zinc-500 uppercase tracking-wider font-medium"
+          className="block text-xs font-mono text-muted uppercase tracking-wider font-medium"
         >
           Message
         </label>
@@ -187,8 +195,8 @@ export function ContactForm() {
           onChange={(e) =>
             setFormData({ ...formData, message: e.target.value })
           }
-          placeholder="Hi Ferry, I'd like to discuss an opportunity..."
-          className="w-full bg-white border border-zinc-200 rounded-xl p-4 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors resize-none shadow-xs"
+          placeholder="Briefly describe your project or opportunity..."
+          className="w-full bg-surface-raised border border-border rounded-xl p-4 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors resize-none"
         />
       </div>
 
@@ -197,7 +205,7 @@ export function ContactForm() {
         variant="primary"
         size="md"
         disabled={loading}
-        className="w-full rounded-xl"
+        className="w-full rounded-xl cursor-pointer"
       >
         {loading ? (
           <span className="inline-flex items-center gap-2">

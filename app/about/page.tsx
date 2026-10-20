@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import Image from 'next/image';
 import {
   getSiteData,
   getAllExperiences,
@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import {
   GraduationCap,
   Briefcase,
-  CheckCircle2,
   Building2,
   Mail,
   ArrowUpRight,
@@ -31,43 +30,58 @@ export default function AboutPage() {
   const skillGroups = getAllSkillGroups();
 
   return (
-    <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-white">
+    <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
         {/* Profile Header */}
-        <div className="space-y-6">
-          <SectionHeading
-            number="ABOUT"
-            eyebrow="Profile & Philosophy"
-            title={site.identity.name}
-            description={`${site.identity.title} · Based in ${site.identity.location}`}
-            className="mb-6"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+          <div className="md:col-span-8 space-y-6">
+            <SectionHeading
+              number="ABOUT"
+              eyebrow="Profile & Philosophy"
+              title={site.identity.name}
+              description={`${site.identity.title} · Based in ${site.identity.location}`}
+              className="mb-6"
+            />
 
-          <div className="space-y-5 text-lg text-zinc-600 font-normal leading-relaxed max-w-3xl">
-            {site.about.paragraphs.map((para, i) => (
-              <p key={i}>{para}</p>
-            ))}
+            <div className="space-y-5 text-lg text-muted font-normal leading-relaxed">
+              {site.about.paragraphs.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
+
+            <div className="pt-4 flex flex-wrap gap-4">
+              <Button href="/contact" variant="primary">
+                <Mail className="w-4 h-4 mr-1.5" />
+                <span>Get in touch</span>
+              </Button>
+              <Button href="/projects" variant="secondary">
+                <span>View my work</span>
+                <ArrowUpRight className="w-4 h-4 ml-1.5" />
+              </Button>
+            </div>
           </div>
 
-          <div className="pt-4 flex flex-wrap gap-4">
-            <Button href="/contact" variant="primary">
-              <Mail className="w-4 h-4 mr-1.5" />
-              <span>Get in touch</span>
-            </Button>
-            <Button href="/projects" variant="secondary">
-              <span>View my work</span>
-              <ArrowUpRight className="w-4 h-4 ml-1.5" />
-            </Button>
+          <div className="md:col-span-4 flex justify-center md:justify-end pt-2">
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden border border-border shadow-md bg-surface-raised">
+              <Image
+                src="/images/ferry.png"
+                alt={site.identity.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 200px, 240px"
+                priority
+              />
+            </div>
           </div>
         </div>
 
         {/* Focus Areas */}
-        <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-200/90 space-y-6 shadow-xs">
+        <div className="p-8 rounded-3xl bg-surface border border-border space-y-6 shadow-sm">
           <div className="space-y-1">
-            <p className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-medium">
+            <p className="text-xs font-mono uppercase tracking-wider text-muted font-medium">
               Core Competencies
             </p>
-            <h2 className="text-xl font-bold text-zinc-900">
+            <h2 className="text-xl font-bold text-foreground">
               What I Focus On
             </h2>
           </div>
@@ -76,10 +90,10 @@ export default function AboutPage() {
             {site.about.focus.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-3 p-4 rounded-xl bg-white border border-zinc-200/80 shadow-xs"
+                className="flex items-start gap-3 p-4 rounded-xl bg-surface-raised border border-border"
               >
-                <CheckCircle2 className="w-4 h-4 text-zinc-900 mt-0.5 shrink-0" />
-                <span className="text-sm font-medium text-zinc-800">
+                <span className="text-accent text-sm font-mono mt-0.5 select-none">-</span>
+                <span className="text-sm font-medium text-foreground">
                   {item}
                 </span>
               </div>
@@ -87,62 +101,62 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Experience Timeline (#experience anchor) */}
+        {/* Experience Timeline */}
         <div className="space-y-8 scroll-mt-28" id="experience">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-zinc-500 font-medium">
-              <Briefcase className="w-4 h-4 text-zinc-900" />
+            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted font-medium">
+              <Briefcase className="w-4 h-4 text-accent" />
               <span>Professional History</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-zinc-900">
+            <h2 className="text-2xl sm:text-3xl font-black text-foreground">
               Work Experience & Projects
             </h2>
           </div>
 
-          <div className="relative pl-6 sm:pl-8 border-l border-zinc-200 space-y-12">
+          <div className="relative pl-6 sm:pl-8 border-l border-border space-y-12">
             {experiences.map((exp, idx) => (
               <div key={idx} className="relative space-y-4">
                 {/* Timeline node */}
-                <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-zinc-900 border-4 border-white shadow-xs" />
+                <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-accent border-4 border-background" />
 
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <h3 className="text-xl font-bold text-zinc-900">
+                    <h3 className="text-xl font-bold text-foreground">
                       {exp.role}
                     </h3>
-                    <p className="text-sm font-mono text-zinc-500 flex items-center gap-2 mt-0.5">
-                      <Building2 className="w-3.5 h-3.5 text-zinc-700" />
+                    <p className="text-sm font-mono text-muted flex items-center gap-2 mt-0.5">
+                      <Building2 className="w-3.5 h-3.5 text-accent" />
                       <span>{exp.organization}</span>
-                      <span className="text-zinc-300">·</span>
+                      <span className="text-border">·</span>
                       <span className="text-xs">{exp.type}</span>
                     </p>
                   </div>
 
-                  <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+                  <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/30 font-medium">
                     {exp.current ? 'Present' : `${exp.startDate} - ${exp.endDate}`}
                   </span>
                 </div>
 
-                <p className="text-sm sm:text-base text-zinc-600 leading-relaxed">
+                <p className="text-sm sm:text-base text-muted leading-relaxed">
                   {exp.summary}
                 </p>
 
                 {/* Responsibilities list */}
                 {exp.responsibilities && exp.responsibilities.length > 0 && (
                   <div className="space-y-2 pt-2">
-                    <p className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-medium">
+                    <p className="text-xs font-mono uppercase tracking-wider text-muted font-medium">
                       Key Responsibilities & Deliverables
                     </p>
                     <ul className="space-y-2">
                       {exp.responsibilities.map((resp, rIdx) => (
                         <li
                           key={rIdx}
-                          className="text-xs sm:text-sm text-zinc-600 flex items-start gap-2.5"
+                          className="text-xs sm:text-sm text-muted flex items-start gap-2.5"
                         >
-                          <span className="text-zinc-900 font-mono text-xs mt-0.5">
+                          <span className="text-accent font-mono text-xs mt-0.5">
                             ›
                           </span>
-                          <span>{resp}</span>
+                          <span className="text-foreground/90">{resp}</span>
                         </li>
                       ))}
                     </ul>
@@ -154,7 +168,7 @@ export default function AboutPage() {
                   {exp.technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="text-xs font-mono px-2.5 py-1 rounded-md bg-zinc-50 border border-zinc-200 text-zinc-700 font-medium"
+                      className="text-xs font-mono px-2.5 py-1 rounded-md bg-surface-raised border border-border text-foreground/80 font-medium"
                     >
                       {tech}
                     </span>
@@ -168,11 +182,11 @@ export default function AboutPage() {
         {/* Education Section */}
         <div className="space-y-8">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-zinc-500 font-medium">
-              <GraduationCap className="w-4 h-4 text-zinc-900" />
+            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted font-medium">
+              <GraduationCap className="w-4 h-4 text-accent" />
               <span>Academic Education</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-zinc-900">
+            <h2 className="text-2xl sm:text-3xl font-black text-foreground">
               Education
             </h2>
           </div>
@@ -181,28 +195,28 @@ export default function AboutPage() {
             {site.education.map((edu, idx) => (
               <div
                 key={idx}
-                className="p-6 sm:p-8 rounded-2xl bg-zinc-50 border border-zinc-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xs"
+                className="p-6 sm:p-8 rounded-2xl bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-sm"
               >
                 <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-zinc-900">
+                  <h3 className="text-xl font-bold text-foreground">
                     {edu.institution}
                   </h3>
-                  <p className="text-base text-zinc-600">
+                  <p className="text-base text-muted">
                     {edu.program}
                   </p>
                   {edu.note && (
-                    <p className="text-xs font-mono text-zinc-400">
+                    <p className="text-xs font-mono text-muted">
                       Status: {edu.startDate} - Ongoing
                     </p>
                   )}
                 </div>
 
                 {edu.gpa && (
-                  <div className="p-4 rounded-xl bg-white border border-zinc-200 text-center shrink-0 shadow-xs">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-medium">
+                  <div className="p-4 rounded-xl bg-surface-raised border border-border text-center shrink-0">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-muted font-medium">
                       Current GPA
                     </p>
-                    <p className="text-2xl font-black font-mono text-zinc-900">
+                    <p className="text-2xl font-black font-mono text-accent">
                       {edu.gpa}
                     </p>
                   </div>
@@ -215,10 +229,10 @@ export default function AboutPage() {
         {/* Technical Skills Overview */}
         <div className="space-y-8">
           <div className="space-y-2">
-            <p className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-medium">
+            <p className="text-xs font-mono uppercase tracking-wider text-muted font-medium">
               Stack Architecture
             </p>
-            <h2 className="text-2xl sm:text-3xl font-black text-zinc-900">
+            <h2 className="text-2xl sm:text-3xl font-black text-foreground">
               Technical Tooling
             </h2>
           </div>
@@ -227,16 +241,16 @@ export default function AboutPage() {
             {skillGroups.map((group) => (
               <div
                 key={group.title}
-                className="p-6 rounded-2xl bg-zinc-50 border border-zinc-200/90 space-y-4 shadow-xs"
+                className="p-6 rounded-2xl bg-surface border border-border space-y-4 shadow-sm"
               >
-                <h3 className="text-base font-bold text-zinc-900">
+                <h3 className="text-base font-bold text-foreground">
                   {group.title}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {group.technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="text-xs font-mono px-3 py-1.5 rounded-lg bg-white border border-zinc-200 text-zinc-700 font-medium hover:text-zinc-900 transition-colors"
+                      className="text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-raised border border-border text-foreground/90 font-medium hover:border-accent/40 transition-colors"
                     >
                       {tech}
                     </span>

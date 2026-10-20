@@ -31,15 +31,14 @@
       ],
       "links": {
         "demo": "",
-        "repository": "",
-        "caseStudy": ""
+        "repository": ""
       },
+      "coverImage": "",
+      "previewImages": [],
       "visual": {
         "type": "brava-preview",
-        "image": "",
-        "alt": "Illustrative preview of the Brava company website and content management system"
-      },
-      "gallery": []
+        "alt": "Preview diagram of the Brava corporate website and content management system"
+      }
     },
     {
       "slug": "sm-sport-center",
@@ -70,15 +69,14 @@
       ],
       "links": {
         "demo": "",
-        "repository": "",
-        "caseStudy": ""
+        "repository": ""
       },
+      "coverImage": "",
+      "previewImages": [],
       "visual": {
         "type": "sports-booking-preview",
-        "image": "",
-        "alt": "Illustrative preview of a futsal court booking interface"
-      },
-      "gallery": []
+        "alt": "Preview diagram of a futsal court booking interface"
+      }
     },
     {
       "slug": "donelock",
@@ -104,15 +102,14 @@
       "architecture": [],
       "links": {
         "demo": "",
-        "repository": "",
-        "caseStudy": ""
+        "repository": ""
       },
+      "coverImage": "",
+      "previewImages": [],
       "visual": {
         "type": "mobile-app-preview",
-        "image": "",
-        "alt": "Illustrative mobile productivity app preview"
-      },
-      "gallery": []
+        "alt": "Preview diagram of the mobile productivity application"
+      }
     }
   ]
 }

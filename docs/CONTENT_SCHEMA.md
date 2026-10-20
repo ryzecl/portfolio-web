@@ -6,7 +6,7 @@ The JSON files are the source of truth for portfolio content. Keep these shapes 
 Contains identity, navigation, introduction, education, and contact links. Use empty strings or omit optional links when unknown. Never invent URLs.
 
 ## `data/projects.json`
-Top-level object with a `projects` array. Each project should support:
+Top-level object with a `projects` array. Each project supports:
 - `slug`: unique URL-safe identifier.
 - `title`, `summary`, `description`.
 - `category`, `status`, `year`, `role`.
@@ -15,9 +15,11 @@ Top-level object with a `projects` array. Each project should support:
 - `highlights`: string array of features that are actually implemented.
 - `problem`, `solution`, `contribution`, `challenges`, `learnings`: strings or arrays as appropriate.
 - `architecture`: optional explanatory text or diagram nodes/steps.
-- `links`: optional `demo`, `repository`, and `caseStudy` URLs.
-- `visual`: a local image path or a preview type for a CSS/HTML-built illustrative preview.
-- `gallery`: optional array of image paths with alt text.
+- `coverImage`: optional path/URL to 1 main cover image.
+- `previewImages`: optional array of image paths for the interactive detail slider/carousel.
+- `links`: optional `demo` (online live preview) and `repository` (source code repository). If populated, the UI renders the respective button; if empty/omitted, the UI hides it completely.
+- `visual`: metadata such as `type` (for fallback wireframe preview) and `alt`.
+- `gallery`: optional backward-compatible image array.
 
 Unknown facts must remain blank or be marked with a TODO. Never generate fake statistics.
 

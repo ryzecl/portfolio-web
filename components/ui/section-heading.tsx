@@ -28,23 +28,23 @@ export function SectionHeading({
     >
       <div
         className={cn(
-          'inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase text-zinc-500 font-medium',
+          'inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase text-muted font-medium',
           align === 'center' && 'justify-center'
         )}
       >
         {number && (
-          <span className="text-zinc-900 font-bold">{number}</span>
+          <span className="text-accent font-bold">{number}</span>
         )}
-        {number && eyebrow && <span className="text-zinc-300">/</span>}
+        {number && eyebrow && <span className="text-border">/</span>}
         {eyebrow && <span>{eyebrow}</span>}
       </div>
 
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-zinc-900 text-balance">
+      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground text-balance">
         {title}
       </h2>
 
       {description && (
-        <p className="text-base sm:text-lg text-zinc-600 font-normal leading-relaxed text-balance">
+        <p className="text-base sm:text-lg text-muted font-normal leading-relaxed text-balance">
           {description}
         </p>
       )}

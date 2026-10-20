@@ -69,6 +69,8 @@ export interface SiteData {
 export interface ProjectVisual {
   type: string;
   image?: string;
+  coverImage?: string;
+  previewImages?: string[];
   alt: string;
 }
 
@@ -98,6 +100,8 @@ export interface ProjectItem {
   architecture?: string[];
   links: ProjectLinks;
   visual: ProjectVisual;
+  coverImage?: string;
+  previewImages?: string[];
   gallery?: Array<{ image: string; alt: string }>;
 }
 

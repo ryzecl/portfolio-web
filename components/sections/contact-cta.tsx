@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { ContactData, SiteIdentity } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Mail, ArrowUpRight } from 'lucide-react';
@@ -11,26 +10,26 @@ interface ContactCtaProps {
 
 export function ContactCta({ contact, identity }: ContactCtaProps) {
   return (
-    <section className="py-24 border-t border-zinc-200 bg-white" id="contact">
+    <section className="py-24 border-t border-border bg-background text-foreground" id="contact">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-zinc-50 border border-zinc-200/90 p-8 sm:p-12 lg:p-16 flex flex-col md:flex-row md:items-center justify-between gap-10 shadow-xs">
+        <div className="rounded-3xl bg-surface border border-border p-8 sm:p-12 lg:p-16 flex flex-col md:flex-row md:items-center justify-between gap-10 shadow-sm">
           <div className="space-y-4 max-w-xl">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-zinc-500 font-medium">
-              <span className="text-zinc-900 font-bold">04</span>
-              <span className="text-zinc-300">/</span>
+            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted font-medium">
+              <span className="text-accent font-bold">04</span>
+              <span className="text-border">/</span>
               <span>Collaboration & Opportunities</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-zinc-900 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-tight">
               Let’s build something practical.
             </h2>
 
-            <p className="text-base text-zinc-600 leading-relaxed font-normal">
-              I’m currently open to internship opportunities, full-stack or backend roles (especially Laravel & modern web stacks), and collaborating on practical digital tools.
+            <p className="text-base text-muted leading-relaxed font-normal">
+              I am open to internship opportunities, full-stack or backend developer roles (especially Laravel, Next.js, and modern APIs), and collaborating on software projects.
             </p>
 
-            <div className="pt-2 flex items-center gap-2 text-xs font-mono text-zinc-500">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <div className="pt-2 flex items-center gap-2 text-xs font-mono text-muted">
+              <span className="w-2 h-2 rounded-full bg-accent" />
               <span>Based in {identity.location} · {identity.statusLabel}</span>
             </div>
           </div>

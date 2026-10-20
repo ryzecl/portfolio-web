@@ -17,13 +17,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        'bg-zinc-900 text-white hover:bg-zinc-800 shadow-sm active:translate-y-[1px]',
+        'bg-foreground text-background font-semibold hover:opacity-90 shadow-sm active:translate-y-[1px]',
       secondary:
-        'bg-zinc-100 text-zinc-900 border border-zinc-200 hover:bg-zinc-200/80 active:translate-y-[1px]',
+        'bg-surface-raised text-foreground border border-border hover:border-foreground/30 active:translate-y-[1px]',
       outline:
-        'border border-zinc-300 text-zinc-900 hover:bg-zinc-100 active:translate-y-[1px]',
+        'border border-border text-foreground hover:bg-surface-raised active:translate-y-[1px]',
       ghost:
-        'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 active:translate-y-[1px]',
+        'text-muted hover:text-foreground hover:bg-surface-raised active:translate-y-[1px]',
     };
 
     const sizes = {
