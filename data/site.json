@@ -1,0 +1,66 @@
+{
+  "identity": {
+    "name": "Ferry Noer Hendriawan",
+    "wordmark": "FNH.",
+    "domain": "ferrynoer.dev",
+    "title": "Information Systems Student · Software Developer",
+    "location": "Indonesia",
+    "statusLabel": "Open to internship opportunities"
+  },
+  "hero": {
+    "eyebrow": "INFORMATION SYSTEMS · SOFTWARE DEVELOPMENT",
+    "headlineLight": "Shaping the",
+    "headlineBold": "practical into intuitive digital presence",
+    "headline": "Shaping the practical into intuitive digital presence.",
+    "description": "Information Systems student with practical experience building clean, scalable digital products. I transform ideas into intuitive experiences through thoughtful design and robust code.",
+    "primaryCta": {
+      "label": "Explore projects",
+      "href": "/projects"
+    },
+    "secondaryCta": {
+      "label": "Get in touch",
+      "href": "/contact"
+    }
+  },
+  "navigation": [
+    { "label": "Home", "href": "/" },
+    { "label": "About", "href": "/about" },
+    { "label": "Projects", "href": "/projects" },
+    { "label": "Experience", "href": "/about#experience" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "about": {
+    "heading": "Software, systems, and real-world needs.",
+    "paragraphs": [
+      "I study Information Systems and build software through practical projects, from web interfaces and backend APIs to content management and booking workflows.",
+      "Through client and personal projects, I’m learning to connect technical implementation with the problems people actually need to solve."
+    ],
+    "focus": [
+      "Full-stack web development",
+      "Backend engineering",
+      "API and database design",
+      "Practical problem-solving"
+    ]
+  },
+  "education": [
+    {
+      "institution": "Horizon University Indonesia",
+      "program": "Information Systems",
+      "startDate": "2024-09",
+      "endDate": "",
+      "gpa": "4.00",
+      "note": "Confirm GPA and graduation details before publishing."
+    }
+  ],
+  "contact": {
+    "email": "",
+    "github": "",
+    "linkedin": "",
+    "whatsapp": "",
+    "cv": ""
+  },
+  "footer": {
+    "copyrightName": "Ferry Noer Hendriawan",
+    "closingLine": "Let’s build something useful."
+  }
+}

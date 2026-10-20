@@ -1,0 +1,20 @@
+{
+  "experiences": [
+    {
+      "organization": "JDNirwana",
+      "role": "Co-founder · Full-Stack Developer",
+      "type": "Agency / Client Projects",
+      "startDate": "",
+      "endDate": "",
+      "current": true,
+      "summary": "Collaborating on digital projects and helping translate client needs into practical web solutions.",
+      "responsibilities": [
+        "Contribute to frontend and backend development across client projects.",
+        "Build and integrate web interfaces, APIs, and database-backed features.",
+        "Help troubleshoot technical issues and communicate implementation details with clients."
+      ],
+      "technologies": ["Next.js", "TypeScript", "Laravel", "REST API", "MySQL", "Midtrans"],
+      "url": ""
+    }
+  ]
+}

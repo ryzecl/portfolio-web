@@ -1,0 +1,118 @@
+{
+  "projects": [
+    {
+      "slug": "brava",
+      "title": "Brava : Company Profile & CMS",
+      "summary": "A corporate website connected to a custom content management system.",
+      "description": "A client project combining a public-facing company profile website with a Laravel-powered CMS for managing website content.",
+      "category": "Client Project",
+      "status": "In Progress",
+      "year": "",
+      "role": "Full-Stack Developer",
+      "featured": true,
+      "technologies": ["Next.js", "TypeScript", "Tailwind CSS", "Laravel", "REST API", "MySQL"],
+      "highlights": [
+        "Company profile frontend",
+        "CMS content management",
+        "Frontend-to-backend REST API integration",
+        "Blog and product content management",
+        "Shared media library",
+        "Multilingual content support"
+      ],
+      "problem": "The client needs a professional company website and a manageable way to update content without editing source code.",
+      "solution": "A Next.js frontend consumes a Laravel REST API, while the CMS provides content-management workflows for authorized editors.",
+      "contribution": "Contributed across frontend and backend development, API integration, CMS functionality, and client-facing problem solving. Update this description to match the exact work delivered.",
+      "challenges": [],
+      "learnings": [],
+      "architecture": [
+        "Next.js public website",
+        "Laravel REST API",
+        "MySQL database"
+      ],
+      "links": {
+        "demo": "",
+        "repository": "",
+        "caseStudy": ""
+      },
+      "visual": {
+        "type": "brava-preview",
+        "image": "",
+        "alt": "Illustrative preview of the Brava company website and content management system"
+      },
+      "gallery": []
+    },
+    {
+      "slug": "sm-sport-center",
+      "title": "SM Sport Center : Online Court Booking",
+      "summary": "A futsal court booking platform with online reservation and payment integration.",
+      "description": "A client project in development to help customers reserve futsal courts and manage booking and payment flows online.",
+      "category": "Client Project",
+      "status": "In Progress",
+      "year": "",
+      "role": "Full-Stack Developer",
+      "featured": true,
+      "technologies": ["Laravel", "MySQL", "Midtrans"],
+      "highlights": [
+        "Online court booking",
+        "Court and schedule management",
+        "Midtrans payment integration"
+      ],
+      "problem": "The venue needs a more convenient way for customers to book courts and complete payment online.",
+      "solution": "A web-based booking workflow is being developed with payment gateway integration.",
+      "contribution": "Contributed to full-stack implementation and integration work. Update this field with the exact features and responsibilities completed.",
+      "challenges": [],
+      "learnings": [],
+      "architecture": [
+        "Customer booking interface",
+        "Laravel application",
+        "MySQL database",
+        "Midtrans payment flow"
+      ],
+      "links": {
+        "demo": "",
+        "repository": "",
+        "caseStudy": ""
+      },
+      "visual": {
+        "type": "sports-booking-preview",
+        "image": "",
+        "alt": "Illustrative preview of a futsal court booking interface"
+      },
+      "gallery": []
+    },
+    {
+      "slug": "donelock",
+      "title": "Donelock : Productivity App",
+      "summary": "A mobile productivity app concept for organizing tasks, notes, and schedules.",
+      "description": "A Flutter-based productivity application project exploring task organization, notes, calendar experiences, and Firebase integration.",
+      "category": "Personal / Academic",
+      "status": "In Progress",
+      "year": "",
+      "role": "Flutter Developer",
+      "featured": false,
+      "technologies": ["Flutter", "Dart", "Firebase", "Riverpod"],
+      "highlights": [
+        "Task and note organization",
+        "Calendar experience",
+        "Authentication experiments"
+      ],
+      "problem": "TODO: describe the specific user problem after confirming the project's scope.",
+      "solution": "TODO: describe the implemented solution and current state accurately.",
+      "contribution": "TODO: list your personal contributions.",
+      "challenges": [],
+      "learnings": [],
+      "architecture": [],
+      "links": {
+        "demo": "",
+        "repository": "",
+        "caseStudy": ""
+      },
+      "visual": {
+        "type": "mobile-app-preview",
+        "image": "",
+        "alt": "Illustrative mobile productivity app preview"
+      },
+      "gallery": []
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "title": "Programming Languages",
+      "priority": 1,
+      "technologies": ["TypeScript", "JavaScript", "PHP", "Dart", "Go"]
+    },
+    {
+      "title": "Frontend",
+      "priority": 2,
+      "technologies": ["Next.js", "React", "Tailwind CSS", "HTML", "CSS"]
+    },
+    {
+      "title": "Backend",
+      "priority": 3,
+      "technologies": ["Laravel", "REST API", "Authentication", "CMS Development"]
+    },
+    {
+      "title": "Data & Tools",
+      "priority": 4,
+      "technologies": ["MySQL", "Firebase", "Git", "GitHub", "Docker"]
+    }
+  ]
+}
