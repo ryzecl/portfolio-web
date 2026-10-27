@@ -156,6 +156,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             </div>
 
             {/* Name + Photo Capsule */}
+            <div className="aura rounded-full">
             <div className="inline-flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-surface-raised border border-border shadow-xs hover:border-foreground/30 transition-colors">
               <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-18 md:h-18 aspect-square rounded-full overflow-hidden relative shrink-0 border-2 border-background shadow-xs bg-surface-muted">
                 <Image
@@ -170,6 +171,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
               <span className="font-bold text-foreground text-base sm:text-xl md:text-2xl tracking-tight pr-2 sm:pr-3 whitespace-nowrap">
                 {name}
               </span>
+              </div>
             </div>
           </div>
 
