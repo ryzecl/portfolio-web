@@ -8,16 +8,27 @@ export interface SiteIdentity {
 }
 
 export interface HeroData {
-  eyebrow: string;
+  greetings?: string[];
+  greeting?: string;
+  intro?: string;
+  name?: string;
+  avatar?: string;
+  eyebrow?: string;
   headline: string;
+  headlineTag?: string;
+  headlineRest?: string;
   headlineLight?: string;
   headlineBold?: string;
+  headlinePart1?: string;
+  headlinePart2?: string;
+  headlinePart3?: string;
+  locationText?: string;
   description: string;
   primaryCta: {
     label: string;
     href: string;
   };
-  secondaryCta: {
+  secondaryCta?: {
     label: string;
     href: string;
   };

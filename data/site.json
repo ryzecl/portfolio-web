@@ -8,18 +8,18 @@
     "statusLabel": "Open to internship opportunities"
   },
   "hero": {
+    "greetings": ["HOLA!", "HI!", "HELLO!", "HALO!"],
+    "greeting": "Hello! I'm Ferry.",
+    "intro": "I am",
+    "name": "Ferry Noer Hendriawan",
+    "avatar": "/images/ferry.png",
     "eyebrow": "INFORMATION SYSTEMS · SOFTWARE DEVELOPMENT",
-    "headlineLight": "Shaping the",
-    "headlineBold": "practical into intuitive digital presence",
-    "headline": "Shaping the practical into intuitive digital presence.",
+    "headline": "Fullstack Developer",
+    "locationText": "from Indonesia",
     "description": "Information Systems student with practical experience building clean, scalable digital products. I transform ideas into intuitive experiences through thoughtful design and robust code.",
     "primaryCta": {
-      "label": "Explore projects",
-      "href": "/projects"
-    },
-    "secondaryCta": {
-      "label": "Get in touch",
-      "href": "/contact"
+      "label": "See My CV",
+      "href": "/cv.pdf"
     }
   },
   "navigation": [

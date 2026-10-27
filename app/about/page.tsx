@@ -178,7 +178,7 @@ export default function AboutPage() {
             {experiences.map((exp, idx) => (
               <div key={idx} className="relative space-y-4">
                 {/* Timeline node */}
-                <div className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-3.5 h-3.5 rounded-full bg-accent border-4 border-background" />
+                <div className="absolute -left-7.75 sm:-left-9.75 top-1.5 w-3.5 h-3.5 rounded-full bg-accent border-4 border-background" />
 
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
