@@ -52,8 +52,11 @@ export function AboutMeSection({
   const eyebrowRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const ctaRowRef = useRef<HTMLDivElement>(null);
+  const lanyardWrapperRef = useRef<HTMLDivElement>(null);
   const lanyardRef = useRef<HTMLDivElement>(null);
+  const col1WrapperRef = useRef<HTMLDivElement>(null);
   const col1Ref = useRef<HTMLDivElement>(null);
+  const col2WrapperRef = useRef<HTMLDivElement>(null);
   const col2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,7 +64,7 @@ export function AboutMeSection({
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const ctx = gsap.context(() => {
-      // Top Section Reveal
+      // 1. Top Section Entrance Reveal (Slack spring curve)
       const topTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -96,7 +99,7 @@ export function AboutMeSection({
         );
       }
 
-      // Bottom Row Reveal: 3D Lanyard & Two-Column Editorial Details
+      // 2. Bottom Row Entrance Reveal
       const bottomTriggerEl = lanyardRef.current || sectionRef.current;
       const bottomTl = gsap.timeline({
         scrollTrigger: {
@@ -128,6 +131,49 @@ export function AboutMeSection({
           },
           '-=0.65'
         );
+      }
+
+      // 3. Differential Parallax Slack on Scroll (Inertia & Depth Layering)
+      // Lanyard floats with heavier inertia (slack lag)
+      if (lanyardWrapperRef.current) {
+        gsap.to(lanyardWrapperRef.current, {
+          y: -36,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.4,
+          },
+        });
+      }
+
+      // Left Column has mild parallax drift
+      if (col1WrapperRef.current) {
+        gsap.to(col1WrapperRef.current, {
+          y: -22,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.1,
+          },
+        });
+      }
+
+      // Right Column has subtle offset for depth
+      if (col2WrapperRef.current) {
+        gsap.to(col2WrapperRef.current, {
+          y: -12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.9,
+          },
+        });
       }
     }, sectionRef);
 
@@ -215,9 +261,12 @@ export function AboutMeSection({
         {/* Bottom Editorial Grid: 3D Lanyard Card + 2 Distinct Content Columns */}
         <div className="pt-8 sm:pt-12 border-t border-border/80">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            {/* Left Side: ReactBits Interactive 3D Lanyard (Directly in section, no card frame) */}
-            <div ref={lanyardRef} className="lg:col-span-5 flex justify-center items-center">
-              <div className="relative w-full h-[460px] sm:h-[520px] lg:h-[560px]">
+            {/* Left Side: ReactBits Interactive 3D Lanyard with Parallax Slack */}
+            <div
+              ref={lanyardWrapperRef}
+              className="lg:col-span-5 flex justify-center items-center will-change-transform"
+            >
+              <div ref={lanyardRef} className="relative w-full h-[460px] sm:h-[520px] lg:h-[560px]">
                 <Lanyard
                   frontImage="/images/about-photo.png"
                   backImage="/images/about-photo.png"
@@ -233,104 +282,108 @@ export function AboutMeSection({
               </div>
             </div>
 
-            {/* Right Side: Two-Column Breakdown (Current Role vs Education & Achievements) */}
+            {/* Right Side: Two-Column Breakdown (Current Role vs Education & Achievements) with Differential Slack */}
             <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-8">
               {/* Column 1: Bringing Ideas to Life / Current Active Role */}
-              <div ref={col1Ref} className="space-y-4">
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2 text-accent">
-                    <Briefcase className="w-4 h-4" />
-                    <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
-                      Current Practice
-                    </span>
+              <div ref={col1WrapperRef} className="will-change-transform">
+                <div ref={col1Ref} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 text-accent">
+                      <Briefcase className="w-4 h-4" />
+                      <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
+                        Current Practice
+                      </span>
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                      Bringing Ideas to Life
+                    </h3>
+                    <p className="text-xs font-mono text-accent font-medium">
+                      {activeExp ? `${activeExp.role} · ${activeExp.organization}` : 'Full-Stack Developer'}
+                    </p>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                    Bringing Ideas to Life
-                  </h3>
-                  <p className="text-xs font-mono text-accent font-medium">
-                    {activeExp ? `${activeExp.role} · ${activeExp.organization}` : 'Full-Stack Developer'}
+
+                  <p className="text-sm text-muted leading-relaxed">
+                    Translating real-world business requirements into high-performance, user-centered digital applications—from intuitive interfaces to reliable backend architecture.
                   </p>
-                </div>
 
-                <p className="text-sm text-muted leading-relaxed">
-                  Translating real-world business requirements into high-performance, user-centered digital applications—from intuitive interfaces to reliable backend architecture.
-                </p>
-
-                {/* CV Responsibilities in English */}
-                <div className="space-y-2.5 pt-2">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-muted/80 font-semibold block">
-                    Core Engineering Focus:
-                  </span>
-                  <ul className="space-y-2 text-xs sm:text-sm text-foreground/90">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                      <span>Architect and engineer fullstack web applications using Next.js, TypeScript, and Laravel.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                      <span>Design scalable relational database schemas (MySQL) and develop robust RESTful APIs.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                      <span>Integrate payment gateways (Midtrans) and secure third-party deployment workflows.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                      <span>Deliver client solutions with clarity, maintainability, and measurable impact.</span>
-                    </li>
-                  </ul>
+                  {/* CV Responsibilities in English */}
+                  <div className="space-y-2.5 pt-2">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-muted/80 font-semibold block">
+                      Core Engineering Focus:
+                    </span>
+                    <ul className="space-y-2 text-xs sm:text-sm text-foreground/90">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                        <span>Architect and engineer fullstack web applications using Next.js, TypeScript, and Laravel.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                        <span>Design scalable relational database schemas (MySQL) and develop robust RESTful APIs.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                        <span>Integrate payment gateways (Midtrans) and secure third-party deployment workflows.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                        <span>Deliver client solutions with clarity, maintainability, and measurable impact.</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 
               {/* Column 2: Collaborate & Credentials / Education & Key Achievements */}
-              <div ref={col2Ref} className="space-y-4">
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2 text-accent">
-                    <GraduationCap className="w-4 h-4" />
-                    <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
-                      Academic Background
-                    </span>
+              <div ref={col2WrapperRef} className="will-change-transform">
+                <div ref={col2Ref} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 text-accent">
+                      <GraduationCap className="w-4 h-4" />
+                      <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
+                        Academic Background
+                      </span>
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                      Education &amp; Honors
+                    </h3>
+                    <p className="text-xs font-mono text-accent font-medium">
+                      {primaryEdu ? `${primaryEdu.institution} · GPA ${primaryEdu.gpa || '3.96'}` : 'Information Systems'}
+                    </p>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                    Education &amp; Honors
-                  </h3>
-                  <p className="text-xs font-mono text-accent font-medium">
-                    {primaryEdu ? `${primaryEdu.institution} · GPA ${primaryEdu.gpa || '3.96'}` : 'Information Systems'}
+
+                  <p className="text-sm text-muted leading-relaxed">
+                    Undergraduate Information Systems degree focusing on software engineering, database architecture, and digital system design with proven academic excellence.
                   </p>
-                </div>
 
-                <p className="text-sm text-muted leading-relaxed">
-                  Undergraduate Information Systems degree focusing on software engineering, database architecture, and digital system design with proven academic excellence.
-                </p>
-
-                {/* Verified Achievements & Distinctions */}
-                <div className="space-y-2.5 pt-2">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-muted/80 font-semibold block">
-                    Honors &amp; Achievements:
-                  </span>
-                  <ul className="space-y-2.5 text-xs sm:text-sm text-foreground/90">
-                    <li className="flex items-start gap-2">
-                      <Award className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-semibold text-foreground">Best Student GPA</span>
-                        <p className="text-[11px] font-mono text-muted">Information Systems Department (2025 &amp; 2026)</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Award className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-semibold text-foreground">1st Winner — Web Solution Business &amp; Supply Chain</span>
-                        <p className="text-[11px] font-mono text-muted">TechnoSpark Vol. 2 Competition at Horizon University Indonesia</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-semibold text-foreground">Areas of Specialization</span>
-                        <p className="text-[11px] font-mono text-muted">Software Engineering, Web Development &amp; System Design</p>
-                      </div>
-                    </li>
-                  </ul>
+                  {/* Verified Achievements & Distinctions */}
+                  <div className="space-y-2.5 pt-2">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-muted/80 font-semibold block">
+                      Honors &amp; Achievements:
+                    </span>
+                    <ul className="space-y-2.5 text-xs sm:text-sm text-foreground/90">
+                      <li className="flex items-start gap-2">
+                        <Award className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-foreground">Best Student GPA</span>
+                          <p className="text-[11px] font-mono text-muted">Information Systems Department (2025 &amp; 2026)</p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Award className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-foreground">1st Winner — Web Solution Business &amp; Supply Chain</span>
+                          <p className="text-[11px] font-mono text-muted">TechnoSpark Vol. 2 Competition at Horizon University Indonesia</p>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-foreground">Areas of Specialization</span>
+                          <p className="text-[11px] font-mono text-muted">Software Engineering, Web Development &amp; System Design</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
