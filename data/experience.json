@@ -3,18 +3,19 @@
     {
       "organization": "JDNirwana",
       "role": "Co-founder · Full-Stack Developer",
-      "type": "Agency / Client Projects",
-      "startDate": "",
-      "endDate": "",
+      "type": "Software Developer Agency",
+      "startDate": "2026",
+      "endDate": "Present",
       "current": true,
-      "summary": "Collaborating on digital projects and helping translate client needs into practical web solutions.",
+      "summary": "Co-founding a digital agency initiative, leading full-stack web development and translating real-world client needs into practical, high-performance digital products.",
       "responsibilities": [
-        "Contribute to frontend and backend development across client projects.",
-        "Build and integrate web interfaces, APIs, and database-backed features.",
-        "Help troubleshoot technical issues and communicate implementation details with clients."
+        "Architect and engineer end-to-end fullstack web applications using Next.js, TypeScript, and Laravel.",
+        "Design scalable relational database schemas (MySQL) and develop robust RESTful APIs.",
+        "Integrate secure third-party services including payment gateways (Midtrans) and cloud deployment pipelines.",
+        "Translate client business requirements into intuitive, performant user interfaces."
       ],
-      "technologies": ["Next.js", "TypeScript", "Laravel", "REST API", "MySQL", "Midtrans"],
-      "url": ""
+      "technologies": ["Next.js", "TypeScript", "Laravel", "REST API", "MySQL", "Midtrans", "Tailwind CSS"],
+      "url": "nirwana.biz.id"
     }
   ]
 }

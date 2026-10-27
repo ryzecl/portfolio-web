@@ -41,8 +41,10 @@ export interface NavigationItem {
 
 export interface AboutData {
   heading: string;
+  subheading?: string;
   paragraphs: string[];
   focus: string[];
+  achievements?: string[];
 }
 
 export interface EducationItem {
@@ -51,6 +53,7 @@ export interface EducationItem {
   startDate: string;
   endDate: string;
   gpa?: string;
+  achievements?: string[];
   note?: string;
 }
 

@@ -36,8 +36,8 @@
     ],
     "focus": [
       "Full-stack web development",
-      "Backend engineering",
-      "API and database design",
+      "Backend & API architecture",
+      "Database design & modeling",
       "Practical problem-solving"
     ]
   },
@@ -45,17 +45,20 @@
     {
       "institution": "Horizon University Indonesia",
       "program": "Information Systems",
-      "startDate": "2024-09",
-      "endDate": "",
-      "gpa": "3.96",
-      "note": "Confirm GPA and graduation details before publishing."
+      "startDate": "2024",
+      "endDate": "Present",
+      "gpa": "3.96 / 4.00",
+      "achievements": [
+        "Best Student GPA for Information Systems (2025 & 2026)",
+        "1st Winner — Web Solution Business & Supply Chain in TechnoSpark Vol. 2 Competition at Horizon University Indonesia"
+      ],
+      "note": "Undergraduate degree focusing on software engineering, database systems, and business process modeling."
     }
   ],
   "contact": {
     "email": "ferrynoerhendriawan18@gmail.com",
     "github": "https://github.com/ryzecl",
     "linkedin": "https://linkedin.com/in/ferry-noer-hendriawan",
-    "whatsapp": "https://wa.me/6283161218295",
     "cv": "/cv.pdf"
   },
   "footer": {

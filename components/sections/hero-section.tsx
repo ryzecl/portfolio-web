@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { HeroData, SiteIdentity } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
+import { MicroSlats } from '@/components/ui/micro-slats';
 
 interface HeroSectionProps {
   hero: HeroData;
@@ -119,6 +120,23 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
       ref={containerRef}
       className="relative h-screen h-[100dvh] min-h-[100dvh] w-full flex flex-col justify-center pt-20 pb-10 sm:pt-24 sm:pb-12 bg-background text-foreground overflow-hidden"
     >
+      {/* MicroSlats Ambient Background from ReactBits */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-35">
+        <MicroSlats
+          preset="swell"
+          color="#2563eb"
+          glintColor="#ffffff"
+          backgroundColor="transparent"
+          slatWidth={14}
+          slatHeight={6}
+          gap={3}
+          speed={0.8}
+          scale={1.2}
+          interactive={true}
+          className="w-full h-full pointer-events-auto"
+        />
+      </div>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 text-left my-auto">
         <div className="max-w-5xl">
           {/* Eyebrow / Intro Row: Animating from TOP via GSAP */}

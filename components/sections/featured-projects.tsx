@@ -19,7 +19,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <SectionHeading
-            number="01"
+            number="02"
             eyebrow="Selected Works"
             title="Featured Projects"
             description="Real-world client software, interactive web architectures, and full-stack engineering."
