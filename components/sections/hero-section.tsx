@@ -118,7 +118,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   return (
     <section
       ref={containerRef}
-      className="relative h-screen h-[100dvh] min-h-[100dvh] w-full flex flex-col justify-center pt-20 pb-10 sm:pt-24 sm:pb-12 bg-background text-foreground overflow-hidden"
+      className="relative h-screen min-h-dvh w-full flex flex-col justify-center pt-20 pb-10 sm:pt-24 sm:pb-12 bg-background text-foreground overflow-hidden"
     >
       {/* MicroSlats Ambient Background from ReactBits */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-35">
@@ -223,7 +223,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
                 href={hero.primaryCta?.href || '/cv.pdf'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-foreground text-background font-semibold text-sm hover:opacity-90 shadow-sm transition-all active:translate-y-[1px]"
+                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-foreground text-background font-semibold text-sm hover:opacity-90 shadow-sm transition-all active:translate-y-px"
               >
                 <span>{hero.primaryCta?.label || 'See My CV'}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
