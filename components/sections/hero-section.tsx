@@ -54,7 +54,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   }, [text, isDeleting, wordIndex, greetings]);
 
   const name = hero.name || identity.name;
-  const avatarSrc = hero.avatar || '/images/hero-photo.png';
+  const avatarSrc = hero.avatar || '/images/linkedin-photo.png';
   const intro = hero.intro || 'I am';
   const headline = hero.headline || 'Fullstack Developer';
 

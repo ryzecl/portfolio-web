@@ -269,7 +269,7 @@ export function AboutMeSection({
               <div ref={lanyardRef} className="relative w-full h-[460px] sm:h-[520px] lg:h-[560px]">
                 <Lanyard
                   frontImage="/images/about-photo.png"
-                  backImage="/images/about-photo.png"
+                  backImage="/images/animated-photo.png"
                   imageFit="cover"
                   orientation="portrait"
                   finish="glossy"
