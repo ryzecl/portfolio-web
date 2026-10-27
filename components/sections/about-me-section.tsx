@@ -291,14 +291,14 @@ export function AboutMeSection({
                     <div className="flex items-center gap-2 text-accent">
                       <Briefcase className="w-4 h-4" />
                       <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
-                        Current Practice
+                        Current Active Roles
                       </span>
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                      Bringing Ideas to Life
+                      JDNirwana
                     </h3>
                     <p className="text-xs font-mono text-accent font-medium">
-                      {activeExp ? `${activeExp.role} · ${activeExp.organization}` : 'Full-Stack Developer'}
+                      {activeExp ? `${activeExp.role}` : 'Full-Stack Developer'}
                     </p>
                   </div>
 
@@ -344,10 +344,10 @@ export function AboutMeSection({
                       </span>
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                      Education &amp; Honors
+                      Horizon University Indonesia
                     </h3>
                     <p className="text-xs font-mono text-accent font-medium">
-                      {primaryEdu ? `${primaryEdu.institution} · GPA ${primaryEdu.gpa || '3.96'}` : 'Information Systems'}
+                      {primaryEdu ? `GPA ${primaryEdu.gpa || '3.96'}` : 'Information Systems'}
                     </p>
                   </div>
 
