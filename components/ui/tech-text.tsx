@@ -34,6 +34,7 @@ type Kick = { index: number; at: number; velocity: number };
 
 export interface TechTextProps {
   text?: string;
+  fitText?: string;
   fontFamily?: string;
   fontWeight?: number;
   fontSize?: number;
@@ -97,6 +98,7 @@ const signed = (value: number) => (value > 0 ? `+${value}` : value < 0 ? `−${-
 
 const TechText = ({
   text = 'React Bits',
+  fitText,
   fontFamily = '',
   fontWeight = 600,
   fontSize = 150,
@@ -133,6 +135,7 @@ const TechText = ({
   useEffect(() => {
     settingsRef.current = {
       text,
+      fitText: fitText || text,
       fontFamily,
       fontWeight,
       fontSize,
@@ -261,6 +264,7 @@ const TechText = ({
     const ensureLayout = (s: Settings, ink: string): Word => {
       const key = [
         s.text,
+        s.fitText || '',
         family(s),
         s.fontWeight,
         s.fontSize,
@@ -285,7 +289,8 @@ const TechText = ({
 
       const probe = scratchCtx;
       setFont(probe, s, s.fontSize);
-      let m = probe.measureText(s.text);
+      const probeText = s.fitText || s.text;
+      let m = probe.measureText(probeText);
       const availWidth = s.align === 'left' ? width - 4 : width * 0.9;
       const fit = Math.min(
         1,

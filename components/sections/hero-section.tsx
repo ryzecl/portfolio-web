@@ -123,6 +123,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   }, [headline]);
 
   const headlineWords = headline.split(' ');
+  const widestWord = headlineWords.find((w) => w.toLowerCase().includes('developer')) || headlineWords[0] || headline;
 
   return (
     <section
@@ -151,35 +152,36 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
           {/* Eyebrow / Intro Row: Animating from TOP via GSAP */}
           <div
             ref={introRef}
-            className="inline-flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 mb-5 sm:mb-7"
+            className="flex flex-col sm:inline-flex sm:flex-row items-center justify-center sm:justify-start gap-2.5 sm:gap-4 mb-4 sm:mb-7"
           >
+            {/* Top on Mobile: Typing Greeting + I am */}
             <div className="flex items-center text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
               <span className="min-w-[1ch] inline-block">{text}</span>
               <span
                 className="inline-block w-[2.5px] sm:w-[3.5px] h-[0.9em] bg-accent ml-1 align-middle animate-pulse"
                 aria-hidden="true"
               />
-              <span className="ml-2.5 sm:ml-3 font-semibold text-muted">
+              <span className="ml-2 sm:ml-3 font-semibold text-muted">
                 {intro}
               </span>
             </div>
 
-            {/* Name + Photo Capsule */}
+            {/* Bottom on Mobile: Name + Photo Capsule */}
             <div className="aura aura-dual rounded-full">
-            <div className="inline-flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-surface-raised border border-border shadow-xs hover:border-foreground/30 transition-colors">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-18 md:h-18 aspect-square rounded-full overflow-hidden relative shrink-0 border-2 border-background shadow-xs bg-surface-muted">
-                <Image
-                  src={avatarSrc}
-                  alt={name}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 640px) 48px, (max-width: 768px) 64px, 72px"
-                  priority
-                />
-              </div>
-              <span className="font-bold text-foreground text-base sm:text-xl md:text-2xl tracking-tight pr-2 sm:pr-3 whitespace-nowrap">
-                {name}
-              </span>
+              <div className="inline-flex items-center gap-2.5 sm:gap-4 px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full bg-surface-raised border border-border shadow-xs hover:border-foreground/30 transition-colors">
+                <div className="w-8 h-8 sm:w-16 sm:h-16 md:w-18 md:h-18 aspect-square rounded-full overflow-hidden relative shrink-0 border-2 border-background shadow-xs bg-surface-muted">
+                  <Image
+                    src={avatarSrc}
+                    alt={name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 32px, (max-width: 768px) 64px, 72px"
+                    priority
+                  />
+                </div>
+                <span className="font-bold text-foreground text-sm sm:text-xl md:text-2xl tracking-tight pr-2 sm:pr-3 whitespace-nowrap">
+                  {name}
+                </span>
               </div>
             </div>
           </div>
@@ -190,10 +192,38 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             className="w-full py-1 will-change-transform flex justify-center sm:justify-start"
           >
             <h1 className="sr-only">{headline}</h1>
-            <div className="h-16 sm:h-22 md:h-28 lg:h-36 xl:h-40 w-full">
+
+            {/* Mobile View (< sm): 2 stacked rows (Fullstack / Developer) with synchronized fitText for identical font size */}
+            <div className="sm:hidden w-full flex flex-col items-center gap-1.5">
+              {headlineWords.map((word, idx) => (
+                <div key={idx} className="h-14 w-full">
+                  <TechText
+                    text={word}
+                    fitText={widestWord}
+                    align="center"
+                    fontWeight={900}
+                    fontSize={150}
+                    letterSpacing={-0.03}
+                    color="currentColor"
+                    accentColor="#2563eb"
+                    lineStyle="dashed"
+                    draggable={true}
+                    clickKick={true}
+                    sweep={true}
+                    labels={true}
+                    selection={true}
+                    guides={false}
+                    className="text-foreground"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop View (>= sm): Single continuous 1-line headline */}
+            <div className="hidden sm:block h-20 sm:h-22 md:h-28 lg:h-36 xl:h-40 w-full">
               <TechText
                 text={headline}
-                align={isMobile ? 'center' : 'left'}
+                align="left"
                 fontWeight={900}
                 fontSize={120}
                 letterSpacing={-0.03}

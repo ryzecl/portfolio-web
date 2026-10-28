@@ -66,7 +66,7 @@ export function GitHubCalendarCard({
       </div>
 
       {/* Calendar Area */}
-      <div className="overflow-x-auto py-2 flex justify-center items-center min-h-[160px]">
+      <div className="overflow-x-auto py-2 flex justify-center items-center min-h-40">
         {mounted ? (
           <GitHubCalendar
             username={username}

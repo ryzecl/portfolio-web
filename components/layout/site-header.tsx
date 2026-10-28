@@ -71,10 +71,10 @@ export function SiteHeader({ site }: SiteHeaderProps) {
   };
 
   const navLinks = site.navigation || [];
-  // Primary navigation for center pill (exclude contact which lives as the CTA button)
+  // Primary navigation for center pill and modal (exclude contact which lives as the CTA button)
   const primaryNavLinks = navLinks.filter((item) => item.href !== '/contact');
 
-  // When scrolled down and NOT hovered, pill collapses into minimal logo + 3-dots indicator
+  // When scrolled down and NOT hovered, desktop pill collapses into minimal logo + 3-dots indicator
   const isCollapsed = scrolled && !isHovered;
 
   return (
@@ -85,7 +85,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
           scrolled && 'py-3'
         )}
       >
-        {/* Interactive Floating Capsule Navbar with smooth fluid transition */}
+        {/* Interactive Floating Capsule Navbar */}
         <div
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -98,7 +98,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
           className={cn(
             'pointer-events-auto flex items-center rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none',
             isCollapsed
-              ? 'px-3.5 py-1.5 gap-2 hover:border-foreground/40 cursor-pointer shadow-sm hover:shadow-md'
+              ? 'sm:px-3.5 sm:py-1.5 sm:gap-2 sm:hover:border-foreground/40 sm:cursor-pointer sm:shadow-sm sm:hover:shadow-md p-1.5 gap-1.5'
               : 'p-1.5 gap-1 sm:gap-1.5'
           )}
         >
@@ -110,10 +110,10 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             {site.identity.wordmark || 'FNH.'}
           </Link>
 
-          {/* 3-dots Loading / Menu indicator (Smooth fluid fade) */}
+          {/* 3-dots Loading / Menu indicator (Desktop Only: Smooth fluid fade on scroll, hidden on mobile) */}
           <div
             className={cn(
-              'flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+              'hidden sm:flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
                 ? 'max-w-15 opacity-100 pr-1'
                 : 'max-w-0 opacity-0 pointer-events-none'
@@ -126,13 +126,13 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_0.5s_infinite]" />
           </div>
 
-          {/* Expandable Navigation Cluster: Nav links + CTA + Mobile Toggle */}
+          {/* Navigation Cluster: Desktop expandable links + CTA + Mobile always-ready hamburger */}
           <div
             className={cn(
-              'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden',
+              'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
-                ? 'max-w-0 opacity-0 pointer-events-none -translate-x-1 scale-95'
-                : 'max-w-150 opacity-100 translate-x-0 scale-100'
+                ? 'sm:max-w-0 sm:opacity-0 sm:pointer-events-none sm:-translate-x-1 sm:scale-95 sm:overflow-hidden'
+                : 'sm:max-w-150 sm:opacity-100 sm:translate-x-0 sm:scale-100 sm:overflow-hidden'
             )}
           >
             {/* Desktop Nav Links */}
@@ -163,7 +163,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               })}
             </nav>
 
-            {/* Let's Collaborate Action Button (Desktop/Tablet only, hidden on mobile) */}
+            {/* Let's Collaborate Action Button (Desktop Only) */}
             <Link
               href="/contact"
               className={cn(
@@ -178,14 +178,14 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
 
-            {/* Mobile Menu Toggle Button */}
+            {/* Mobile Menu Toggle Button (Direct hamburger on mobile, never collapsed or hidden) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={
                 mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'
               }
               aria-expanded={mobileMenuOpen}
-              className="sm:hidden p-1.5 rounded-full text-foreground hover:bg-surface-raised transition-colors focus:outline-none ml-1"
+              className="sm:hidden p-1.5 rounded-full text-foreground hover:bg-surface-raised transition-colors focus:outline-none ml-0.5"
             >
               {mobileMenuOpen ? (
                 <X className="w-4 h-4 text-foreground" />
@@ -197,13 +197,13 @@ export function SiteHeader({ site }: SiteHeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer with Smooth Slide & Scale Transition */}
+      {/* Mobile Navigation Modal Dialog (Smooth, high aesthetic, editorial) */}
       <div
         role="dialog"
         aria-modal="true"
-        aria-hidden={!mobileMenuOpen}
+        aria-label="Navigation Menu"
         className={cn(
-          'fixed inset-0 z-40 bg-background/80 backdrop-blur-md sm:hidden flex flex-col pt-20 px-4 pb-8 transition-all duration-300 ease-out',
+          'fixed inset-0 z-50 bg-background/80 backdrop-blur-md sm:hidden flex flex-col justify-start pt-20 px-4 pb-8 transition-all duration-300 ease-out',
           mobileMenuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
@@ -217,29 +217,31 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             'flex flex-col gap-2 bg-surface border border-border rounded-3xl p-6 shadow-2xl max-w-sm mx-auto w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
             mobileMenuOpen
               ? 'translate-y-0 scale-100 opacity-100'
-              : '-translate-y-5 scale-95 opacity-0'
+              : '-translate-y-6 scale-95 opacity-0'
           )}
         >
+          {/* Modal Header */}
           <div className="flex items-center justify-between pb-3.5 border-b border-border">
             <div>
-              <p className="text-sm font-bold font-mono text-foreground">
+              <p className="text-sm font-bold font-mono tracking-tight text-foreground">
                 {site.identity.wordmark || 'FNH.'}
               </p>
               <p className="text-xs text-muted">
-                {site.identity.name}
+                {site.identity.name} · {site.identity.statusLabel || 'Available for projects'}
               </p>
             </div>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-1.5 rounded-full text-muted hover:text-foreground hover:bg-surface-raised transition-colors"
+              className="p-1.5 rounded-full text-muted hover:text-foreground hover:bg-surface-raised transition-colors focus:outline-none"
               aria-label="Close menu"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <nav className="flex flex-col gap-1 py-3">
-            {navLinks.map((item) => {
+          {/* Clean Navigation Links: Redundant Contact removed */}
+          <nav className="flex flex-col gap-1 py-3" aria-label="Mobile Navigation">
+            {primaryNavLinks.map((item) => {
               const isActive =
                 item.href === '/'
                   ? pathname === '/'
@@ -266,6 +268,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             })}
           </nav>
 
+          {/* Unified Primary Action: Let's Collaborate */}
           <div className="pt-3 border-t border-border flex flex-col gap-2">
             <Link
               href="/contact"
