@@ -8,6 +8,7 @@ import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import { MicroSlats } from '@/components/ui/micro-slats';
 import { IndonesiaFlag } from '@/components/ui/indonesia-flag';
+import { TechText } from '@/components/ui/tech-text';
 
 interface HeroSectionProps {
   hero: HeroData;
@@ -23,10 +24,20 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   const [text, setText] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const headlineRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
   const bottomRowRef = useRef<HTMLDivElement>(null);
 
@@ -74,19 +85,16 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
         );
       }
 
-      // 2. Headline Split Text from top
-      const chars = headlineRef.current?.querySelectorAll('.headline-char');
-      if (chars && chars.length > 0) {
+      // 2. Headline Entrance Animation from top
+      if (headlineRef.current) {
         gsap.fromTo(
-          chars,
-          { y: -55, opacity: 0, rotateX: 35 },
+          headlineRef.current,
+          { y: -35, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            rotateX: 0,
             duration: 0.85,
-            stagger: 0.035,
-            ease: 'back.out(1.4)',
+            ease: 'power3.out',
             delay: 0.25,
           }
         );
@@ -138,12 +146,12 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
         />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 text-left my-auto">
-        <div className="max-w-5xl">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 text-center sm:text-left my-auto">
+        <div className="max-w-5xl mx-auto sm:mx-0 flex flex-col items-center sm:items-start">
           {/* Eyebrow / Intro Row: Animating from TOP via GSAP */}
           <div
             ref={introRef}
-            className="inline-flex flex-wrap items-center gap-3 sm:gap-4 mb-5 sm:mb-7"
+            className="inline-flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 mb-5 sm:mb-7"
           >
             <div className="flex items-center text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
               <span className="min-w-[1ch] inline-block">{text}</span>
@@ -176,33 +184,37 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             </div>
           </div>
 
-          {/* Main Headline: Split-Text Character Stagger Animating from TOP via GSAP */}
-          <h1
+          {/* Main Headline: Interactive TechText from ReactBits with CAD blueprint inspector */}
+          <div
             ref={headlineRef}
-            aria-label={headline}
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-[86px] xl:text-[92px] font-black tracking-tight text-foreground leading-[1.05] text-balance overflow-hidden py-1"
+            className="w-full py-1 will-change-transform flex justify-center sm:justify-start"
           >
-            {headlineWords.map((word, wIdx) => (
-              <span
-                key={wIdx}
-                className="inline-block whitespace-nowrap mr-[0.28em] last:mr-0"
-              >
-                {word.split('').map((char, cIdx) => (
-                  <span
-                    key={cIdx}
-                    className="headline-char inline-block will-change-transform"
-                  >
-                    {char}
-                  </span>
-                ))}
-              </span>
-            ))}
-          </h1>
+            <h1 className="sr-only">{headline}</h1>
+            <div className="h-16 sm:h-22 md:h-28 lg:h-36 xl:h-40 w-full">
+              <TechText
+                text={headline}
+                align={isMobile ? 'center' : 'left'}
+                fontWeight={900}
+                fontSize={120}
+                letterSpacing={-0.03}
+                color="currentColor"
+                accentColor="#2563eb"
+                lineStyle="dashed"
+                draggable={true}
+                clickKick={true}
+                sweep={true}
+                labels={true}
+                selection={true}
+                guides={false}
+                className="text-foreground"
+              />
+            </div>
+          </div>
 
           {/* Sub-headline: from Indonesia [Flag] - Animating from BOTTOM via GSAP */}
           <div
             ref={locationRef}
-            className="flex items-center gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3"
+            className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3"
           >
             <span>{hero.locationText || 'from Indonesia'}</span>
             <IndonesiaFlag className="w-7 h-[19px] sm:w-9 sm:h-[24px] md:w-11 md:h-[29px] lg:w-12 lg:h-[32px]" />
@@ -211,10 +223,10 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
           {/* Bottom Row: CTA on Left, Clean Description on Right - Animating from BOTTOM via GSAP */}
           <div
             ref={bottomRowRef}
-            className="mt-8 sm:mt-12 lg:mt-14 pt-2 sm:pt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-6 sm:gap-8"
+            className="mt-8 sm:mt-12 lg:mt-14 pt-2 sm:pt-4 flex flex-col items-center sm:items-start md:flex-row md:items-center md:justify-between gap-6 sm:gap-8 w-full"
           >
             {/* Left: Action Button */}
-            <div className="flex items-center">
+            <div className="flex items-center justify-center sm:justify-start">
               <Link
                 href={hero.primaryCta?.href || '#about-me'}
                 {...(hero.primaryCta?.href?.startsWith('http') || hero.primaryCta?.href?.endsWith('.pdf')
@@ -229,7 +241,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
 
             {/* Right: Concise Description Paragraph */}
             {hero.description && (
-              <p className="text-xs sm:text-sm text-muted font-normal leading-relaxed max-w-md md:max-w-lg md:text-right text-pretty">
+              <p className="text-xs sm:text-sm text-muted font-normal leading-relaxed max-w-md md:max-w-lg text-center sm:text-left md:text-right text-pretty">
                 {hero.description}
               </p>
             )}

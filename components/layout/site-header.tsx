@@ -163,11 +163,11 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               })}
             </nav>
 
-            {/* Let's Collaborate Action Button */}
+            {/* Let's Collaborate Action Button (Desktop/Tablet only, hidden on mobile) */}
             <Link
               href="/contact"
               className={cn(
-                'inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 sm:px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs hover:-translate-y-0.5 active:translate-y-0 shrink-0 ml-0.5 sm:ml-1',
+                'hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 sm:px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs hover:-translate-y-0.5 active:translate-y-0 shrink-0 ml-0.5 sm:ml-1',
                 pathname === '/contact'
                   ? 'bg-foreground text-background shadow-sm'
                   : 'bg-foreground text-background hover:opacity-90'
@@ -197,66 +197,87 @@ export function SiteHeader({ site }: SiteHeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
+      {/* Mobile Navigation Drawer with Smooth Slide & Scale Transition */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!mobileMenuOpen}
+        className={cn(
+          'fixed inset-0 z-40 bg-background/80 backdrop-blur-md sm:hidden flex flex-col pt-20 px-4 pb-8 transition-all duration-300 ease-out',
+          mobileMenuOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
+        )}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setMobileMenuOpen(false);
+        }}
+      >
         <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden flex flex-col pt-20 px-6 pb-8 animate-in fade-in duration-200"
+          className={cn(
+            'flex flex-col gap-2 bg-surface border border-border rounded-3xl p-6 shadow-2xl max-w-sm mx-auto w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
+            mobileMenuOpen
+              ? 'translate-y-0 scale-100 opacity-100'
+              : '-translate-y-5 scale-95 opacity-0'
+          )}
         >
-          <div className="flex flex-col gap-2 bg-surface border border-border rounded-2xl p-6 shadow-xl">
-            <div className="flex items-center justify-between pb-4 border-b border-border">
-              <div>
-                <p className="text-sm font-bold font-mono text-foreground">
-                  {site.identity.wordmark || 'FNH.'}
-                </p>
-                <p className="text-xs text-muted">
-                  {site.identity.name}
-                </p>
-              </div>
+          <div className="flex items-center justify-between pb-3.5 border-b border-border">
+            <div>
+              <p className="text-sm font-bold font-mono text-foreground">
+                {site.identity.wordmark || 'FNH.'}
+              </p>
+              <p className="text-xs text-muted">
+                {site.identity.name}
+              </p>
             </div>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-1.5 rounded-full text-muted hover:text-foreground hover:bg-surface-raised transition-colors"
+              aria-label="Close menu"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
 
-            <nav className="flex flex-col gap-1 py-4">
-              {navLinks.map((item) => {
-                const isActive =
-                  item.href === '/'
-                    ? pathname === '/'
-                    : pathname.startsWith(item.href);
+          <nav className="flex flex-col gap-1 py-3">
+            {navLinks.map((item) => {
+              const isActive =
+                item.href === '/'
+                  ? pathname === '/'
+                  : pathname.startsWith(item.href);
 
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      'px-4 py-3 rounded-xl text-sm font-medium transition-colors flex items-center justify-between',
-                      isActive
-                        ? 'bg-surface-raised text-accent font-semibold border border-border'
-                        : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
-                    )}
-                  >
-                    <span>{item.label}</span>
-                    {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    'px-4 py-2.5 rounded-2xl text-sm font-medium transition-all flex items-center justify-between',
+                    isActive
+                      ? 'bg-surface-raised text-accent font-semibold border border-border/80 shadow-2xs'
+                      : 'text-muted hover:text-foreground hover:bg-surface-raised/60'
+                  )}
+                >
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
 
-            <div className="pt-3 border-t border-border flex flex-col gap-2">
-              <Link
-                href="/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-2.5 rounded-full bg-foreground text-background text-sm font-semibold text-center hover:opacity-90 transition-colors flex items-center justify-center gap-1.5"
-              >
-                <span>Let&apos;s Collaborate</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
+          <div className="pt-3 border-t border-border flex flex-col gap-2">
+            <Link
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-3 rounded-2xl bg-foreground text-background text-sm font-semibold text-center hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm"
+            >
+              <span>Let&apos;s Collaborate</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }

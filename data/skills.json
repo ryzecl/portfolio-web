@@ -8,7 +8,7 @@
     {
       "title": "Frontend",
       "priority": 2,
-      "technologies": ["Next.js", "React", "Tailwind CSS", "HTML", "CSS"]
+      "technologies": ["Next.js", "React", "Tailwind CSS", "shadcn/ui", "React Bits", "HTML", "CSS"]
     },
     {
       "title": "Backend",
@@ -18,7 +18,7 @@
     {
       "title": "Data & Tools",
       "priority": 4,
-      "technologies": ["MySQL", "Firebase", "Git", "GitHub", "Docker"]
+      "technologies": ["MySQL", "PostgreSQL", "Supabase", "Cloudflare", "Git", "GitHub", "Docker"]
     }
   ]
 }
