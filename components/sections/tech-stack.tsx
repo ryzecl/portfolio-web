@@ -60,7 +60,7 @@ export function TechStack({ contact }: TechStackProps) {
   const githubUrl = contact?.github || 'https://github.com/ryzecl';
 
   return (
-    <section className="py-16 sm:py-24 lg:py-32 border-t border-border bg-background text-foreground overflow-hidden" id="skills">
+    <section className="py-16 sm:py-24 lg:py-32 bg-transparent text-foreground overflow-hidden" id="skills">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
         {/* Section Header */}
         <div className="space-y-3">

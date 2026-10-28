@@ -10,7 +10,7 @@ interface ContactCtaProps {
 
 export function ContactCta({ contact, identity }: ContactCtaProps) {
   return (
-    <section className="py-24 border-t border-border bg-background text-foreground" id="contact">
+    <section className="py-24 bg-transparent text-foreground" id="contact">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-surface border border-border p-8 sm:p-12 lg:p-16 flex flex-col md:flex-row md:items-center justify-between gap-10 shadow-sm">
           <div className="space-y-4 max-w-xl">

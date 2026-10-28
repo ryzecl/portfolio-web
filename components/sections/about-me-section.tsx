@@ -113,7 +113,7 @@ export function AboutMeSection({
     <section
       ref={sectionRef}
       id="about-me"
-      className="relative z-10 py-12 sm:py-16 lg:py-24 bg-background text-foreground overflow-hidden"
+      className="relative z-10 py-12 sm:py-16 lg:py-24 bg-transparent text-foreground overflow-hidden"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Card Container with Entrance Animation */}

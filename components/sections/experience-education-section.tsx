@@ -92,7 +92,7 @@ export function ExperienceEducationSection({
     <section
       ref={containerRef}
       id="experience-education"
-      className="relative z-10 py-16 sm:py-24 lg:py-32 bg-background text-foreground border-t border-border overflow-hidden"
+      className="relative z-10 py-16 sm:py-24 lg:py-32 bg-transparent text-foreground overflow-hidden"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 sm:space-y-28">
         {/* ==================== 1. EXPERIENCES ==================== */}

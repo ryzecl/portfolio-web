@@ -71,7 +71,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
     <section
       ref={sectionRef}
       id="projects"
-      className="py-16 sm:py-24 lg:py-32 border-t border-border bg-background text-foreground overflow-hidden"
+      className="py-16 sm:py-24 lg:py-32 bg-transparent text-foreground overflow-hidden"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
         {/* Section Header: Left (Eyebrow + Large Title), Right (Description) */}
