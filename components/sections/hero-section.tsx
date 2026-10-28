@@ -7,6 +7,7 @@ import { HeroData, SiteIdentity } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import { MicroSlats } from '@/components/ui/micro-slats';
+import { IndonesiaFlag } from '@/components/ui/indonesia-flag';
 
 interface HeroSectionProps {
   hero: HeroData;
@@ -156,7 +157,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             </div>
 
             {/* Name + Photo Capsule */}
-            <div className="aura rounded-full">
+            <div className="aura aura-dual rounded-full">
             <div className="inline-flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-surface-raised border border-border shadow-xs hover:border-foreground/30 transition-colors">
               <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-18 md:h-18 aspect-square rounded-full overflow-hidden relative shrink-0 border-2 border-background shadow-xs bg-surface-muted">
                 <Image
@@ -204,14 +205,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             className="flex items-center gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3"
           >
             <span>{hero.locationText || 'from Indonesia'}</span>
-            <span
-              className="inline-flex flex-col w-6 h-4 sm:w-9 sm:h-6 rounded-xs overflow-hidden border border-border shadow-xs shrink-0 align-middle"
-              title="Indonesia"
-              aria-label="Bendera Indonesia"
-            >
-              <span className="w-full h-1/2 bg-[#E70011]" />
-              <span className="w-full h-1/2 bg-white" />
-            </span>
+            <IndonesiaFlag className="w-7 h-[19px] sm:w-9 sm:h-[24px] md:w-11 md:h-[29px] lg:w-12 lg:h-[32px]" />
           </div>
 
           {/* Bottom Row: CTA on Left, Clean Description on Right - Animating from BOTTOM via GSAP */}
