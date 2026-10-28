@@ -39,7 +39,7 @@ interface TechPill {
 
 function ReactBitsIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current text-[#00E5FF]" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current text-accent" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(30 12 12)" />
       <ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(-30 12 12)" />
       <circle cx="12" cy="12" r="2" fill="currentColor" />

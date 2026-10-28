@@ -81,7 +81,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         >
           <div className="space-y-2.5">
             <div className="flex items-center gap-2">
-              <span className="text-emerald-500 font-bold text-xs" aria-hidden="true">✦</span>
+              <span className="text-accent font-bold text-xs" aria-hidden="true">✦</span>
               <span className="text-xs font-mono uppercase tracking-widest text-muted font-semibold">
                 Selected Works
               </span>

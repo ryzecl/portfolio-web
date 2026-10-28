@@ -147,8 +147,8 @@ export function AboutMeSection({
                   <div className="inline-flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-raised border border-border/80 max-w-xl">
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
                       </span>
                       <span className="text-[11px] font-mono uppercase tracking-wider text-muted font-semibold">
                             Current Role
@@ -219,9 +219,9 @@ export function AboutMeSection({
                   {/* Left CTA: Get in Touch */}
                   <Link
                     href="#contact"
-                    className="inline-flex items-center justify-center gap-2.5 p-2 sm:p-2.5 rounded-full bg-surface-raised border border-border hover:border-teal-500/60 hover:bg-surface-raised/90 transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                    className="inline-flex items-center justify-center gap-2.5 p-2 sm:p-2.5 rounded-full bg-surface-raised border border-border hover:border-accent/60 hover:bg-surface-raised/90 transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   >
-                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#00c9a7] flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:translate-x-0.5 shrink-0">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-accent flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:translate-x-0.5 shrink-0">
                       <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </span>
                     <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground truncate">

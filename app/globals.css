@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "daisyui";
 
 @theme {
   --color-background: #ffffff;
@@ -33,6 +32,10 @@
   --accent: #2563eb;
   --accent-strong: #1d4ed8;
   --accent-subtle: rgba(37, 99, 235, 0.08);
+
+  --color-accent: #2563eb;
+  --color-accent-strong: #1d4ed8;
+  --color-accent-subtle: rgba(37, 99, 235, 0.08);
 }
 
 html {

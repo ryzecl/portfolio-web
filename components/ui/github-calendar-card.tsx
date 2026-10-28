@@ -38,8 +38,8 @@ export function GitHubCalendarCard({
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
             </span>
             <span className="text-xs font-mono uppercase tracking-widest text-muted font-medium">
               Open Source &amp; Engineering Activity
@@ -75,8 +75,8 @@ export function GitHubCalendarCard({
             fontSize={12}
             colorScheme="light"
             theme={{
-              light: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'],
-              dark: ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'],
+              light: ['#ebedf0', '#bfdbfe', '#60a5fa', '#2563eb', '#1d4ed8'],
+              dark: ['#161b22', '#1e3a8a', '#1d4ed8', '#2563eb', '#60a5fa'],
             }}
             labels={{
               totalCount: '{{count}} contributions in the last year',

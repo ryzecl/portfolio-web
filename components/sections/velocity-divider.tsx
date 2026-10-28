@@ -17,18 +17,34 @@ export function VelocityDivider({ items }: VelocityDividerProps) {
 
   const list = items && items.length > 0 ? items : defaultItems;
 
-  // Create two variations of the ticker stream for dual opposing tracks
-  const track1 = list.join('   ✦   ');
-  const track2 = [...list].reverse().join('   ✦   ');
+  // Render track items with blue accent separator matching Hero MicroSlats (#2563eb)
+  const renderTrack = (trackItems: string[]) => (
+    <span className="inline-flex items-center">
+      {trackItems.map((item, i) => (
+        <span key={i} className="inline-flex items-center">
+          <span>{item}</span>
+          <span
+            className="text-accent font-bold mx-4 sm:mx-6 text-sm sm:text-base select-none drop-shadow-[0_0_8px_rgba(37,99,235,0.4)]"
+            aria-hidden="true"
+          >
+            ✦
+          </span>
+        </span>
+      ))}
+    </span>
+  );
+
+  const track1 = renderTrack(list);
+  const track2 = renderTrack([...list].reverse());
 
   return (
     <div
-      className="relative w-full border-y border-border/40 bg-surface/30 backdrop-blur-xs py-4 sm:py-6 overflow-hidden select-none z-20"
+      className="relative w-full border-y border-blue-600/20 bg-blue-950/[0.08] backdrop-blur-xs py-4 sm:py-6 overflow-hidden select-none z-20"
       aria-label="Professional roles ticker"
     >
-      {/* Subtle background glow/accent overlay */}
+      {/* Subtle horizontal blue accent wash matching MicroSlats */}
       <div
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/[0.03] to-transparent pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/[0.08] to-transparent pointer-events-none"
         aria-hidden="true"
       />
 
