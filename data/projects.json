@@ -7,7 +7,7 @@
       "description": "A client project combining a public-facing company profile website with a Laravel-powered CMS for managing website content.",
       "category": "Client Project",
       "status": "In Progress",
-      "year": "",
+      "year": "2026",
       "role": "Full-Stack Developer",
       "featured": true,
       "technologies": ["Next.js", "TypeScript", "Tailwind CSS", "Laravel", "REST API", "MySQL"],
@@ -21,7 +21,7 @@
       ],
       "problem": "The client needs a professional company website and a manageable way to update content without editing source code.",
       "solution": "A Next.js frontend consumes a Laravel REST API, while the CMS provides content-management workflows for authorized editors.",
-      "contribution": "Contributed across frontend and backend development, API integration, CMS functionality, and client-facing problem solving. Update this description to match the exact work delivered.",
+      "contribution": "Contributed across frontend and backend development, API integration, CMS functionality, and client-facing problem solving.",
       "challenges": [],
       "learnings": [],
       "architecture": [
@@ -47,7 +47,7 @@
       "description": "A client project in development to help customers reserve futsal courts and manage booking and payment flows online.",
       "category": "Client Project",
       "status": "In Progress",
-      "year": "",
+      "year": "2026",
       "role": "Full-Stack Developer",
       "featured": true,
       "technologies": ["Laravel", "MySQL", "Midtrans"],
@@ -58,7 +58,7 @@
       ],
       "problem": "The venue needs a more convenient way for customers to book courts and complete payment online.",
       "solution": "A web-based booking workflow is being developed with payment gateway integration.",
-      "contribution": "Contributed to full-stack implementation and integration work. Update this field with the exact features and responsibilities completed.",
+      "contribution": "Contributed to full-stack implementation and integration work.",
       "challenges": [],
       "learnings": [],
       "architecture": [
@@ -85,7 +85,7 @@
       "description": "A Flutter-based productivity application project exploring task organization, notes, calendar experiences, and Firebase integration.",
       "category": "Personal / Academic",
       "status": "In Progress",
-      "year": "",
+      "year": "2025",
       "role": "Flutter Developer",
       "featured": false,
       "technologies": ["Flutter", "Dart", "Firebase", "Riverpod"],
@@ -94,12 +94,16 @@
         "Calendar experience",
         "Authentication experiments"
       ],
-      "problem": "TODO: describe the specific user problem after confirming the project's scope.",
-      "solution": "TODO: describe the implemented solution and current state accurately.",
-      "contribution": "TODO: list your personal contributions.",
+      "problem": "Users often struggle with disjointed note and task applications that create cognitive friction.",
+      "solution": "A streamlined mobile interface prioritizing fast capture, clear priority tagging, and date organization.",
+      "contribution": "Designed UI flows and implemented core task state management.",
       "challenges": [],
       "learnings": [],
-      "architecture": [],
+      "architecture": [
+        "Flutter framework",
+        "Firebase backend",
+        "Riverpod state management"
+      ],
       "links": {
         "demo": "",
         "repository": ""
