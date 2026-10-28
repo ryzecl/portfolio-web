@@ -1,7 +1,12 @@
 'use client';
 
 import React from 'react';
-import { ScrollVelocity } from '@/components/ui/scroll-velocity';
+import dynamic from 'next/dynamic';
+
+const ScrollVelocity = dynamic(
+  () => import('@/components/ui/scroll-velocity').then((mod) => mod.ScrollVelocity),
+  { ssr: false }
+);
 
 interface VelocityDividerProps {
   items?: string[];

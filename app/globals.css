@@ -64,35 +64,24 @@ html {
   }
 }
 
-/* Hero Synchronous CSS Entrance Animations (Zero-FOUC, Zero-TBT) */
-@keyframes heroSlideDown {
+/* Minimal Preloader Accent Bar Animation */
+@keyframes preloaderLine {
   0% {
-    opacity: 0;
-    transform: translateY(-24px);
+    left: -40%;
+    width: 30%;
+  }
+  50% {
+    left: 20%;
+    width: 60%;
   }
   100% {
-    opacity: 1;
-    transform: translateY(0);
+    left: 100%;
+    width: 40%;
   }
 }
 
-@keyframes heroSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-hero-down {
-  animation: heroSlideDown 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-hero-up {
-  animation: heroSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+.animate-preloader-line {
+  animation: preloaderLine 1.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
 body {

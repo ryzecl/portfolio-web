@@ -1,12 +1,25 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { SiteIdentity, ContactData, AboutData, EducationItem, ExperienceItem } from '@/lib/types';
 import { ArrowRight, ArrowUpRight, FileText, Mail } from 'lucide-react';
-import { Lanyard } from '@/components/ui/lanyard';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+const Lanyard = dynamic(
+  () => import('@/components/ui/lanyard').then((mod) => mod.Lanyard),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-muted">
+        <div className="w-8 h-8 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
+        <span className="text-xs font-mono uppercase tracking-wider">Loading 3D Card...</span>
+      </div>
+    ),
+  }
+);
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -50,6 +63,31 @@ export function AboutMeSection({
   const cardRef = useRef<HTMLDivElement>(null);
   const textColRef = useRef<HTMLDivElement>(null);
   const lanyardCardRef = useRef<HTMLDivElement>(null);
+  const [shouldLoadLanyard, setShouldLoadLanyard] = useState(false);
+
+  // Viewport-based lazy loading: only instantiate Three.js when nearing viewport
+  useEffect(() => {
+    const el = lanyardCardRef.current;
+    if (!el) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setShouldLoadLanyard(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadLanyard(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const name = about?.name || identity.name;
   const status = about?.status || 'Information System Student - Freelancer';
@@ -255,18 +293,25 @@ export function AboutMeSection({
                 ref={lanyardCardRef}
                 className="w-full h-105 sm:h-120 lg:h-135 rounded-2xl sm:rounded-3xl bg-surface-raised border border-border/70 relative overflow-hidden flex items-center justify-center"
               >
-                <Lanyard
-                  frontImage="/images/about-photo.png"
-                  backImage="/images/animated-photo.png"
-                  imageFit="cover"
-                  orientation="portrait"
-                  finish="glossy"
-                  metal="silver"
-                  strapColor="#2563eb"
-                  cardColor="#ffffff"
-                  interactive={true}
-                  className="w-full h-full"
-                />
+                {shouldLoadLanyard ? (
+                  <Lanyard
+                    frontImage="/images/about-photo.png"
+                    backImage="/images/animated-photo.png"
+                    imageFit="cover"
+                    orientation="portrait"
+                    finish="glossy"
+                    metal="silver"
+                    strapColor="#2563eb"
+                    cardColor="#ffffff"
+                    interactive={true}
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-muted">
+                    <div className="w-8 h-8 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
+                    <span className="text-xs font-mono uppercase tracking-wider">Loading 3D Card...</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

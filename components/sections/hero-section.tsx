@@ -3,11 +3,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { HeroData, SiteIdentity } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
-import { MicroSlats } from '@/components/ui/micro-slats';
 import { IndonesiaFlag } from '@/components/ui/indonesia-flag';
 import { TechText } from '@/components/ui/tech-text';
+
+const MicroSlats = dynamic(
+  () => import('@/components/ui/micro-slats').then((mod) => mod.MicroSlats),
+  { ssr: false }
+);
 
 interface HeroSectionProps {
   hero: HeroData;
@@ -107,11 +112,8 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 text-center sm:text-left my-auto">
         <div className="max-w-5xl mx-auto sm:mx-0 flex flex-col items-center sm:items-start">
-          {/* Eyebrow / Intro Row: Synchronous CSS entrance animation */}
-          <div
-            className="flex flex-col sm:inline-flex sm:flex-row items-center justify-center sm:justify-start gap-2.5 sm:gap-4 mb-4 sm:mb-7 animate-hero-down"
-            style={{ animationDelay: '100ms' }}
-          >
+          {/* Eyebrow / Intro Row */}
+          <div className="flex flex-col sm:inline-flex sm:flex-row items-center justify-center sm:justify-start gap-2.5 sm:gap-4 mb-4 sm:mb-7">
             {/* Top on Mobile: Typing Greeting + I am */}
             <div className="flex items-center text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
               <span className="min-w-[1ch] inline-block">{text}</span>
@@ -146,13 +148,10 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
           </div>
 
           {/* Main Headline: Progressive Enhancement with SSR Fallback H1 + Interactive TechText */}
-          <div
-            className="w-full py-1 will-change-transform flex justify-center sm:justify-start relative min-h-[7rem] sm:min-h-[5.5rem] md:min-h-[7rem] lg:min-h-[9rem] xl:min-h-[10rem] animate-hero-down"
-            style={{ animationDelay: '200ms' }}
-          >
-            {/* 1. Semantic SSR Fallback H1: Instantly visible on first paint, no blank gap, excellent LCP */}
+          <div className="w-full py-1 flex justify-center sm:justify-start relative min-h-[7rem] sm:min-h-[5.5rem] md:min-h-[7rem] lg:min-h-[9rem] xl:min-h-[10rem]">
+            {/* 1. Semantic SSR Fallback H1: Visible for SEO and before client canvas warms up */}
             <h1
-              className={`w-full font-black tracking-tight text-foreground uppercase select-none transition-opacity duration-700 ${
+              className={`w-full font-black tracking-tight text-foreground uppercase select-none transition-opacity duration-500 ${
                 canvasReady ? 'opacity-0 pointer-events-none absolute inset-0' : 'opacity-100'
               }`}
             >
@@ -172,7 +171,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             {/* 2. Interactive TechText Canvas: Mounted only on client, restricted to active viewport */}
             {isMounted && (
               <div
-                className={`w-full transition-opacity duration-700 ${
+                className={`w-full transition-opacity duration-500 ${
                   canvasReady ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 }`}
                 aria-hidden="true"
@@ -229,20 +228,14 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             )}
           </div>
 
-          {/* Sub-headline: from Indonesia [Flag] - Synchronous CSS entrance animation */}
-          <div
-            className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3 animate-hero-up"
-            style={{ animationDelay: '350ms' }}
-          >
+          {/* Sub-headline: from Indonesia [Flag] */}
+          <div className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3">
             <span>{hero.locationText || 'from Indonesia'}</span>
             <IndonesiaFlag className="w-7 h-4.75 sm:w-9 sm:h-6 md:w-11 md:h-7.25 lg:w-12 lg:h-8" />
           </div>
 
-          {/* Bottom Row: CTA on Left, Clean Description on Right - Synchronous CSS entrance animation */}
-          <div
-            className="mt-8 sm:mt-12 lg:mt-14 pt-2 sm:pt-4 flex flex-col items-center sm:items-start md:flex-row md:items-center md:justify-between gap-6 sm:gap-8 w-full animate-hero-up"
-            style={{ animationDelay: '500ms' }}
-          >
+          {/* Bottom Row: CTA on Left, Clean Description on Right */}
+          <div className="mt-8 sm:mt-12 lg:mt-14 pt-2 sm:pt-4 flex flex-col items-center sm:items-start md:flex-row md:items-center md:justify-between gap-6 sm:gap-8 w-full">
             {/* Left: Action Button */}
             <div className="flex items-center justify-center sm:justify-start">
               <Link

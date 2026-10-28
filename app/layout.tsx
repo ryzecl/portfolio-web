@@ -5,6 +5,7 @@ import { getSiteData } from '@/lib/data';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { JsonLd } from '@/components/ui/json-ld';
+import { PagePreloader } from '@/components/ui/page-preloader';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -157,6 +158,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${plusJakartaSans.variable}`}>
       <body className="font-sans bg-background text-foreground min-h-screen flex flex-col">
+        <PagePreloader brandName="FNH ." />
         {structuredSchemas.map((schema, i) => (
           <JsonLd key={i} data={schema} />
         ))}
