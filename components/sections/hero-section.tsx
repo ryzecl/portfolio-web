@@ -167,7 +167,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             </div>
 
             {/* Bottom on Mobile: Name + Photo Capsule */}
-            <div className="aura aura-dual rounded-full">
+            <div className="aura aura-dual text-accent rounded-full">
               <div className="inline-flex items-center gap-2.5 sm:gap-4 px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full bg-surface-raised border border-border shadow-xs hover:border-foreground/30 transition-colors">
                 <div className="w-8 h-8 sm:w-16 sm:h-16 md:w-18 md:h-18 aspect-square rounded-full overflow-hidden relative shrink-0 border-2 border-background shadow-xs bg-surface-muted">
                   <Image
