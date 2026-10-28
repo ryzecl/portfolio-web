@@ -46,7 +46,7 @@
   "education": [
     {
       "institution": "Horizon University Indonesia",
-      "program": "Information Systems",
+      "program": "Information Systems (S1)",
       "startDate": "2024",
       "endDate": "Present",
       "gpa": "3.96 / 4.00",
@@ -55,6 +55,18 @@
         "1st Winner — Web Solution Business & Supply Chain in TechnoSpark Vol. 2 Competition at Horizon University Indonesia"
       ],
       "note": "Undergraduate degree focusing on software engineering, database systems, and business process modeling."
+    },
+    {
+      "institution": "SMK Mitra Karya Rengasdengklok",
+      "program": "Computer and Network Engineering (TKJ)",
+      "startDate": "2020",
+      "endDate": "2023",
+      "gpa": "90.15 / 100",
+      "achievements": [
+        "Head of Student Council (Ketua OSIS) — Period 2022/2023",
+        "3rd Best Participant — Vocational Competency Assessment (Uji Kompetensi Keahlian TKJ)"
+      ],
+      "note": "Vocational secondary education focused on computer networking, server administration, hardware diagnostics, and student organizational leadership."
     }
   ],
   "contact": {

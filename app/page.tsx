@@ -7,6 +7,7 @@ import {
 } from '@/lib/data';
 import { HeroSection } from '@/components/sections/hero-section';
 import { AboutMeSection } from '@/components/sections/about-me-section';
+import { ExperienceEducationSection } from '@/components/sections/experience-education-section';
 import { FeaturedProjects } from '@/components/sections/featured-projects';
 import { TechStack } from '@/components/sections/tech-stack';
 import { ContactCta } from '@/components/sections/contact-cta';
@@ -28,6 +29,12 @@ export default function HomePage() {
         about={site.about}
         contact={site.contact}
         experience={experiences[0]}
+      />
+
+      {/* Experiences & Education Section — Positioned directly below About Me */}
+      <ExperienceEducationSection
+        experiences={experiences}
+        education={site.education}
       />
 
       <FeaturedProjects projects={featuredProjects} />

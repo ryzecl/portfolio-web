@@ -16,6 +16,22 @@
       ],
       "technologies": ["Next.js", "TypeScript", "Laravel", "REST API", "MySQL", "Midtrans", "Tailwind CSS"],
       "url": "nirwana.biz.id"
+    },
+    {
+      "organization": "PT Honda Prospect Motor",
+      "role": "IT Operation Support Intern",
+      "type": "Automotive Manufacturing · Internship",
+      "startDate": "Dec 2023",
+      "endDate": "June 2024",
+      "current": false,
+      "summary": "Assisted IT operations, hardware and network infrastructure maintenance, technical troubleshooting, and operational system support across company workflows.",
+      "responsibilities": [
+        "Supported day-to-day IT operations, technical troubleshooting, and hardware/software maintenance.",
+        "Monitored network connectivity, workstations, and operational systems to ensure uptime and operational reliability.",
+        "Collaborated with cross-functional operational teams to diagnose issues and deliver rapid technical resolutions."
+      ],
+      "technologies": ["IT Operations", "System Support", "Hardware & Networking", "Technical Troubleshooting"],
+      "url": ""
     }
   ]
 }
