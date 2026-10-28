@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HeroData, SiteIdentity } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
-import gsap from 'gsap';
 import { MicroSlats } from '@/components/ui/micro-slats';
 import { IndonesiaFlag } from '@/components/ui/indonesia-flag';
 import { TechText } from '@/components/ui/tech-text';
@@ -24,22 +23,31 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   const [text, setText] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 640);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+
+    // Allow TechText canvas to measure layout and warm up before crossfading
+    const readyTimer = setTimeout(() => {
+      setCanvasReady(true);
+    }, 180);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(readyTimer);
+    };
   }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const introRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const locationRef = useRef<HTMLDivElement>(null);
-  const bottomRowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const currentWord = greetings[wordIndex % greetings.length];
@@ -70,58 +78,6 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   const intro = hero.intro || 'I am';
   const headline = hero.headline || 'Fullstack Developer';
 
-  // GSAP Entrance Animation (Top: Intro & Headline; Bottom: Location & Bottom row)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const ctx = gsap.context(() => {
-      // 1. Intro from top
-      if (introRef.current) {
-        gsap.fromTo(
-          introRef.current,
-          { y: -35, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.1 }
-        );
-      }
-
-      // 2. Headline Entrance Animation from top
-      if (headlineRef.current) {
-        gsap.fromTo(
-          headlineRef.current,
-          { y: -35, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.85,
-            ease: 'power3.out',
-            delay: 0.25,
-          }
-        );
-      }
-
-      // 3. Location from bottom
-      if (locationRef.current) {
-        gsap.fromTo(
-          locationRef.current,
-          { y: 35, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out', delay: 0.45 }
-        );
-      }
-
-      // 4. Bottom Row from bottom
-      if (bottomRowRef.current) {
-        gsap.fromTo(
-          bottomRowRef.current,
-          { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.6 }
-        );
-      }
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [headline]);
-
   const headlineWords = headline.split(' ');
   const widestWord = headlineWords.find((w) => w.toLowerCase().includes('developer')) || headlineWords[0] || headline;
 
@@ -130,29 +86,31 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
       ref={containerRef}
       className="relative h-screen min-h-dvh w-full flex flex-col justify-center pt-20 pb-10 sm:pt-24 sm:pb-12 bg-background text-foreground overflow-hidden"
     >
-      {/* MicroSlats Ambient Background from ReactBits */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-35">
-        <MicroSlats
-          preset="swell"
-          color="#2563eb"
-          glintColor="#ffffff"
-          backgroundColor="transparent"
-          slatWidth={14}
-          slatHeight={6}
-          gap={3}
-          speed={0.8}
-          scale={1.2}
-          interactive={true}
-          className="w-full h-full pointer-events-auto"
-        />
-      </div>
+      {/* MicroSlats Ambient Background from ReactBits (Mount only when client is active to eliminate SSR/TBT blocking) */}
+      {isMounted && (
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-35 transition-opacity duration-1000">
+          <MicroSlats
+            preset="swell"
+            color="#2563eb"
+            glintColor="#ffffff"
+            backgroundColor="transparent"
+            slatWidth={14}
+            slatHeight={6}
+            gap={3}
+            speed={0.8}
+            scale={1.2}
+            interactive={true}
+            className="w-full h-full pointer-events-auto"
+          />
+        </div>
+      )}
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 text-center sm:text-left my-auto">
         <div className="max-w-5xl mx-auto sm:mx-0 flex flex-col items-center sm:items-start">
-          {/* Eyebrow / Intro Row: Animating from TOP via GSAP */}
+          {/* Eyebrow / Intro Row: Synchronous CSS entrance animation */}
           <div
-            ref={introRef}
-            className="flex flex-col sm:inline-flex sm:flex-row items-center justify-center sm:justify-start gap-2.5 sm:gap-4 mb-4 sm:mb-7"
+            className="flex flex-col sm:inline-flex sm:flex-row items-center justify-center sm:justify-start gap-2.5 sm:gap-4 mb-4 sm:mb-7 animate-hero-down"
+            style={{ animationDelay: '100ms' }}
           >
             {/* Top on Mobile: Typing Greeting + I am */}
             <div className="flex items-center text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
@@ -169,7 +127,8 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             {/* Bottom on Mobile: Name + Photo Capsule */}
             <div className="aura aura-dual text-accent rounded-full">
               <div className="inline-flex items-center gap-2.5 sm:gap-4 px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full bg-surface-raised border border-border shadow-xs hover:border-foreground/30 transition-colors">
-                <div className="w-8 h-8 sm:w-16 sm:h-16 md:w-18 md:h-18 aspect-square rounded-full overflow-hidden relative shrink-0 border-2 border-background shadow-xs bg-surface-muted">
+                <div className="w-8 h-8 sm:w-16 sm:h-16 md:w-18 md:h-18 aspect-square rounded-full overflow-hidden relative shrink-0 border-2 border-background shadow-xs bg-surface-muted flex items-center justify-center font-bold text-xs sm:text-base text-muted select-none">
+                  <span>FN</span>
                   <Image
                     src={avatarSrc}
                     alt={name}
@@ -186,74 +145,103 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             </div>
           </div>
 
-          {/* Main Headline: Interactive TechText from ReactBits with CAD blueprint inspector */}
+          {/* Main Headline: Progressive Enhancement with SSR Fallback H1 + Interactive TechText */}
           <div
-            ref={headlineRef}
-            className="w-full py-1 will-change-transform flex justify-center sm:justify-start"
+            className="w-full py-1 will-change-transform flex justify-center sm:justify-start relative min-h-[7rem] sm:min-h-[5.5rem] md:min-h-[7rem] lg:min-h-[9rem] xl:min-h-[10rem] animate-hero-down"
+            style={{ animationDelay: '200ms' }}
           >
-            <h1 className="sr-only">{headline}</h1>
+            {/* 1. Semantic SSR Fallback H1: Instantly visible on first paint, no blank gap, excellent LCP */}
+            <h1
+              className={`w-full font-black tracking-tight text-foreground uppercase select-none transition-opacity duration-700 ${
+                canvasReady ? 'opacity-0 pointer-events-none absolute inset-0' : 'opacity-100'
+              }`}
+            >
+              {/* Mobile layout: 2 stacked lines matching TechText dimensions */}
+              <span className="sm:hidden flex flex-col items-center gap-1 text-[2.75rem] leading-[1.05] font-black tracking-tighter">
+                {headlineWords.map((word, idx) => (
+                  <span key={idx} className="block">{word}</span>
+                ))}
+              </span>
 
-            {/* Mobile View (< sm): 2 stacked rows (Fullstack / Developer) with synchronized fitText for identical font size */}
-            <div className="sm:hidden w-full flex flex-col items-center gap-1.5">
-              {headlineWords.map((word, idx) => (
-                <div key={idx} className="h-14 w-full">
-                  <TechText
-                    text={word}
-                    fitText={widestWord}
-                    align="center"
-                    fontWeight={900}
-                    fontSize={150}
-                    letterSpacing={-0.03}
-                    color="currentColor"
-                    accentColor="#2563eb"
-                    lineStyle="dashed"
-                    draggable={true}
-                    clickKick={true}
-                    sweep={true}
-                    labels={true}
-                    selection={true}
-                    guides={false}
-                    className="text-foreground"
-                  />
-                </div>
-              ))}
-            </div>
+              {/* Desktop layout: single clean headline matching TechText */}
+              <span className="hidden sm:block text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[96px] font-black leading-none tracking-tight">
+                {headline}
+              </span>
+            </h1>
 
-            {/* Desktop View (>= sm): Single continuous 1-line headline */}
-            <div className="hidden sm:block h-20 sm:h-22 md:h-28 lg:h-36 xl:h-40 w-full">
-              <TechText
-                text={headline}
-                align="left"
-                fontWeight={900}
-                fontSize={120}
-                letterSpacing={-0.03}
-                color="currentColor"
-                accentColor="#2563eb"
-                lineStyle="dashed"
-                draggable={true}
-                clickKick={true}
-                sweep={true}
-                labels={true}
-                selection={true}
-                guides={false}
-                className="text-foreground"
-              />
-            </div>
+            {/* 2. Interactive TechText Canvas: Mounted only on client, restricted to active viewport */}
+            {isMounted && (
+              <div
+                className={`w-full transition-opacity duration-700 ${
+                  canvasReady ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`}
+                aria-hidden="true"
+              >
+                {isMobile ? (
+                  /* Mobile: 2 stacked words */
+                  <div className="w-full flex flex-col items-center gap-1.5">
+                    {headlineWords.map((word, idx) => (
+                      <div key={idx} className="h-14 w-full">
+                        <TechText
+                          text={word}
+                          fitText={widestWord}
+                          align="center"
+                          fontWeight={900}
+                          fontSize={150}
+                          letterSpacing={-0.03}
+                          color="currentColor"
+                          accentColor="#2563eb"
+                          lineStyle="dashed"
+                          draggable={true}
+                          clickKick={true}
+                          sweep={true}
+                          labels={true}
+                          selection={true}
+                          guides={false}
+                          className="text-foreground"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Desktop: Single continuous line */
+                  <div className="h-20 sm:h-22 md:h-28 lg:h-36 xl:h-40 w-full">
+                    <TechText
+                      text={headline}
+                      align="left"
+                      fontWeight={900}
+                      fontSize={120}
+                      letterSpacing={-0.03}
+                      color="currentColor"
+                      accentColor="#2563eb"
+                      lineStyle="dashed"
+                      draggable={true}
+                      clickKick={true}
+                      sweep={true}
+                      labels={true}
+                      selection={true}
+                      guides={false}
+                      className="text-foreground"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Sub-headline: from Indonesia [Flag] - Animating from BOTTOM via GSAP */}
+          {/* Sub-headline: from Indonesia [Flag] - Synchronous CSS entrance animation */}
           <div
-            ref={locationRef}
-            className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3"
+            className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3 animate-hero-up"
+            style={{ animationDelay: '350ms' }}
           >
             <span>{hero.locationText || 'from Indonesia'}</span>
             <IndonesiaFlag className="w-7 h-4.75 sm:w-9 sm:h-6 md:w-11 md:h-7.25 lg:w-12 lg:h-8" />
           </div>
 
-          {/* Bottom Row: CTA on Left, Clean Description on Right - Animating from BOTTOM via GSAP */}
+          {/* Bottom Row: CTA on Left, Clean Description on Right - Synchronous CSS entrance animation */}
           <div
-            ref={bottomRowRef}
-            className="mt-8 sm:mt-12 lg:mt-14 pt-2 sm:pt-4 flex flex-col items-center sm:items-start md:flex-row md:items-center md:justify-between gap-6 sm:gap-8 w-full"
+            className="mt-8 sm:mt-12 lg:mt-14 pt-2 sm:pt-4 flex flex-col items-center sm:items-start md:flex-row md:items-center md:justify-between gap-6 sm:gap-8 w-full animate-hero-up"
+            style={{ animationDelay: '500ms' }}
           >
             {/* Left: Action Button */}
             <div className="flex items-center justify-center sm:justify-start">

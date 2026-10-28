@@ -64,6 +64,37 @@ html {
   }
 }
 
+/* Hero Synchronous CSS Entrance Animations (Zero-FOUC, Zero-TBT) */
+@keyframes heroSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-down {
+  animation: heroSlideDown 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-hero-up {
+  animation: heroSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
