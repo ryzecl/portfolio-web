@@ -38,7 +38,7 @@ export default function HomePage() {
       />
 
       <FeaturedProjects projects={featuredProjects} />
-      <TechStack groups={skillGroups} />
+      <TechStack groups={skillGroups} contact={site.contact} />
       <ContactCta contact={site.contact} identity={site.identity} />
     </div>
   );
