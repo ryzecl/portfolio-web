@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { SiteIdentity, ContactData, AboutData, EducationItem, ExperienceItem } from '@/lib/types';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, FileText, Mail } from 'lucide-react';
 import { Lanyard } from '@/components/ui/lanyard';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -122,7 +122,7 @@ export function AboutMeSection({
           className="rounded-3xl border border-border bg-surface p-6 sm:p-10 lg:p-12 shadow-xs transition-shadow duration-300 hover:shadow-sm will-change-transform"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-            {/* Left Column: Top block (Name, Status, Bio, Current Role) aligned to top, Bottom block (CTAs) aligned to bottom */}
+            {/* Left Column: Top block (Name, Status, Bio, Current Role) aligned to top, Bottom block (Socials + 2 balanced CTAs) aligned to bottom */}
             <div
               ref={textColRef}
               className="lg:col-span-7 flex flex-col justify-between py-1 lg:py-2 gap-8 lg:gap-0"
@@ -151,7 +151,7 @@ export function AboutMeSection({
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                       </span>
                       <span className="text-[11px] font-mono uppercase tracking-wider text-muted font-semibold">
-                        Current Role
+                            Current Role
                       </span>
                     </div>
                     <span className="hidden sm:inline-block text-border" aria-hidden="true">|</span>
@@ -174,30 +174,20 @@ export function AboutMeSection({
                 </div>
               </div>
 
-              {/* Bottom Block: Connect CTA + Social Media & Resume */}
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-4 lg:pt-0">
-                {/* "Connect" Pill CTA */}
-                <Link
-                  href={contact.email ? `mailto:${contact.email}` : '#contact'}
-                  className="inline-flex items-center gap-3 p-1.5 pr-5 sm:pr-6 rounded-full bg-surface-raised border border-border hover:border-teal-500/50 hover:bg-surface-raised/80 transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
-                >
-                  <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#00c9a7] flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:translate-x-0.5">
-                    <ArrowRight className="w-4 h-4" />
+              {/* Bottom Block: 2-Tier Action Area */}
+              <div className="space-y-4 pt-4 lg:pt-0 max-w-lg">
+                {/* 1. Upper Tier: Social Media Links */}
+                <div className="flex items-center gap-2.5">
+                  <span className="text-xs font-mono uppercase tracking-wider text-muted font-medium mr-1">
+                    Connect Online:
                   </span>
-                  <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
-                    Connect
-                  </span>
-                </Link>
-
-                {/* Social Media Links & Resume */}
-                <div className="flex items-center gap-2 sm:gap-2.5">
                   {contact.github && (
                     <a
                       href={contact.github}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="GitHub Profile"
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-teal-500/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                      className="w-9 h-9 rounded-full bg-surface-raised border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     >
                       <GitHubIcon />
                     </a>
@@ -208,19 +198,51 @@ export function AboutMeSection({
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="LinkedIn Profile"
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-teal-500/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                      className="w-9 h-9 rounded-full bg-surface-raised border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     >
                       <LinkedInIcon />
                     </a>
                   )}
+                  {contact.email && (
+                    <a
+                      href={`mailto:${contact.email}`}
+                      aria-label="Send Email"
+                      className="w-9 h-9 rounded-full bg-surface-raised border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
+                      <Mail className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
+
+                {/* 2. Lower Tier: 2 Balanced Symmetrical CTAs (Left: Connect, Right: Resume) */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  {/* Left CTA: Get in Touch */}
+                  <Link
+                    href="#contact"
+                    className="inline-flex items-center justify-center gap-2.5 p-2 sm:p-2.5 rounded-full bg-surface-raised border border-border hover:border-teal-500/60 hover:bg-surface-raised/90 transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                  >
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#00c9a7] flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:translate-x-0.5 shrink-0">
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    </span>
+                    <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground truncate">
+                      Get in Touch
+                    </span>
+                  </Link>
+
+                  {/* Right CTA: Resume */}
                   {contact.cv && (
                     <a
                       href={contact.cv}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-full bg-surface border border-border text-xs sm:text-sm font-mono font-medium text-muted hover:text-foreground hover:border-teal-500/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                      className="inline-flex items-center justify-center gap-2.5 p-2 sm:p-2.5 rounded-full bg-surface border border-border hover:border-accent/60 hover:bg-surface-raised transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-foreground"
                     >
-                      Resume
+                      <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 shrink-0">
+                        <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </span>
+                      <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground truncate">
+                        Resume
+                      </span>
                     </a>
                   )}
                 </div>

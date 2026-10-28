@@ -18,13 +18,12 @@
     "locationText": "from Indonesia",
     "description": "Information Systems student with practical experience building clean, scalable digital products. I transform ideas into intuitive experiences through thoughtful design and robust code.",
     "primaryCta": {
-      "label": "Let's Collaborate",
+      "label": "View More",
       "href": "#about-me"
     }
   },
   "navigation": [
     { "label": "Home", "href": "/" },
-    { "label": "About", "href": "/about" },
     { "label": "Projects", "href": "/projects" },
     { "label": "Contact", "href": "/contact" }
   ],

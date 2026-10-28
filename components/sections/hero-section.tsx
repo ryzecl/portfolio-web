@@ -228,7 +228,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
                   : {})}
                 className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-foreground text-background font-semibold text-sm hover:opacity-90 shadow-sm transition-all active:translate-y-px"
               >
-                <span>{hero.primaryCta?.label || "Let's Collaborate"}</span>
+                <span>{hero.primaryCta?.label || 'View More'}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>

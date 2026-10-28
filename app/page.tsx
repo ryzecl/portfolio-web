@@ -31,13 +31,15 @@ export default function HomePage() {
         experience={experiences[0]}
       />
 
-      {/* Experiences & Education Section — Positioned directly below About Me */}
+      {/* Featured Projects — Positioned directly below About Me */}
+      <FeaturedProjects projects={featuredProjects} />
+
+      {/* Experiences & Education Section */}
       <ExperienceEducationSection
         experiences={experiences}
         education={site.education}
       />
 
-      <FeaturedProjects projects={featuredProjects} />
       <TechStack groups={skillGroups} contact={site.contact} />
       <ContactCta contact={site.contact} identity={site.identity} />
     </div>
