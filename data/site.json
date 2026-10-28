@@ -18,8 +18,8 @@
     "locationText": "from Indonesia",
     "description": "Information Systems student with practical experience building clean, scalable digital products. I transform ideas into intuitive experiences through thoughtful design and robust code.",
     "primaryCta": {
-      "label": "See My CV",
-      "href": "/cv.pdf"
+      "label": "Let's Collaborate",
+      "href": "#about-me"
     }
   },
   "navigation": [
@@ -29,10 +29,12 @@
     { "label": "Contact", "href": "/contact" }
   ],
   "about": {
+    "name": "Ferry Noer Hendriawan",
+    "status": "Information System Student - Freelancer",
+    "description": "I’m an Information Systems student at Horizon University Indonesia, a participant in the Artificial Intelligence learning path at GDGOC Widyatama 2025, and co-founder of JDNirwana, a software development agency. As a Full-Stack Developer, I build web applications, analyze client requirements, and translate business needs into practical digital solutions.",
     "heading": "Software, systems, and real-world needs.",
     "paragraphs": [
-      "I study Information Systems and build software through practical projects, from web interfaces and backend APIs to content management and booking workflows.",
-      "Through client and personal projects, I’m learning to connect technical implementation with the problems people actually need to solve."
+      "I’m an Information Systems student at Horizon University Indonesia, a participant in the Artificial Intelligence learning path at GDGOC Widyatama 2025, and co-founder of JDNirwana, a software development agency. As a Full-Stack Developer, I build web applications, analyze client requirements, and translate business needs into practical digital solutions."
     ],
     "focus": [
       "Full-stack web development",

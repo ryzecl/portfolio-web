@@ -25,8 +25,8 @@ export default function HomePage() {
       {/* About Me Section — Positioned directly below Hero */}
       <AboutMeSection
         identity={site.identity}
+        about={site.about}
         contact={site.contact}
-        education={site.education}
         experience={experiences[0]}
       />
 

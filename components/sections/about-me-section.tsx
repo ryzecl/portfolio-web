@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { SiteIdentity, ContactData, EducationItem, ExperienceItem } from '@/lib/types';
-import { ArrowRight, GraduationCap, Briefcase, Award, CheckCircle2 } from 'lucide-react';
+import { SiteIdentity, ContactData, AboutData, EducationItem, ExperienceItem } from '@/lib/types';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { Lanyard } from '@/components/ui/lanyard';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,6 +14,7 @@ if (typeof window !== 'undefined') {
 
 interface AboutMeSectionProps {
   identity: SiteIdentity;
+  about?: AboutData;
   contact: ContactData;
   education?: EducationItem[];
   experience?: ExperienceItem;
@@ -41,139 +42,67 @@ function LinkedInIcon() {
 
 export function AboutMeSection({
   identity,
+  about,
   contact,
-  education,
   experience,
 }: AboutMeSectionProps) {
-  const primaryEdu = education?.[0];
-  const activeExp = experience;
-
   const sectionRef = useRef<HTMLElement>(null);
-  const eyebrowRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const ctaRowRef = useRef<HTMLDivElement>(null);
-  const lanyardWrapperRef = useRef<HTMLDivElement>(null);
-  const lanyardRef = useRef<HTMLDivElement>(null);
-  const col1WrapperRef = useRef<HTMLDivElement>(null);
-  const col1Ref = useRef<HTMLDivElement>(null);
-  const col2WrapperRef = useRef<HTMLDivElement>(null);
-  const col2Ref = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const textColRef = useRef<HTMLDivElement>(null);
+  const lanyardCardRef = useRef<HTMLDivElement>(null);
+
+  const name = about?.name || identity.name;
+  const status = about?.status || 'Information System Student - Freelancer';
+  const description =
+    about?.description ||
+    about?.paragraphs?.[0] ||
+    'I’m an Information Systems student at Horizon University Indonesia, a participant in the Artificial Intelligence learning path at GDGOC Widyatama 2025, and co-founder of JDNirwana, a software development agency. As a Full-Stack Developer, I build web applications, analyze client requirements, and translate business needs into practical digital solutions.';
+
+  const currentRole = experience?.role || 'Full-Stack Developer';
+  const currentOrg = experience?.organization || 'JDNirwana';
+  const currentUrl = experience?.url || 'nirwana.biz.id';
+  const formattedUrl = currentUrl.startsWith('http') ? currentUrl : `https://${currentUrl}`;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const ctx = gsap.context(() => {
-      // 1. Top Section Entrance Reveal (Slack spring curve)
-      const topTl = gsap.timeline({
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 82%',
-          toggleActions: 'play none none none',
-        },
-      });
-
-      if (eyebrowRef.current) {
-        topTl.fromTo(
-          eyebrowRef.current,
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
-        );
-      }
-
-      if (headlineRef.current) {
-        topTl.fromTo(
-          headlineRef.current,
-          { y: 35, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' },
-          '-=0.35'
-        );
-      }
-
-      if (ctaRowRef.current) {
-        topTl.fromTo(
-          ctaRowRef.current,
-          { y: 25, opacity: 0, scale: 0.96 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.65, ease: 'back.out(1.2)' },
-          '-=0.45'
-        );
-      }
-
-      // 2. Bottom Row Entrance Reveal
-      const bottomTriggerEl = lanyardRef.current || sectionRef.current;
-      const bottomTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: bottomTriggerEl,
+          trigger: cardRef.current,
           start: 'top 85%',
           toggleActions: 'play none none none',
         },
       });
 
-      if (lanyardRef.current) {
-        bottomTl.fromTo(
-          lanyardRef.current,
-          { y: 50, opacity: 0, scale: 0.94 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.95, ease: 'power3.out' }
+      // 1. Entrance animation for the Main Card Container itself
+      if (cardRef.current) {
+        tl.fromTo(
+          cardRef.current,
+          { y: 40, opacity: 0, scale: 0.98 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out' }
         );
       }
 
-      const cols = [col1Ref.current, col2Ref.current].filter(Boolean);
-      if (cols.length > 0) {
-        bottomTl.fromTo(
-          cols,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.85,
-            stagger: 0.18,
-            ease: 'power3.out',
-          },
-          '-=0.65'
+      // 2. Entrance animation for Left Column children
+      if (textColRef.current) {
+        tl.fromTo(
+          textColRef.current.children,
+          { y: 22, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.65, stagger: 0.12, ease: 'power3.out' },
+          '-=0.55'
         );
       }
 
-      // 3. Differential Parallax Slack on Scroll (Inertia & Depth Layering)
-      // Lanyard floats with heavier inertia (slack lag)
-      if (lanyardWrapperRef.current) {
-        gsap.to(lanyardWrapperRef.current, {
-          y: -36,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.4,
-          },
-        });
-      }
-
-      // Left Column has mild parallax drift
-      if (col1WrapperRef.current) {
-        gsap.to(col1WrapperRef.current, {
-          y: -22,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.1,
-          },
-        });
-      }
-
-      // Right Column has subtle offset for depth
-      if (col2WrapperRef.current) {
-        gsap.to(col2WrapperRef.current, {
-          y: -12,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.9,
-          },
-        });
+      // 3. Entrance animation for 3D Lanyard Card
+      if (lanyardCardRef.current) {
+        tl.fromTo(
+          lanyardCardRef.current,
+          { y: 28, opacity: 0, scale: 0.96 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.75, ease: 'power3.out' },
+          '-=0.5'
+        );
       }
     }, sectionRef);
 
@@ -184,89 +113,126 @@ export function AboutMeSection({
     <section
       ref={sectionRef}
       id="about-me"
-      className="relative z-10 py-20 sm:py-28 lg:py-32 border-t border-border bg-background text-foreground overflow-hidden"
+      className="relative z-10 py-12 sm:py-16 lg:py-24 bg-background text-foreground overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
-        {/* Top Editorial Layout (Reference Design: Grey Dot + Large Bold Statement + Pill CTA) */}
-        <div className="space-y-6 sm:space-y-8">
-          {/* Eyebrow Dot */}
-          <div ref={eyebrowRef} className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-neutral-400 dark:bg-neutral-500" />
-            <span className="text-xs font-mono uppercase tracking-widest text-muted font-medium">
-              Profile &amp; Perspective
-            </span>
-          </div>
-
-          {/* Large Bold Editorial Headline Statement */}
-          <h2
-            ref={headlineRef}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-black tracking-tight text-foreground leading-[1.18] max-w-5xl text-balance"
-          >
-            Full-Stack Developer &amp; Information Systems student based in Indonesia, passionate about crafting high-performance, user-centered digital solutions from architecture to polished code.®
-          </h2>
-
-          {/* Distinctive Pill CTA + Social Connections */}
-          <div ref={ctaRowRef} className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2">
-            {/* "Let's Collaborate" Pill Button */}
-            <Link
-              href={contact.email ? `mailto:${contact.email}` : '#contact'}
-              className="inline-flex items-center gap-3.5 p-1.5 pr-6 rounded-full bg-surface-raised border border-border hover:border-accent/50 hover:bg-surface-raised/80 transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              <span className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-accent flex items-center justify-center text-accent-foreground shadow-sm transition-transform duration-200 group-hover:translate-x-0.5">
-                <ArrowRight className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-              </span>
-              <span className="text-sm sm:text-base font-semibold tracking-tight text-foreground">
-                Let&apos;s Collaborate
-              </span>
-            </Link>
-
-            {/* Social Media Links & Resume */}
-            <div className="flex items-center gap-2.5">
-              {contact.github && (
-                <a
-                  href={contact.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub Profile"
-                  className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                >
-                  <GitHubIcon />
-                </a>
-              )}
-              {contact.linkedin && (
-                <a
-                  href={contact.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn Profile"
-                  className="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                >
-                  <LinkedInIcon />
-                </a>
-              )}
-              {contact.cv && (
-                <a
-                  href={contact.cv}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-full bg-surface border border-border text-xs sm:text-sm font-mono font-medium text-muted hover:text-foreground hover:border-accent/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                >
-                  See CV
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Editorial Grid: 3D Lanyard Card + 2 Distinct Content Columns */}
-        <div className="pt-8 sm:pt-12 border-t border-border/80">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            {/* Left Side: ReactBits Interactive 3D Lanyard with Parallax Slack */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Main Card Container with Entrance Animation */}
+        <div
+          ref={cardRef}
+          className="rounded-3xl border border-border bg-surface p-6 sm:p-10 lg:p-12 shadow-xs transition-shadow duration-300 hover:shadow-sm will-change-transform"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+            {/* Left Column: Top block (Name, Status, Bio, Current Role) aligned to top, Bottom block (CTAs) aligned to bottom */}
             <div
-              ref={lanyardWrapperRef}
-              className="lg:col-span-5 flex justify-center items-center will-change-transform"
+              ref={textColRef}
+              className="lg:col-span-7 flex flex-col justify-between py-1 lg:py-2 gap-8 lg:gap-0"
             >
-              <div ref={lanyardRef} className="relative w-full h-115 sm:h-130 lg:h-140">
+              {/* Top Block: Name, Status, Bio Description & Current Role Highlight */}
+              <div className="space-y-6">
+                <div className="space-y-1.5">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-[1.12]">
+                    {name}
+                  </h2>
+                  <p className="text-base sm:text-lg lg:text-xl text-muted font-normal">
+                    {status}
+                  </p>
+                </div>
+
+                <p className="text-sm sm:text-base lg:text-[17px] text-foreground/80 leading-relaxed max-w-xl text-pretty">
+                  {description}
+                </p>
+
+                {/* Current Role Capsule */}
+                <div className="pt-1">
+                  <div className="inline-flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-raised border border-border/80 max-w-xl">
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                      </span>
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-muted font-semibold">
+                        Current Role
+                      </span>
+                    </div>
+                    <span className="hidden sm:inline-block text-border" aria-hidden="true">|</span>
+                    <div className="text-xs sm:text-sm font-medium text-foreground flex items-center flex-wrap gap-1.5">
+                      <span>{currentRole} at</span>
+                      <a
+                        href={formattedUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-accent hover:underline inline-flex items-center gap-1 group/role focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-xs"
+                      >
+                        <span>{currentOrg}</span>
+                        <span className="text-xs font-normal text-muted group-hover/role:text-accent font-mono">
+                          ({currentUrl})
+                        </span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-muted group-hover/role:text-accent transition-transform group-hover/role:-translate-y-0.5 group-hover/role:translate-x-0.5" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Block: Connect CTA + Social Media & Resume */}
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-4 lg:pt-0">
+                {/* "Connect" Pill CTA */}
+                <Link
+                  href={contact.email ? `mailto:${contact.email}` : '#contact'}
+                  className="inline-flex items-center gap-3 p-1.5 pr-5 sm:pr-6 rounded-full bg-surface-raised border border-border hover:border-teal-500/50 hover:bg-surface-raised/80 transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                >
+                  <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#00c9a7] flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:translate-x-0.5">
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                  <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
+                    Connect
+                  </span>
+                </Link>
+
+                {/* Social Media Links & Resume */}
+                <div className="flex items-center gap-2 sm:gap-2.5">
+                  {contact.github && (
+                    <a
+                      href={contact.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="GitHub Profile"
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-teal-500/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                    >
+                      <GitHubIcon />
+                    </a>
+                  )}
+                  {contact.linkedin && (
+                    <a
+                      href={contact.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="LinkedIn Profile"
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-teal-500/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                    >
+                      <LinkedInIcon />
+                    </a>
+                  )}
+                  {contact.cv && (
+                    <a
+                      href={contact.cv}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-full bg-surface border border-border text-xs sm:text-sm font-mono font-medium text-muted hover:text-foreground hover:border-teal-500/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                    >
+                      Resume
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: 3D Interactive Lanyard Card */}
+            <div className="lg:col-span-5 flex justify-center items-center h-full">
+              <div
+                ref={lanyardCardRef}
+                className="w-full h-105 sm:h-120 lg:h-135 rounded-2xl sm:rounded-3xl bg-surface-raised border border-border/70 relative overflow-hidden flex items-center justify-center"
+              >
                 <Lanyard
                   frontImage="/images/about-photo.png"
                   backImage="/images/animated-photo.png"
@@ -279,112 +245,6 @@ export function AboutMeSection({
                   interactive={true}
                   className="w-full h-full"
                 />
-              </div>
-            </div>
-
-            {/* Right Side: Two-Column Breakdown (Current Role vs Education & Achievements) with Differential Slack */}
-            <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-8">
-              {/* Column 1: Bringing Ideas to Life / Current Active Role */}
-              <div ref={col1WrapperRef} className="will-change-transform">
-                <div ref={col1Ref} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 text-accent">
-                      <Briefcase className="w-4 h-4" />
-                      <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
-                        Current Active Roles
-                      </span>
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                      JDNirwana
-                    </h3>
-                    <p className="text-xs font-mono text-accent font-medium">
-                      {activeExp ? `${activeExp.role}` : 'Full-Stack Developer'}
-                    </p>
-                  </div>
-
-                  <p className="text-sm text-muted leading-relaxed">
-                    Translating real-world business requirements into high-performance, user-centered digital applications—from intuitive interfaces to reliable backend architecture.
-                  </p>
-
-                  {/* CV Responsibilities in English */}
-                  <div className="space-y-2.5 pt-2">
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-muted/80 font-semibold block">
-                      Core Engineering Focus:
-                    </span>
-                    <ul className="space-y-2 text-xs sm:text-sm text-foreground/90">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                        <span>Architect and engineer fullstack web applications using Next.js, TypeScript, and Laravel.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                        <span>Design scalable relational database schemas (MySQL) and develop robust RESTful APIs.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                        <span>Integrate payment gateways (Midtrans) and secure third-party deployment workflows.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                        <span>Deliver client solutions with clarity, maintainability, and measurable impact.</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Column 2: Collaborate & Credentials / Education & Key Achievements */}
-              <div ref={col2WrapperRef} className="will-change-transform">
-                <div ref={col2Ref} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 text-accent">
-                      <GraduationCap className="w-4 h-4" />
-                      <span className="text-xs font-mono uppercase tracking-wider text-muted font-semibold">
-                        Academic Background
-                      </span>
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                      Horizon University Indonesia
-                    </h3>
-                    <p className="text-xs font-mono text-accent font-medium">
-                      {primaryEdu ? `GPA ${primaryEdu.gpa || '3.96'}` : 'Information Systems'}
-                    </p>
-                  </div>
-
-                  <p className="text-sm text-muted leading-relaxed">
-                    Undergraduate Information Systems degree focusing on software engineering, database architecture, and digital system design with proven academic excellence.
-                  </p>
-
-                  {/* Verified Achievements & Distinctions */}
-                  <div className="space-y-2.5 pt-2">
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-muted/80 font-semibold block">
-                      Honors &amp; Achievements:
-                    </span>
-                    <ul className="space-y-2.5 text-xs sm:text-sm text-foreground/90">
-                      <li className="flex items-start gap-2">
-                        <Award className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                        <div>
-                          <span className="font-semibold text-foreground">Best Student GPA</span>
-                          <p className="text-[11px] font-mono text-muted">Information Systems Department (2025 &amp; 2026)</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Award className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                        <div>
-                          <span className="font-semibold text-foreground">1st Winner — Web Solution Business &amp; Supply Chain</span>
-                          <p className="text-[11px] font-mono text-muted">TechnoSpark Vol. 2 Competition at Horizon University Indonesia</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                        <div>
-                          <span className="font-semibold text-foreground">Areas of Specialization</span>
-                          <p className="text-[11px] font-mono text-muted">Software Engineering, Web Development &amp; System Design</p>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

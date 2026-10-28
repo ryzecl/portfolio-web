@@ -219,15 +219,16 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             ref={bottomRowRef}
             className="mt-8 sm:mt-12 lg:mt-14 pt-2 sm:pt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-6 sm:gap-8"
           >
-            {/* Left: See My CV Action Button */}
+            {/* Left: Action Button */}
             <div className="flex items-center">
               <Link
-                href={hero.primaryCta?.href || '/cv.pdf'}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={hero.primaryCta?.href || '#about-me'}
+                {...(hero.primaryCta?.href?.startsWith('http') || hero.primaryCta?.href?.endsWith('.pdf')
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
                 className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-foreground text-background font-semibold text-sm hover:opacity-90 shadow-sm transition-all active:translate-y-px"
               >
-                <span>{hero.primaryCta?.label || 'See My CV'}</span>
+                <span>{hero.primaryCta?.label || "Let's Collaborate"}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>

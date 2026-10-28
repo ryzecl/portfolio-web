@@ -40,6 +40,9 @@ export interface NavigationItem {
 }
 
 export interface AboutData {
+  name?: string;
+  status?: string;
+  description?: string;
   heading: string;
   subheading?: string;
   paragraphs: string[];
