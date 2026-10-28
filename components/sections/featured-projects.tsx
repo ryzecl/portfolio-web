@@ -114,7 +114,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                   className="group block space-y-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-3xl"
                 >
                   {/* Image Preview Container */}
-                  <div className="relative aspect-[16/10] w-full rounded-3xl border border-border/80 bg-surface-raised overflow-hidden shadow-xs transition-all duration-300 group-hover:border-accent/40 group-hover:shadow-md">
+                  <div className="relative aspect-16/10 w-full rounded-3xl border border-border/80 bg-surface-raised overflow-hidden shadow-xs transition-all duration-300 group-hover:border-accent/40 group-hover:shadow-md">
                     <Image
                       src={coverSrc}
                       alt={project.visual?.alt || `${project.title} Preview`}

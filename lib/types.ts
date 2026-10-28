@@ -81,6 +81,7 @@ export interface SiteData {
   education: EducationItem[];
   contact: ContactData;
   footer: FooterData;
+  velocityScroll?: string[];
 }
 
 export interface ProjectVisual {

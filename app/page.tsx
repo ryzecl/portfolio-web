@@ -6,6 +6,7 @@ import {
   getAllSkillGroups,
 } from '@/lib/data';
 import { HeroSection } from '@/components/sections/hero-section';
+import { VelocityDivider } from '@/components/sections/velocity-divider';
 import { AboutMeSection } from '@/components/sections/about-me-section';
 import { ExperienceEducationSection } from '@/components/sections/experience-education-section';
 import { FeaturedProjects } from '@/components/sections/featured-projects';
@@ -21,8 +22,11 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* Existing Hero Section — Kept completely untouched */}
+      {/* Existing Hero Section */}
       <HeroSection hero={site.hero} identity={site.identity} />
+
+      {/* Velocity Scroll Divider between Hero and About Me */}
+      <VelocityDivider items={site.velocityScroll} />
 
       {/* Main Content Area Below Hero with Dot Matrix Pattern */}
       <div className="relative bg-tech-dots">
@@ -33,7 +37,7 @@ export default function HomePage() {
         />
 
         <div className="relative z-10">
-          {/* About Me Section — Positioned directly below Hero */}
+          {/* About Me Section — Positioned directly below Hero and Divider */}
           <AboutMeSection
             identity={site.identity}
             about={site.about}

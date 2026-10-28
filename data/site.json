@@ -77,5 +77,11 @@
   "footer": {
     "copyrightName": "Ferry Noer Hendriawan",
     "closingLine": "Let’s build something useful."
-  }
+  },
+  "velocityScroll": [
+    "SOFTWARE DEVELOPER",
+    "SYSTEM ANALYST",
+    "IT ENTHUSIAST",
+    "FULLSTACK DEVELOPER"
+  ]
 }

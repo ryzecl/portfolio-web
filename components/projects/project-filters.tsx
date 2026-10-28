@@ -98,7 +98,7 @@ export function ProjectFilters({
 
       {/* Projects Grid */}
       {filteredProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
           {filteredProjects.map((project, idx) => (
             <ProjectCard
               key={project.slug}

@@ -247,7 +247,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3"
           >
             <span>{hero.locationText || 'from Indonesia'}</span>
-            <IndonesiaFlag className="w-7 h-[19px] sm:w-9 sm:h-[24px] md:w-11 md:h-[29px] lg:w-12 lg:h-[32px]" />
+            <IndonesiaFlag className="w-7 h-4.75 sm:w-9 sm:h-6 md:w-11 md:h-7.25 lg:w-12 lg:h-8" />
           </div>
 
           {/* Bottom Row: CTA on Left, Clean Description on Right - Animating from BOTTOM via GSAP */}
