@@ -62,13 +62,13 @@ export function SiteFooter({ site }: SiteFooterProps) {
           </blockquote>
         </div>
 
-        {/* Bottom Row: Copyright on Left, Circular Social Buttons on Right */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+        {/* Bottom Row: Centered on mobile, split on desktop */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 text-center sm:text-left w-full">
           <p className="font-mono text-[11px] sm:text-xs tracking-widest uppercase text-muted/70 select-none">
             &copy; {currentYear} {copyrightText}
           </p>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-center gap-2.5">
             {site.contact.github && (
               <a
                 href={site.contact.github}

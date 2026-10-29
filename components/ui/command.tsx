@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Command as CommandPrimitive } from 'cmdk';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Command = React.forwardRef<
@@ -29,7 +29,7 @@ const CommandDialog = ({
     <DialogPrimitive.Root {...props}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md" />
-        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-2xl border border-border bg-surface p-0 shadow-2xl">
+        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 grid w-[calc(100vw-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-2xl border border-border bg-surface p-0 shadow-2xl">
           <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-4 [&_[cmdk-input-wrapper]_svg]:w-4 [&_[cmdk-input]]:h-10 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2 [&_[cmdk-item]_svg]:h-4 [&_[cmdk-item]_svg]:w-4">
             {children}
           </Command>
@@ -41,18 +41,30 @@ const CommandDialog = ({
 
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> & {
+    onClose?: () => void;
+  }
+>(({ className, onClose, ...props }, ref) => (
   <div className="flex items-center border-b border-border px-3" cmdk-input-wrapper="">
     <Search className="mr-2 h-4 w-4 shrink-0 text-muted" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        'flex h-10 w-full rounded-md bg-transparent py-2 text-xs outline-none placeholder:text-muted/60 disabled:cursor-not-allowed disabled:opacity-50',
+        'flex h-11 w-full rounded-md bg-transparent py-2.5 text-xs sm:text-sm outline-none placeholder:text-muted/60 disabled:cursor-not-allowed disabled:opacity-50 text-foreground',
         className
       )}
       {...props}
     />
+    {onClose && (
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close search"
+        className="ml-2 p-1 text-muted hover:text-foreground rounded-lg hover:bg-surface-raised transition-colors cursor-pointer"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    )}
   </div>
 ));
 CommandInput.displayName = CommandPrimitive.Input.displayName;

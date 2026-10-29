@@ -33,6 +33,7 @@ export interface ComboboxProps {
   emptyText?: string;
   className?: string;
   triggerClassName?: string;
+  popoverClassName?: string;
 }
 
 export function Combobox({
@@ -44,6 +45,7 @@ export function Combobox({
   emptyText = 'No options found.',
   className,
   triggerClassName,
+  popoverClassName,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -71,7 +73,10 @@ export function Combobox({
           </button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[260px] p-0 rounded-2xl border border-border bg-surface shadow-2xl backdrop-blur-xl"
+          className={cn(
+            'w-[var(--radix-popover-trigger-width)] min-w-[240px] p-0 rounded-2xl border border-border bg-surface shadow-2xl backdrop-blur-xl',
+            popoverClassName
+          )}
           align="start"
         >
           <Command>
