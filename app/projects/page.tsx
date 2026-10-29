@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { getAllProjects, getProjectCategories, getSiteData } from '@/lib/data';
 import { ProjectFilters } from '@/components/projects/project-filters';
+import { DotBackground } from '@/components/ui/dot-background';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { JsonLd } from '@/components/ui/json-ld';
 
@@ -69,9 +70,10 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground">
+    <div className="relative min-h-screen pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground overflow-hidden">
+      <DotBackground />
       <JsonLd data={collectionSchema} />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
           number="CATALOG"
           eyebrow="Index of Works"

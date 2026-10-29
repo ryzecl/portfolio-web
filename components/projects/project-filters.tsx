@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { ProjectItem } from '@/lib/types';
 import { ProjectCard } from './project-card';
 import { Search, FolderGit2 } from 'lucide-react';
@@ -15,17 +15,21 @@ export function ProjectFilters({
   initialProjects,
   categories,
 }: ProjectFiltersProps) {
-  const [selectedCategory, setSelectedCategory] = React.useState<string>('All');
-  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const filterOptions = ['All', ...categories];
+  const filterOptions = useMemo(() => {
+    return ['All', ...categories];
+  }, [categories]);
 
-  const filteredProjects = React.useMemo(() => {
+  const filteredProjects = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+
     return initialProjects.filter((project) => {
       const matchesCategory =
-        selectedCategory === 'All' || project.category === selectedCategory;
+        selectedCategory === 'All' ||
+        project.category.toLowerCase() === selectedCategory.toLowerCase();
 
-      const query = searchQuery.toLowerCase().trim();
       const matchesQuery =
         !query ||
         project.title.toLowerCase().includes(query) ||
@@ -38,13 +42,14 @@ export function ProjectFilters({
   }, [initialProjects, selectedCategory, searchQuery]);
 
   return (
-    <div className="space-y-8">
-      {/* Search and Category Filter Toolbar */}
+    <div className="space-y-8 relative z-10">
+      {/* Search and Category Filter Toolbar (Clean & Simple) */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-3 rounded-2xl bg-surface border border-border shadow-xs">
         {/* Category Pills */}
         <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
           {filterOptions.map((cat) => {
-            const isSelected = selectedCategory === cat;
+            const isSelected =
+              selectedCategory.toLowerCase() === cat.toLowerCase();
             return (
               <button
                 key={cat}
@@ -64,7 +69,7 @@ export function ProjectFilters({
         </div>
 
         {/* Search Input */}
-        <div className="relative min-w-[220px]">
+        <div className="relative min-w-[240px]">
           <Search className="w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
@@ -72,7 +77,7 @@ export function ProjectFilters({
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search projects or stack..."
             aria-label="Search projects by name or technology"
-            className="w-full bg-surface-raised border border-border rounded-full pl-9 pr-4 py-2 text-xs text-foreground placeholder:text-muted/60 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
+            className="w-full bg-surface-raised border border-border rounded-full pl-9 pr-14 py-2 text-xs text-foreground placeholder:text-muted/60 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
           />
           {searchQuery && (
             <button
@@ -92,7 +97,9 @@ export function ProjectFilters({
           Showing {filteredProjects.length} of {initialProjects.length} projects
         </span>
         {selectedCategory !== 'All' && (
-          <span className="text-foreground font-semibold">Filtered by: {selectedCategory}</span>
+          <span className="text-foreground font-semibold">
+            Filtered by: {selectedCategory}
+          </span>
         )}
       </div>
 
