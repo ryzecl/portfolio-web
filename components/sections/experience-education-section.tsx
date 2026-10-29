@@ -41,6 +41,50 @@ export function ExperienceEducationSection({
     }));
   };
 
+  // Recalculate ScrollTrigger positions when accordion items toggle
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Immediate refresh on state change
+    ScrollTrigger.refresh();
+
+    // The accordion transition in CSS takes 300ms (duration-300)
+    // Refresh midway and after it fully completes
+    const t1 = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 150);
+
+    const t2 = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 350);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [openExp, openEdu]);
+
+  // Dynamically observe layout height shifts of this section via ResizeObserver
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!containerRef.current) return;
+
+    let rafId: number | null = null;
+    const observer = new ResizeObserver(() => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    });
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      observer.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

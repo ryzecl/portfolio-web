@@ -151,7 +151,8 @@ export function TechStack({ contact }: TechStackProps) {
             ease: 'power3.out',
             scrollTrigger: {
               trigger: headerRef.current,
-              start: 'top 85%',
+              start: 'top 88%',
+              invalidateOnRefresh: true,
               toggleActions: 'play none none reverse',
             },
           }
@@ -169,7 +170,8 @@ export function TechStack({ contact }: TechStackProps) {
             ease: 'power3.out',
             scrollTrigger: {
               trigger: calendarRef.current,
-              start: 'top 85%',
+              start: 'top 90%',
+              invalidateOnRefresh: true,
               toggleActions: 'play none none reverse',
             },
           }
@@ -178,6 +180,27 @@ export function TechStack({ contact }: TechStackProps) {
     }, sectionRef);
 
     return () => ctx.revert();
+  }, []);
+
+  // Ensure ScrollTrigger stays refreshed if section content changes height dynamically
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!sectionRef.current) return;
+
+    let rafId: number | null = null;
+    const observer = new ResizeObserver(() => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    });
+
+    observer.observe(sectionRef.current);
+
+    return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      observer.disconnect();
+    };
   }, []);
 
   return (

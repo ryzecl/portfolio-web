@@ -42,7 +42,8 @@ export function ContactCta({ contact, identity }: ContactCtaProps) {
             ease: 'power3.out',
             scrollTrigger: {
               trigger: cardRef.current,
-              start: 'top 85%',
+              start: 'top 88%',
+              invalidateOnRefresh: true,
               toggleActions: 'play none none reverse',
             },
           }
