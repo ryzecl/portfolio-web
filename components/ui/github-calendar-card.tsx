@@ -1,8 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { GitHubCalendar } from 'react-github-calendar';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface ContributionDay {
+  date: string;
+  level: number;
+  count: number;
+  text: string;
+}
 
 interface GitHubCalendarCardProps {
   username?: string;
@@ -21,15 +28,95 @@ function GitHubIcon() {
   );
 }
 
+// 5-level palette matching our cobalt blue theme
+const LEVEL_COLORS: Record<number, string> = {
+  0: 'bg-border/60 hover:border-border',
+  1: 'bg-blue-200 border-blue-300',
+  2: 'bg-blue-400 border-blue-500',
+  3: 'bg-blue-600 border-blue-700',
+  4: 'bg-blue-800 border-blue-900',
+};
+
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 export function GitHubCalendarCard({
   username = 'ryzecl',
   githubUrl = 'https://github.com/ryzecl',
 }: GitHubCalendarCardProps) {
+  const [days, setDays] = useState<ContributionDay[]>([]);
+  const [total, setTotal] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    let isSubscribed = true;
+
+    async function loadData() {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/github-contributions?username=${encodeURIComponent(username)}`);
+        const json = await res.json();
+
+        if (isSubscribed && json.success && Array.isArray(json.days)) {
+          setDays(json.days);
+          setTotal(json.totalContributions);
+        }
+      } catch (err) {
+        console.error('Error fetching GitHub calendar:', err);
+      } finally {
+        if (isSubscribed) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadData();
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, [username]);
+
+  // Group days into columns of 7 days (weeks)
+  const weeks = useMemo(() => {
+    if (!days.length) return [];
+
+    const weekList: ContributionDay[][] = [];
+    let currentWeek: ContributionDay[] = [];
+
+    days.forEach((day, idx) => {
+      currentWeek.push(day);
+      if (currentWeek.length === 7 || idx === days.length - 1) {
+        weekList.push(currentWeek);
+        currentWeek = [];
+      }
+    });
+
+    return weekList;
+  }, [days]);
+
+  // Determine which week index starts a new month for column labels
+  const monthLabels = useMemo(() => {
+    if (!weeks.length) return [];
+
+    const labels: { weekIndex: number; name: string }[] = [];
+    let lastMonth = -1;
+
+    weeks.forEach((week, wIdx) => {
+      const firstDayInWeek = week[0];
+      if (firstDayInWeek) {
+        const dateObj = new Date(firstDayInWeek.date);
+        const month = dateObj.getMonth();
+        if (month !== lastMonth) {
+          labels.push({ weekIndex: wIdx, name: MONTH_NAMES[month] });
+          lastMonth = month;
+        }
+      }
+    });
+
+    return labels;
+  }, [weeks]);
 
   return (
     <div className="rounded-3xl border border-border bg-surface p-6 sm:p-8 lg:p-10 shadow-xs space-y-6">
@@ -38,7 +125,7 @@ export function GitHubCalendarCard({
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
             </span>
             <span className="text-xs font-mono uppercase tracking-widest text-muted font-medium">
@@ -57,7 +144,7 @@ export function GitHubCalendarCard({
           href={githubUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-raised border border-border text-xs sm:text-sm font-mono font-medium text-foreground hover:border-accent hover:text-accent transition-colors self-start sm:self-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-raised border border-border text-xs sm:text-sm font-mono font-medium text-foreground hover:border-accent hover:text-accent transition-colors self-start sm:self-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-2xs"
         >
           <GitHubIcon />
           <span>View GitHub</span>
@@ -65,26 +152,96 @@ export function GitHubCalendarCard({
         </a>
       </div>
 
-      {/* Calendar Area */}
-      <div className="overflow-x-auto py-2 flex justify-center items-center min-h-40">
-        {mounted ? (
-          <GitHubCalendar
-            username={username}
-            blockSize={12}
-            blockMargin={4}
-            fontSize={12}
-            colorScheme="light"
-            theme={{
-              light: ['#ebedf0', '#bfdbfe', '#60a5fa', '#2563eb', '#1d4ed8'],
-              dark: ['#161b22', '#1e3a8a', '#1d4ed8', '#2563eb', '#60a5fa'],
-            }}
-            labels={{
-              totalCount: '{{count}} contributions in the last year',
-            }}
-          />
+      {/* Heatmap Area */}
+      <div className="overflow-x-auto py-2">
+        {!mounted || loading ? (
+          <div className="w-full h-36 flex flex-col items-center justify-center gap-2 text-xs font-mono text-muted animate-pulse">
+            <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            <span>Fetching live GitHub contributions...</span>
+          </div>
+        ) : weeks.length > 0 ? (
+          <div className="inline-block min-w-full">
+            {/* Month Labels Header */}
+            <div className="flex text-[10px] font-mono text-muted mb-2 ml-7 relative h-4">
+              {monthLabels.map((lbl, i) => (
+                <span
+                  key={i}
+                  className="absolute"
+                  style={{ left: `${lbl.weekIndex * 15.5}px` }}
+                >
+                  {lbl.name}
+                </span>
+              ))}
+            </div>
+
+            {/* Grid Container */}
+            <div className="flex gap-2">
+              {/* Day of Week Labels (Mon, Wed, Fri) */}
+              <div className="flex flex-col justify-between text-[9px] font-mono text-muted py-0.5 pr-1 select-none">
+                <span>Mon</span>
+                <span>Wed</span>
+                <span>Fri</span>
+              </div>
+
+              {/* 53 Weeks Grid */}
+              <div className="flex gap-1">
+                {weeks.map((week, wIdx) => (
+                  <div key={wIdx} className="flex flex-col gap-1">
+                    {week.map((day) => {
+                      const colorClass =
+                        LEVEL_COLORS[day.level] || LEVEL_COLORS[0];
+
+                      return (
+                        <div
+                          key={day.date}
+                          title={day.text}
+                          className={cn(
+                            'w-3 h-3 rounded-[3px] border border-transparent transition-all duration-150 cursor-pointer hover:scale-125 hover:z-10',
+                            colorClass
+                          )}
+                          aria-label={day.text}
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer Summary & Legend */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 mt-2 border-t border-border/60 text-xs font-mono text-muted">
+              <div>
+                {typeof total === 'number' && (
+                  <span className="font-semibold text-foreground">
+                    {total.toLocaleString()} contributions in the last year
+                  </span>
+                )}
+              </div>
+
+              {/* Color Legend */}
+              <div className="flex items-center gap-1.5 self-end sm:self-auto select-none">
+                <span className="text-[10px]">Less</span>
+                <div className="w-2.5 h-2.5 rounded-[2px] bg-border/60" />
+                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-200" />
+                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-400" />
+                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-600" />
+                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-800" />
+                <span className="text-[10px]">More</span>
+              </div>
+            </div>
+          </div>
         ) : (
-          <div className="w-full h-32 flex items-center justify-center text-xs font-mono text-muted animate-pulse">
-            Loading GitHub contributions...
+          <div className="w-full py-8 text-center text-xs font-mono text-muted space-y-2">
+            <p>Could not load contributions heatmap directly.</p>
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent underline font-semibold inline-flex items-center gap-1"
+            >
+              <span>View full activity on github.com/{username}</span>
+              <ArrowUpRight className="w-3 h-3" />
+            </a>
           </div>
         )}
       </div>
