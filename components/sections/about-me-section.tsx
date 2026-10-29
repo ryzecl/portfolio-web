@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { SiteIdentity, ContactData, AboutData, EducationItem, ExperienceItem } from '@/lib/types';
 import { ArrowRight, ArrowUpRight, FileText, Mail } from 'lucide-react';
+import { ShinyText } from '@/components/ui/shiny-text';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -101,6 +102,39 @@ export function AboutMeSection({
   const currentUrl = experience?.url || 'nirwana.biz.id';
   const formattedUrl = currentUrl.startsWith('http') ? currentUrl : `https://${currentUrl}`;
 
+  const renderStatus = () => {
+    const match = status.match(/information systems? students?/i);
+    if (match && match.index !== undefined) {
+      const matchedText = match[0];
+      const before = status.slice(0, match.index);
+      const after = status.slice(match.index + matchedText.length);
+      return (
+        <>
+          {before}
+          <ShinyText
+            text={matchedText}
+            color="#52525b"
+            shineColor="#09090b"
+            speed={3}
+            shineWidth={45}
+            className="font-medium"
+          />
+          {after}
+        </>
+      );
+    }
+    return (
+      <ShinyText
+        text={status}
+        color="#52525b"
+        shineColor="#09090b"
+        speed={3}
+        shineWidth={45}
+        className="font-medium"
+      />
+    );
+  };
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -172,7 +206,7 @@ export function AboutMeSection({
                     {name}
                   </h2>
                   <p className="text-base sm:text-lg lg:text-xl text-muted font-normal">
-                    {status}
+                    {renderStatus()}
                   </p>
                 </div>
 

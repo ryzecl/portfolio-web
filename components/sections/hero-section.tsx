@@ -8,6 +8,7 @@ import { HeroData, SiteIdentity } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
 import { IndonesiaFlag } from '@/components/ui/indonesia-flag';
 import { TechText } from '@/components/ui/tech-text';
+import { ShinyText } from '@/components/ui/shiny-text';
 
 const MicroSlats = dynamic(
   () => import('@/components/ui/micro-slats').then((mod) => mod.MicroSlats),
@@ -229,8 +230,14 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
           </div>
 
           {/* Sub-headline: from Indonesia [Flag] */}
-          <div className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight text-muted/70 mt-2 sm:mt-3">
-            <span>{hero.locationText || 'from Indonesia'}</span>
+          <div className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3.5 text-xl sm:text-3xl md:text-4xl lg:text-[46px] font-semibold tracking-tight mt-2 sm:mt-3">
+            <ShinyText
+              text={hero.locationText || 'from Indonesia'}
+              color="#52525b"
+              shineColor="#09090b"
+              speed={3}
+              shineWidth={45}
+            />
             <IndonesiaFlag className="w-7 h-4.75 sm:w-9 sm:h-6 md:w-11 md:h-7.25 lg:w-12 lg:h-8" />
           </div>
 
