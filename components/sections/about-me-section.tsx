@@ -214,20 +214,15 @@ export function AboutMeSection({
                   {description}
                 </p>
 
-                {/* Current Role Capsule */}
+                {/* Current Role (Shadcn-styled, refined & anti-slop) */}
                 <div className="pt-1">
-                  <div className="inline-flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-raised border border-border/80 max-w-xl">
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
-                      </span>
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-muted font-semibold">
-                            Current Role
-                      </span>
-                    </div>
-                    <span className="hidden sm:inline-block text-border" aria-hidden="true">|</span>
-                    <div className="text-xs sm:text-sm font-medium text-foreground flex items-center flex-wrap gap-1.5">
+                  <div className="inline-flex flex-wrap items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-2xl bg-surface-raised border border-border text-xs sm:text-sm font-sans shadow-2xs">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-accent/10 border border-accent/20 text-accent font-mono text-[11px] font-semibold uppercase tracking-wider">
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent" aria-hidden="true" />
+                      Current Role
+                    </span>
+                    <span className="text-border hidden sm:inline" aria-hidden="true">|</span>
+                    <span className="text-foreground font-medium flex items-center flex-wrap gap-1.5">
                       <span>{currentRole} at</span>
                       <a
                         href={formattedUrl}
@@ -236,12 +231,12 @@ export function AboutMeSection({
                         className="font-semibold text-accent hover:underline inline-flex items-center gap-1 group/role focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-xs"
                       >
                         <span>{currentOrg}</span>
-                        <span className="text-xs font-normal text-muted group-hover/role:text-accent font-mono">
+                        <span className="hidden sm:inline-block text-xs font-normal text-muted group-hover/role:text-accent font-mono">
                           ({currentUrl})
                         </span>
                         <ArrowUpRight className="w-3.5 h-3.5 text-muted group-hover/role:text-accent transition-transform group-hover/role:-translate-y-0.5 group-hover/role:translate-x-0.5" />
                       </a>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>

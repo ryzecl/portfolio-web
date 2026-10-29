@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { SkillGroup, ContactData } from '@/lib/types';
+import { SkillGroup, ContactData, SpotifyData } from '@/lib/types';
 import { Marquee } from '@/components/ui/marquee';
 import { GitHubCalendarCard } from '@/components/ui/github-calendar-card';
 import gsap from 'gsap';
@@ -49,6 +49,7 @@ import { RiverpodLogo, MazerLogo } from '@/components/ui/tech-icon';
 interface TechStackProps {
   groups?: SkillGroup[];
   contact?: ContactData;
+  spotify?: SpotifyData;
 }
 
 interface TechPill {
@@ -127,7 +128,7 @@ const row2Techs: TechPill[] = [
   { name: 'Midtrans Payment', category: 'Payment Gateway', icon: <MidtransIcon /> },
 ];
 
-export function TechStack({ contact }: TechStackProps) {
+export function TechStack({ contact, spotify }: TechStackProps) {
   const username = 'ryzecl';
   const githubUrl = contact?.github || 'https://github.com/ryzecl';
 
@@ -264,7 +265,7 @@ export function TechStack({ contact }: TechStackProps) {
 
       {/* Live GitHub Contributions Heatmap Card */}
       <div ref={calendarRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <GitHubCalendarCard username={username} githubUrl={githubUrl} />
+        <GitHubCalendarCard username={username} githubUrl={githubUrl} spotify={spotify} />
       </div>
     </section>
   );

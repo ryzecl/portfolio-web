@@ -19,6 +19,7 @@ Contains personal identity, hero section copy, navigation, academic education, c
 - `education`: Array of academic credentials (`institution`, `program`, `startDate`, `endDate`, `gpa`, `achievements`, `note`).
 - `contact`: Official links for `email`, `github`, `linkedin`, and `cv`.
 - `velocityScroll`: Array of uppercase strings displayed in the hero velocity ticker marquee.
+- `spotify`: Headphone Check and live Spotify configuration via Lanyard Discord activity (`discordUserId`, `tagline`, `lore`, `defaultTrack`, `playlistUrl`).
 
 ---
 

@@ -73,6 +73,22 @@ export interface FooterData {
   closingLine: string;
 }
 
+export interface SpotifyTrack {
+  song: string;
+  artist: string;
+  album?: string;
+  albumArtUrl: string;
+  trackUrl: string;
+}
+
+export interface SpotifyData {
+  discordUserId: string;
+  tagline: string;
+  lore: string;
+  defaultTrack: SpotifyTrack;
+  playlistUrl?: string;
+}
+
 export interface SiteData {
   identity: SiteIdentity;
   hero: HeroData;
@@ -82,6 +98,7 @@ export interface SiteData {
   contact: ContactData;
   footer: FooterData;
   velocityScroll?: string[];
+  spotify?: SpotifyData;
 }
 
 export interface ProjectVisual {

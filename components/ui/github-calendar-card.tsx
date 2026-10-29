@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SpotifyModal } from '@/components/ui/spotify-modal';
+import { SpotifyData } from '@/lib/types';
 
 interface ContributionDay {
   date: string;
@@ -19,6 +21,7 @@ interface MonthItem {
 interface GitHubCalendarCardProps {
   username?: string;
   githubUrl?: string;
+  spotify?: SpotifyData;
 }
 
 function GitHubIcon() {
@@ -47,6 +50,7 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 export function GitHubCalendarCard({
   username = 'ryzecl',
   githubUrl = 'https://github.com/ryzecl',
+  spotify,
 }: GitHubCalendarCardProps) {
   const [days, setDays] = useState<ContributionDay[]>([]);
   const [months, setMonths] = useState<MonthItem[]>([]);
@@ -147,16 +151,22 @@ export function GitHubCalendarCard({
           </h3>
         </div>
 
-        <a
-          href={githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-raised border border-border text-xs sm:text-sm font-mono font-medium text-foreground hover:border-accent hover:text-accent transition-colors self-start sm:self-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-2xs"
-        >
-          <GitHubIcon />
-          <span>View GitHub</span>
-          <ArrowUpRight className="w-3.5 h-3.5" />
-        </a>
+        <div className="flex flex-row items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
+          {/* Headphone Check SlingButton Trigger & Shadcn Modal */}
+          <SpotifyModal spotifyData={spotify} className="flex-1 sm:flex-initial justify-between sm:justify-start" />
+
+          {/* View GitHub Link Button */}
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 rounded-full bg-surface-raised border border-border text-xs sm:text-sm font-mono font-medium text-foreground hover:border-accent hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent shadow-2xs flex-1 sm:flex-initial"
+          >
+            <GitHubIcon />
+            <span>View GitHub</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
       </div>
 
       {/* Heatmap Area */}

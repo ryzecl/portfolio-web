@@ -54,7 +54,7 @@ export default function HomePage() {
             education={site.education}
           />
 
-          <TechStack groups={skillGroups} contact={site.contact} />
+          <TechStack groups={skillGroups} contact={site.contact} spotify={site.spotify} />
           <ContactCta contact={site.contact} identity={site.identity} />
         </div>
       </div>

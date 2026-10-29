@@ -108,5 +108,18 @@
     "SYSTEM ANALYST",
     "IT ENTHUSIAST",
     "FULLSTACK DEVELOPER"
-  ]
+  ],
+  "spotify": {
+    "discordUserId": "1129671251271622746",
+    "tagline": "HEADPHONE CHECK",
+    "lore": "Status: Headphones ON, Distractions OFF. Kalau lagi senggang, intip apa yang lagi nemenin gw ngoding.",
+    "defaultTrack": {
+      "song": "Teh Hijau",
+      "artist": "Tulus",
+      "album": "Monokrom",
+      "albumArtUrl": "https://i.scdn.co/image/ab67616d0000b273fb31e82b5f6ff9e5ed448dd4",
+      "trackUrl": "https://open.spotify.com"
+    },
+    "playlistUrl": "https://open.spotify.com"
+  }
 }
