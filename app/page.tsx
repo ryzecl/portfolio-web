@@ -32,7 +32,7 @@ export default function HomePage() {
       <div className="relative bg-tech-dots">
         {/* Smooth Top Transition from Hero into Dot Matrix */}
         <div
-          className="absolute top-0 inset-x-0 h-24 pointer-events-none bg-gradient-to-b from-background to-transparent"
+          className="absolute top-0 inset-x-0 h-24 pointer-events-none bg-linear-to-b from-background to-transparent"
           aria-hidden="true"
         />
 
