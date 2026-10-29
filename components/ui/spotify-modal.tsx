@@ -12,9 +12,7 @@ import {
   Shuffle,
   Repeat,
   Heart,
-  Volume2,
   Laptop,
-  Radio,
 } from 'lucide-react';
 import {
   Dialog,
@@ -189,8 +187,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
 
   const loreText =
     spotifyData?.lore ||
-    'Status: Headphones ON, Distractions OFF. Kalau lagi senggang, intip apa yang lagi nemenin gw ngoding.';
-  const tagline = spotifyData?.tagline || 'HEADPHONE CHECK';
+    'Kalau lagi senggang, intip apa yang lagi nemenin gw ngoding.';
 
   return (
     <>
@@ -205,7 +202,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
           <Headphones className="w-3.5 h-3.5 text-muted group-hover:text-[#1DB954] transition-colors shrink-0" />
           <span className="text-xs font-mono font-medium text-foreground truncate">
             <span className="inline sm:hidden">Spotify</span>
-            <span className="hidden sm:inline">Headphone Check</span>
+            <span className="hidden sm:inline">Spotify Player</span>
           </span>
           {mounted && isPlaying && (
             <span className="flex items-center gap-1 ml-0.5 shrink-0">
@@ -215,7 +212,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
           )}
         </div>
 
-        {/* SlingButton from React Bits */}
+        {/* SlingButton trigger */}
         <div className="shrink-0 flex items-center justify-center">
           <SlingButton
             size={30}
@@ -226,7 +223,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
             wellColor="#27272a"
             bandColor="#52525b"
             maxPull={90}
-            ariaLabel="Pull sling to open Spotify player"
+            ariaLabel="Open Spotify player"
             onSend={() => setIsOpen(true)}
           >
             <SpotifyIcon className="w-3.5 h-3.5 text-[#1DB954]" />
@@ -234,85 +231,75 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
         </div>
       </div>
 
-      {/* Authentic Spotify Player Modal — Refined for Mobile & Desktop */}
+      {/* Spotify Player Modal — macOS Style Launch, Zero Scroller Kanan-Kiri, No AI Slop */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="w-[calc(100%-2rem)] max-w-[390px] max-h-[88dvh] overflow-y-auto overscroll-contain p-0 border border-zinc-800/80 bg-[#121212] text-white rounded-3xl shadow-2xl">
-          {/* Top Ambient Glow / Header Vignette */}
-          <div className="relative p-4 sm:p-6 pb-4 sm:pb-5 bg-gradient-to-b from-[#1e3a29]/60 via-[#181818]/90 to-[#121212]">
+        <DialogContent className="w-[calc(100%-2rem)] max-w-[370px] p-0 border border-zinc-800 bg-[#121212] text-white rounded-3xl shadow-2xl overflow-hidden focus:outline-none">
+          <div className="w-full max-h-[88dvh] overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden p-5 sm:p-6 space-y-4">
             {/* Header Status Bar */}
             <DialogHeader className="space-y-0 text-left">
-              <div className="flex items-center justify-between gap-2 pb-3 sm:pb-4 pr-7">
+              <div className="flex items-center justify-between gap-2 pr-7">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] font-mono font-bold tracking-wider bg-black/40 border border-white/10 text-[#1DB954]">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold tracking-wider bg-zinc-900 border border-zinc-800 text-[#1DB954]">
                     <SpotifyIcon className="w-3.5 h-3.5 shrink-0" />
-                    <span>{tagline}</span>
+                    <span>{mounted && isPlaying ? 'NOW PLAYING' : 'RECENTLY PLAYED'}</span>
                   </span>
-                  {mounted && isPlaying ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-mono text-[#1DB954] font-semibold">
+                  {mounted && isPlaying && (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-mono text-[#1DB954] font-medium">
                       <Equalizer />
-                      <span>LIVE</span>
-                    </span>
-                  ) : (
-                    <span className="text-[10px] sm:text-[11px] font-mono text-zinc-400">
-                      LAST PLAYED
+                      <span className="text-[10px]">LIVE</span>
                     </span>
                   )}
                 </div>
               </div>
 
               <DialogTitle className="sr-only">
-                Spotify Now Playing: {track.song} by {track.artist}
+                Spotify: {track.song} by {track.artist}
               </DialogTitle>
             </DialogHeader>
 
-            {/* Album Cover Canvas — Responsive scaling */}
-            <div className="relative mx-auto my-1 sm:my-2 w-44 h-44 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 group/cover">
+            {/* Album Cover Canvas */}
+            <div className="relative mx-auto w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-xl border border-white/10 group/cover">
               {track.albumArtUrl ? (
                 <Image
                   src={track.albumArtUrl}
                   alt={`${track.song} album artwork`}
                   fill
-                  sizes="(max-width: 640px) 180px, 230px"
+                  sizes="(max-width: 640px) 192px, 224px"
                   unoptimized
                   className="object-cover transition-transform duration-500 group-hover/cover:scale-105"
                   priority
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-zinc-600">
-                  <SpotifyIcon className="w-14 h-14" />
+                  <SpotifyIcon className="w-12 h-12" />
                 </div>
               )}
-              {/* Subtle vinyl reflection overlay */}
-              <div
-                className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-black/40 via-transparent to-white/15"
-                aria-hidden="true"
-              />
             </div>
 
             {/* Track Info & Like Action */}
-            <div className="flex items-center justify-between gap-3 pt-3 sm:pt-4 px-1">
+            <div className="flex items-center justify-between gap-3 pt-1">
               <div className="min-w-0 flex-1">
                 <a
                   href={track.trackUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-base sm:text-xl font-bold tracking-tight text-white hover:underline truncate"
+                  className="block text-lg sm:text-xl font-bold tracking-tight text-white hover:underline truncate"
                 >
                   {track.song}
                 </a>
                 <p className="text-xs sm:text-sm text-zinc-400 truncate mt-0.5">
                   <span>{track.artist}</span>
                   {track.album && (
-                    <span className="text-zinc-500 font-normal"> • {track.album}</span>
+                    <span className="text-zinc-500"> • {track.album}</span>
                   )}
                 </p>
               </div>
 
-              {/* Spotify Heart Toggle (Min 44x44px touch area) */}
+              {/* Like Toggle */}
               <button
                 type="button"
                 onClick={() => setIsLiked(!isLiked)}
-                className="w-11 h-11 flex items-center justify-center rounded-full text-zinc-400 hover:text-white transition-colors shrink-0 touch-manipulation active:scale-90"
+                className="w-10 h-10 flex items-center justify-center rounded-full text-zinc-400 hover:text-white transition-colors shrink-0 touch-manipulation active:scale-90"
                 aria-label={isLiked ? 'Unlike track' : 'Like track'}
               >
                 <Heart
@@ -326,29 +313,29 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
               </button>
             </div>
 
-            {/* Spotify Scrubber / Seek Bar (Enlarged hit-box for mobile fingers) */}
-            <div className="space-y-1 pt-2 sm:pt-3 px-1">
-              <div className="py-1.5 cursor-pointer touch-manipulation group/bar">
-                <div className="relative h-1 sm:h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+            {/* Spotify Scrubber / Seek Bar */}
+            <div className="space-y-1 pt-1">
+              <div className="py-1 cursor-pointer touch-manipulation group/bar">
+                <div className="relative h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-white group-hover/bar:bg-[#1DB954] rounded-full transition-all duration-300"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center text-[10px] sm:text-[11px] font-mono text-zinc-400">
+              <div className="flex justify-between items-center text-[10px] sm:text-[11px] font-mono text-zinc-500">
                 <span>{formatTime(elapsedMs)}</span>
                 <span>{formatTime(durationMs)}</span>
               </div>
             </div>
 
-            {/* Spotify Media Controls — 44x44px touch-friendly targets */}
-            <div className="flex items-center justify-between pt-1 sm:pt-2 px-1 sm:px-3">
+            {/* Playback Controls */}
+            <div className="flex items-center justify-between pt-1 px-1">
               <button
                 type="button"
                 onClick={() => setIsShuffle(!isShuffle)}
                 className={cn(
-                  'w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full transition-all touch-manipulation active:scale-90',
+                  'w-9 h-9 flex items-center justify-center rounded-full transition-all touch-manipulation active:scale-90',
                   isShuffle ? 'text-[#1DB954]' : 'text-zinc-400 hover:text-white'
                 )}
                 aria-label="Shuffle"
@@ -358,18 +345,18 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
 
               <button
                 type="button"
-                className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full text-zinc-300 hover:text-white transition-all touch-manipulation active:scale-90"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-zinc-300 hover:text-white transition-all touch-manipulation active:scale-90"
                 aria-label="Previous Track"
               >
-                <SkipBack className="w-5 h-5 fill-current" />
+                <SkipBack className="w-4 h-4 fill-current" />
               </button>
 
-              {/* Big Spotify Play / Pause Circle */}
+              {/* Play / Pause */}
               <a
                 href={track.trackUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white hover:bg-zinc-200 text-black flex items-center justify-center transition-transform hover:scale-105 active:scale-90 shadow-lg touch-manipulation"
+                className="w-11 h-11 rounded-full bg-white hover:bg-zinc-200 text-black flex items-center justify-center transition-transform hover:scale-105 active:scale-90 shadow-lg touch-manipulation"
                 aria-label="Play on Spotify"
               >
                 {isPlaying ? (
@@ -381,17 +368,17 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
 
               <button
                 type="button"
-                className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full text-zinc-300 hover:text-white transition-all touch-manipulation active:scale-90"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-zinc-300 hover:text-white transition-all touch-manipulation active:scale-90"
                 aria-label="Next Track"
               >
-                <SkipForward className="w-5 h-5 fill-current" />
+                <SkipForward className="w-4 h-4 fill-current" />
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsRepeat(!isRepeat)}
                 className={cn(
-                  'w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full transition-all touch-manipulation active:scale-90',
+                  'w-9 h-9 flex items-center justify-center rounded-full transition-all touch-manipulation active:scale-90',
                   isRepeat ? 'text-[#1DB954]' : 'text-zinc-400 hover:text-white'
                 )}
                 aria-label="Repeat"
@@ -399,29 +386,25 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
                 <Repeat className="w-4 h-4" />
               </button>
             </div>
-          </div>
 
-          {/* Lower Section: Storyline / Curator's Lore + Device Status */}
-          <div className="p-4 sm:p-5 pt-3 sm:pt-4 bg-[#121212] border-t border-zinc-800/80 space-y-3 sm:space-y-4">
-            {/* Storyline / Curator's Lore Card */}
-            <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-br from-[#1e1e1e] to-[#161616] border border-white/5 space-y-1">
-              <div className="flex items-center gap-1.5 text-[#1DB954]">
-                <Radio className="w-3.5 h-3.5 shrink-0" />
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-                  Storyline · Ferry&apos;s Focus Fuel
+            {/* Lore Note */}
+            {loreText && (
+              <div className="px-3.5 py-2.5 rounded-xl bg-zinc-900/90 border border-zinc-800/80 space-y-1">
+                <span className="text-[10px] font-mono font-medium text-zinc-400 uppercase tracking-wider block">
+                  Curator&apos;s Note
                 </span>
+                <p className="text-xs text-zinc-300 leading-relaxed font-normal">
+                  &ldquo;{loreText}&rdquo;
+                </p>
               </div>
-              <p className="text-[11px] sm:text-xs text-zinc-300 leading-relaxed font-normal text-pretty italic">
-                &ldquo;{loreText}&rdquo;
-              </p>
-            </div>
+            )}
 
-            {/* Device & Direct Spotify CTA */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-0.5">
-              <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-mono text-zinc-400">
+            {/* Bottom Section: Device Status & Open in Spotify CTA */}
+            <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 min-w-0">
                 <Laptop className="w-3.5 h-3.5 text-[#1DB954] shrink-0" />
                 <span className="truncate">
-                  {isPlaying ? "Playing via Spotify" : 'Synced with Discord'}
+                  {isPlaying ? 'Listening via Spotify' : 'Synced with Discord'}
                 </span>
               </div>
 
@@ -429,7 +412,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
                 href={track.trackUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 sm:py-1.5 rounded-full bg-[#1DB954] hover:bg-[#1ed760] text-black font-semibold text-xs transition-colors shrink-0 touch-manipulation active:scale-95"
+                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#1DB954] hover:bg-[#1ed760] text-black font-semibold text-xs transition-colors shrink-0 touch-manipulation active:scale-95"
               >
                 <SpotifyIcon className="w-3.5 h-3.5 text-black shrink-0" />
                 <span>Open Spotify</span>

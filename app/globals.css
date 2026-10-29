@@ -159,6 +159,65 @@ body {
   }
 }
 
+/* macOS App Launch & Close Animations for Modals */
+@keyframes macos-window-in {
+  0% {
+    opacity: 0;
+    transform: translateY(35vh) scale(0.68);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes macos-window-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(35vh) scale(0.68);
+  }
+}
+
+@keyframes macos-overlay-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes macos-overlay-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-macos-modal[data-state='open'] {
+  animation: macos-window-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-macos-modal[data-state='closed'] {
+  animation: macos-window-out 0.28s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-macos-overlay[data-state='open'] {
+  animation: macos-overlay-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-macos-overlay[data-state='closed'] {
+  animation: macos-overlay-out 0.24s ease-in forwards;
+}
+
 /* Hide Next.js dev badge */
 nextjs-portal {
   display: none !important;

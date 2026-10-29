@@ -128,8 +128,8 @@ export function SpotifyBadge({ spotifyData, className }: SpotifyBadgeProps) {
 
   const loreText =
     spotifyData?.lore ||
-    'Status: Headphones ON, Distractions OFF. Kalau lagi senggang, intip apa yang lagi nemenin gw ngoding.';
-  const tagline = spotifyData?.tagline || 'HEADPHONE CHECK';
+    'Lagu yang lagi nemenin gw ngoding dan eksplorasi project.';
+  const tagline = spotifyData?.tagline || 'NOW PLAYING';
 
   return (
     <div

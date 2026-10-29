@@ -111,8 +111,8 @@
   ],
   "spotify": {
     "discordUserId": "1129671251271622746",
-    "tagline": "HEADPHONE CHECK",
-    "lore": "Status: Headphones ON, Distractions OFF. Kalau lagi senggang, intip apa yang lagi nemenin gw ngoding.",
+    "tagline": "NOW PLAYING",
+    "lore": "Kalau lagi senggang, intip apa yang lagi nemenin gw ngoding.",
     "defaultTrack": {
       "song": "Teh Hijau",
       "artist": "Tulus",
