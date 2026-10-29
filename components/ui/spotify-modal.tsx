@@ -421,7 +421,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
               <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-mono text-zinc-400">
                 <Laptop className="w-3.5 h-3.5 text-[#1DB954] shrink-0" />
                 <span className="truncate">
-                  {isPlaying ? "Playing via Ferry's Spotify" : 'Synced with Discord'}
+                  {isPlaying ? "Playing via Spotify" : 'Synced with Discord'}
                 </span>
               </div>
 
@@ -432,7 +432,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
                 className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 sm:py-1.5 rounded-full bg-[#1DB954] hover:bg-[#1ed760] text-black font-semibold text-xs transition-colors shrink-0 touch-manipulation active:scale-95"
               >
                 <SpotifyIcon className="w-3.5 h-3.5 text-black shrink-0" />
-                <span>Open in Spotify</span>
+                <span>Open Spotify</span>
                 <ExternalLink className="w-3 h-3 shrink-0" />
               </a>
             </div>
