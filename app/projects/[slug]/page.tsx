@@ -11,6 +11,7 @@ import {
 import { ProjectMediaViewer } from '@/components/projects/project-media-viewer';
 import { JsonLd } from '@/components/ui/json-ld';
 import { DotBackground } from '@/components/ui/dot-background';
+import { ContactCta } from '@/components/sections/contact-cta';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -138,7 +139,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   };
 
   return (
-    <div className="relative min-h-screen pt-28 pb-24 sm:pt-36 sm:pb-32 bg-background text-foreground overflow-hidden">
+    <div className="relative min-h-screen pt-28 sm:pt-36 bg-background text-foreground overflow-hidden">
       {/* Precision Ambient Dot Grid Background */}
       <DotBackground />
 
@@ -527,6 +528,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             </div>
           )}
         </nav>
+      </div>
+
+      <div className="relative z-10">
+        <ContactCta contact={site.contact} identity={site.identity} />
       </div>
     </div>
   );

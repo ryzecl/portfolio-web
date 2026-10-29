@@ -5,6 +5,7 @@ import { ProjectFilters } from '@/components/projects/project-filters';
 import { DotBackground } from '@/components/ui/dot-background';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { JsonLd } from '@/components/ui/json-ld';
+import { ContactCta } from '@/components/sections/contact-cta';
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
@@ -70,7 +71,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="relative min-h-screen pt-32 pb-24 sm:pt-40 sm:pb-32 bg-background text-foreground overflow-hidden">
+    <div className="relative min-h-screen pt-32 sm:pt-40 bg-background text-foreground overflow-hidden">
       <DotBackground />
       <JsonLd data={collectionSchema} />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -85,6 +86,10 @@ export default function ProjectsPage() {
           initialProjects={projects}
           categories={categories}
         />
+      </div>
+
+      <div className="relative z-10">
+        <ContactCta contact={site.contact} identity={site.identity} />
       </div>
     </div>
   );
