@@ -26,14 +26,6 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
       ? hero.greetings
       : [
           'HALO!',
-          'SAMPURASUN!',
-          'SUGENG RAWUH!',
-          'OM SWASTYASTU!',
-          'HORAS!',
-          'TABE\'!',
-          'WA WA WA!',
-          'GIMANE KABAR!',
-          'APA KHABAR!',
           'HELLO!',
           'HOLA!',
           'BONJOUR!',
