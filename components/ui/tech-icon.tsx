@@ -19,6 +19,15 @@ import {
   SiGit,
   SiGithub,
   SiFigma,
+  SiVite,
+  SiInertia,
+  SiExpo,
+  SiExpress,
+  SiBootstrap,
+  SiDaisyui,
+  SiNodedotjs,
+  SiBun,
+  SiCpanel,
 } from 'react-icons/si';
 import { Braces, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -50,6 +59,15 @@ export function RiverpodLogo({ className }: { className?: string }) {
   );
 }
 
+export function MazerLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={cn('w-3.5 h-3.5 shrink-0 fill-none stroke-current text-[#435EBE]', className)} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M3 9h18M9 21V9" />
+    </svg>
+  );
+}
+
 interface TechIconProps {
   name: string;
   className?: string;
@@ -72,11 +90,34 @@ export function TechIcon({ name, className = 'w-3.5 h-3.5 shrink-0', colored = t
     case 'react':
     case 'reactjs':
       return <SiReact className={cn(className, colored ? 'text-[#61DAFB]' : 'text-foreground')} />;
+    case 'reactnative':
+    case 'reactnativeapp':
+      return <SiReact className={cn(className, colored ? 'text-[#61DAFB]' : 'text-foreground')} />;
+    case 'expo':
+      return <SiExpo className={cn(className, colored && 'text-foreground')} />;
     case 'tailwindcss':
     case 'tailwind':
       return <SiTailwindcss className={cn(className, colored ? 'text-[#06B6D4]' : 'text-foreground')} />;
+    case 'bootstrap':
+      return <SiBootstrap className={cn(className, colored ? 'text-[#7952B3]' : 'text-foreground')} />;
+    case 'daisyui':
+      return <SiDaisyui className={cn(className, colored ? 'text-[#1AD1A5]' : 'text-foreground')} />;
+    case 'mazer':
+    case 'mazertemplate':
+    case 'mazeradmin':
+      return <MazerLogo className={className} />;
     case 'laravel':
       return <SiLaravel className={cn(className, colored ? 'text-[#FF2D20]' : 'text-foreground')} />;
+    case 'express':
+    case 'expressjs':
+      return <SiExpress className={cn(className, colored && 'text-foreground')} />;
+    case 'nodejs':
+    case 'node':
+      return <SiNodedotjs className={cn(className, colored ? 'text-[#5FA04E]' : 'text-foreground')} />;
+    case 'bun':
+      return <SiBun className={cn(className, colored ? 'text-[#FBF0DF]' : 'text-foreground')} />;
+    case 'cpanel':
+      return <SiCpanel className={cn(className, colored ? 'text-[#FF6C2C]' : 'text-foreground')} />;
     case 'mysql':
       return <SiMysql className={cn(className, colored ? 'text-[#4479A1]' : 'text-foreground')} />;
     case 'postgresql':
@@ -89,6 +130,7 @@ export function TechIcon({ name, className = 'w-3.5 h-3.5 shrink-0', colored = t
     case 'dart':
       return <SiDart className={cn(className, colored ? 'text-[#0175C2]' : 'text-foreground')} />;
     case 'firebase':
+    case 'firestore':
       return <SiFirebase className={cn(className, colored ? 'text-[#FFCA28]' : 'text-foreground')} />;
     case 'riverpod':
       return <RiverpodLogo className={className} />;
@@ -113,6 +155,11 @@ export function TechIcon({ name, className = 'w-3.5 h-3.5 shrink-0', colored = t
       return <SiGithub className={cn(className, colored ? 'text-foreground' : 'text-foreground')} />;
     case 'figma':
       return <SiFigma className={cn(className, colored ? 'text-[#F24E1E]' : 'text-foreground')} />;
+    case 'vite':
+      return <SiVite className={cn(className, colored ? 'text-[#646CFF]' : 'text-foreground')} />;
+    case 'inertiajs':
+    case 'inertia':
+      return <SiInertia className={cn(className, colored ? 'text-[#9553E9]' : 'text-foreground')} />;
     default:
       return <Terminal className={cn(className, 'text-muted')} />;
   }

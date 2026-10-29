@@ -187,36 +187,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           <p className="text-lg sm:text-xl text-muted leading-relaxed max-w-3xl font-normal">
             {project.description || project.summary}
           </p>
-
-          {/* Action Row: Demo & Source code */}
-          {hasAnyLink && (
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              {hasDemo && (
-                <Button
-                  variant="primary"
-                  size="md"
-                  href={project.links.demo}
-                  external
-                  className="rounded-full gap-2 cursor-pointer shadow-sm"
-                >
-                  <span>Live Demo</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Button>
-              )}
-              {hasRepo && (
-                <Button
-                  variant="secondary"
-                  size="md"
-                  href={project.links.repository}
-                  external
-                  className="rounded-full gap-2 cursor-pointer shadow-xs"
-                >
-                  <GithubIcon className="w-4 h-4" />
-                  <span>Source Code</span>
-                </Button>
-              )}
-            </div>
-          )}
         </header>
 
         {/* Media Viewer Showcase */}
@@ -292,35 +262,66 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             {/* Architecture Pipeline if available */}
             {project.architecture && project.architecture.length > 0 && (
               <div className="space-y-4 pt-2">
-                <div className="space-y-1">
-                  <span className="text-xs font-mono uppercase tracking-wider text-accent font-bold">
-                    02 / Architecture & Data Flow
-                  </span>
-                  <h3 className="text-xl font-bold text-foreground tracking-tight">
-                    Pipeline & Component Topology
-                  </h3>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <span className="text-xs font-mono uppercase tracking-wider text-accent font-bold">
+                      02 / Architecture & Data Flow
+                    </span>
+                    <h3 className="text-xl font-bold text-foreground tracking-tight">
+                      Pipeline & Component Topology
+                    </h3>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-muted">
+                    <span>Horizontal Flow</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-accent" />
+                  </div>
                 </div>
 
                 <Card className="rounded-3xl border-border bg-surface shadow-xs overflow-hidden">
-                  <CardContent className="p-5 sm:p-6">
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                      {project.architecture.map((node, i) => (
-                        <React.Fragment key={node}>
-                          <div className="flex-1 p-3.5 rounded-2xl bg-surface-raised border border-border text-center">
-                            <span className="text-[10px] font-mono text-muted uppercase tracking-wider block mb-1">
-                              Stage 0{i + 1}
-                            </span>
-                            <span className="text-xs sm:text-sm font-semibold text-foreground">
-                              {node}
-                            </span>
-                          </div>
-                          {i < project.architecture!.length - 1 && (
-                            <div className="hidden sm:flex items-center justify-center text-muted shrink-0">
-                              <ArrowRight className="w-4 h-4 text-accent" />
-                            </div>
-                          )}
-                        </React.Fragment>
-                      ))}
+                  <CardContent className="p-4 sm:p-6 space-y-4">
+                    {/* Horizontal Scroller Container */}
+                    <div className="relative">
+                      <div className="overflow-x-auto pb-2 -mx-1 px-1">
+                        <div className="flex items-center min-w-max gap-3 py-1">
+                          {project.architecture.map((node, i) => (
+                            <React.Fragment key={node}>
+                              <div className="w-56 sm:w-64 p-4 rounded-2xl bg-surface-raised border border-border/80 hover:border-accent/40 transition-colors shadow-2xs shrink-0 flex flex-col justify-between min-h-26.25">
+                                <div className="flex items-center justify-between gap-2 mb-2">
+                                  <span className="text-[10px] font-mono text-accent font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20">
+                                    Stage 0{i + 1}
+                                  </span>
+                                  <span className="text-[10px] font-mono text-muted">
+                                    Phase {i + 1} of {project.architecture!.length}
+                                  </span>
+                                </div>
+                                <p className="text-xs sm:text-sm font-semibold text-foreground leading-snug">
+                                  {node}
+                                </p>
+                              </div>
+
+                              {i < project.architecture!.length - 1 && (
+                                <div className="flex items-center justify-center shrink-0 px-0.5 text-muted">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="w-3 h-px bg-border" />
+                                    <div className="w-6 h-6 rounded-full bg-surface-raised border border-border flex items-center justify-center text-accent shadow-2xs">
+                                      <ArrowRight className="w-3 h-3" />
+                                    </div>
+                                    <div className="w-3 h-px bg-border" />
+                                  </div>
+                                </div>
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Helper Bar */}
+                    <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11px] font-mono text-muted">
+                      <span>End-to-End Execution Sequence</span>
+                      <span className="text-[10px] text-muted">
+                        ← Scroll horizontally to inspect full flow →
+                      </span>
                     </div>
                   </CardContent>
                 </Card>

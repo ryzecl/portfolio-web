@@ -16,7 +16,7 @@ import { GradualBlur } from '@/components/ui/gradual-blur';
 
 export default function HomePage() {
   const site = getSiteData();
-  const featuredProjects = getFeaturedProjects();
+  const featuredProjects = getFeaturedProjects(4);
   const experiences = getAllExperiences();
   const skillGroups = getAllSkillGroups();
 

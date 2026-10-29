@@ -6,19 +6,19 @@
       "technologies": ["TypeScript", "JavaScript", "PHP", "Dart", "Go"]
     },
     {
-      "title": "Frontend",
+      "title": "Frontend & Mobile",
       "priority": 2,
-      "technologies": ["Next.js", "React", "Tailwind CSS", "shadcn/ui", "React Bits", "HTML", "CSS"]
+      "technologies": ["Next.js", "React", "React Native", "Expo", "Flutter", "Tailwind CSS", "Bootstrap", "daisyUI", "Mazer Template", "Inertia.js", "Vite", "shadcn/ui"]
     },
     {
-      "title": "Backend",
+      "title": "Backend & Cloud",
       "priority": 3,
-      "technologies": ["Laravel", "REST API", "Authentication", "CMS Development"]
+      "technologies": ["Laravel", "Express.js", "Node.js", "Firebase", "REST API", "Riverpod", "Authentication", "CMS Development"]
     },
     {
-      "title": "Data & Tools",
+      "title": "Data & DevOps",
       "priority": 4,
-      "technologies": ["MySQL", "PostgreSQL", "Supabase", "Cloudflare", "Git", "GitHub", "Docker"]
+      "technologies": ["MySQL", "PostgreSQL", "Supabase", "Cloudflare", "cPanel", "Docker", "Bun", "Git", "GitHub"]
     }
   ]
 }

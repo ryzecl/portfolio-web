@@ -157,7 +157,7 @@ export default function RootLayout({
           <JsonLd key={i} data={schema} />
         ))}
         <SiteHeader site={site} />
-        <main className="flex-grow">{children}</main>
+        <main className="grow">{children}</main>
         <SiteFooter site={site} />
       </body>
     </html>

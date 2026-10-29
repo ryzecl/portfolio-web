@@ -40,7 +40,19 @@ export async function GET(request: Request) {
       ? parseInt(totalMatch[1].replace(/,/g, ''), 10)
       : 0;
 
-    // 2. Parse Tooltips
+    // 2. Parse Months (Header Labels)
+    const months: { name: string; colspan: number }[] = [];
+    const monthRegex =
+      /<td[^>]*class="ContributionCalendar-label"[^>]*colspan="(\d+)"[^>]*>[\s\S]*?<span aria-hidden="true"[^>]*>([^<]+)<\/span>/g;
+    let mMatch;
+    while ((mMatch = monthRegex.exec(html)) !== null) {
+      months.push({
+        colspan: parseInt(mMatch[1], 10),
+        name: mMatch[2].trim(),
+      });
+    }
+
+    // 3. Parse Tooltips
     const tooltipMap = new Map<string, string>();
     const tipRegex = /<tool-tip[^>]*for="([^"]+)"[^>]*>([\s\S]*?)<\/tool-tip>/g;
     let tipMatch;
@@ -48,7 +60,7 @@ export async function GET(request: Request) {
       tooltipMap.set(tipMatch[1], tipMatch[2].trim());
     }
 
-    // 3. Parse Days
+    // 4. Parse Days
     const cellRegex = /<td[^>]*data-date="([^"]+)"[^>]*>/g;
     const days: ContributionDay[] = [];
     let cellMatch;
@@ -83,11 +95,15 @@ export async function GET(request: Request) {
       });
     }
 
+    // Sort days chronologically (GitHub HTML renders rows by day-of-week, not chronological)
+    days.sort((a, b) => a.date.localeCompare(b.date));
+
     return NextResponse.json(
       {
         success: true,
         username,
         totalContributions,
+        months,
         days,
       },
       {

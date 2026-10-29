@@ -30,7 +30,20 @@ import {
   SiGit,
   SiGithub,
   SiHtml5,
+  SiVite,
+  SiFirebase,
+  SiExpo,
+  SiFlutter,
+  SiDart,
+  SiInertia,
+  SiExpress,
+  SiBootstrap,
+  SiDaisyui,
+  SiNodedotjs,
+  SiBun,
+  SiCpanel,
 } from 'react-icons/si';
+import { RiverpodLogo, MazerLogo } from '@/components/ui/tech-icon';
 
 interface TechStackProps {
   groups?: SkillGroup[];
@@ -73,29 +86,43 @@ function RestApiIcon() {
 const row1Techs: TechPill[] = [
   { name: 'Next.js', category: 'Framework', icon: <SiNextdotjs className="w-4 h-4 text-foreground" /> },
   { name: 'React', category: 'UI Library', icon: <SiReact className="w-4 h-4 text-[#61DAFB]" /> },
+  { name: 'React Native', category: 'Mobile Framework', icon: <SiReact className="w-4 h-4 text-[#61DAFB]" /> },
+  { name: 'Expo', category: 'Mobile Tooling', icon: <SiExpo className="w-4 h-4 text-foreground" /> },
+  { name: 'Flutter', category: 'Mobile Framework', icon: <SiFlutter className="w-4 h-4 text-[#02569B]" /> },
+  { name: 'Dart', category: 'Language', icon: <SiDart className="w-4 h-4 text-[#0175C2]" /> },
   { name: 'TypeScript', category: 'Language', icon: <SiTypescript className="w-4 h-4 text-[#3178C6]" /> },
   { name: 'JavaScript', category: 'Language', icon: <SiJavascript className="w-4 h-4 text-[#F7DF1E]" /> },
-  { name: 'Golang', category: 'Language', icon: <SiGo className="w-4 h-4 text-[#00ADD8]" /> },
   { name: 'Tailwind CSS', category: 'Styling', icon: <SiTailwindcss className="w-4 h-4 text-[#06B6D4]" /> },
+  { name: 'Bootstrap', category: 'CSS Framework', icon: <SiBootstrap className="w-4 h-4 text-[#7952B3]" /> },
+  { name: 'daisyUI', category: 'UI Components', icon: <SiDaisyui className="w-4 h-4 text-[#1AD1A5]" /> },
+  { name: 'Mazer Template', category: 'Admin Template', icon: <MazerLogo className="w-4 h-4" /> },
+  { name: 'Vite', category: 'Build Tool', icon: <SiVite className="w-4 h-4 text-[#646CFF]" /> },
+  { name: 'Inertia.js', category: 'Fullstack Monolith', icon: <SiInertia className="w-4 h-4 text-[#9553E9]" /> },
   { name: 'shadcn/ui', category: 'Component System', icon: <SiShadcnui className="w-4 h-4 text-foreground" /> },
   { name: 'React Bits', category: 'Creative UI', icon: <ReactBitsIcon /> },
-  { name: 'Laravel', category: 'Backend', icon: <SiLaravel className="w-4 h-4 text-[#FF2D20]" /> },
-  { name: 'PHP', category: 'Backend', icon: <SiPhp className="w-4 h-4 text-[#777BB4]" /> },
   { name: 'Figma', category: 'Design', icon: <SiFigma className="w-4 h-4 text-[#F24E1E]" /> },
 ];
 
 const row2Techs: TechPill[] = [
-  { name: 'Cloudflare', category: 'Cloud & Edge', icon: <SiCloudflare className="w-4 h-4 text-[#F38020]" /> },
+  { name: 'Laravel', category: 'Backend', icon: <SiLaravel className="w-4 h-4 text-[#FF2D20]" /> },
+  { name: 'Node.js', category: 'Runtime & Backend', icon: <SiNodedotjs className="w-4 h-4 text-[#5FA04E]" /> },
+  { name: 'Express.js', category: 'Backend Framework', icon: <SiExpress className="w-4 h-4 text-foreground" /> },
+  { name: 'Bun', category: 'Runtime & Tooling', icon: <SiBun className="w-4 h-4 text-foreground" /> },
+  { name: 'PHP', category: 'Language', icon: <SiPhp className="w-4 h-4 text-[#777BB4]" /> },
+  { name: 'Firebase', category: 'BaaS & Auth', icon: <SiFirebase className="w-4 h-4 text-[#FFCA28]" /> },
+  { name: 'Supabase', category: 'BaaS & Database', icon: <SiSupabase className="w-4 h-4 text-[#3ECF8E]" /> },
+  { name: 'cPanel', category: 'Hosting & Deployment', icon: <SiCpanel className="w-4 h-4 text-[#FF6C2C]" /> },
+  { name: 'Riverpod', category: 'State Management', icon: <RiverpodLogo className="w-4 h-4" /> },
   { name: 'PostgreSQL', category: 'Database', icon: <SiPostgresql className="w-4 h-4 text-[#4169E1]" /> },
   { name: 'MySQL', category: 'Database', icon: <SiMysql className="w-4 h-4 text-[#4479A1]" /> },
-  { name: 'Supabase', category: 'BaaS & Auth', icon: <SiSupabase className="w-4 h-4 text-[#3ECF8E]" /> },
   { name: 'Prisma ORM', category: 'Database ORM', icon: <SiPrisma className="w-4 h-4 text-foreground" /> },
+  { name: 'Golang', category: 'Language', icon: <SiGo className="w-4 h-4 text-[#00ADD8]" /> },
+  { name: 'Cloudflare', category: 'Cloud & Edge', icon: <SiCloudflare className="w-4 h-4 text-[#F38020]" /> },
   { name: 'Docker', category: 'DevOps', icon: <SiDocker className="w-4 h-4 text-[#2496ED]" /> },
   { name: 'Git', category: 'VCS', icon: <SiGit className="w-4 h-4 text-[#F05032]" /> },
   { name: 'GitHub', category: 'Collaboration', icon: <SiGithub className="w-4 h-4 text-foreground" /> },
   { name: 'REST APIs', category: 'Architecture', icon: <RestApiIcon /> },
   { name: 'Midtrans Payment', category: 'Payment Gateway', icon: <MidtransIcon /> },
-  { name: 'HTML5 & CSS3', category: 'Markup', icon: <SiHtml5 className="w-4 h-4 text-[#E34F26]" /> },
 ];
 
 export function TechStack({ contact }: TechStackProps) {
@@ -172,7 +199,7 @@ export function TechStack({ contact }: TechStackProps) {
       </div>
 
       {/* Infinite Marquee Rows (Magic UI Pattern with Edge Fade Masks) - Full width edge-to-edge */}
-      <div className="relative w-full overflow-hidden space-y-4 py-2 [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] sm:[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+      <div className="relative w-full overflow-hidden space-y-4 py-2 mask-[linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] sm:mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
         {/* Row 1: Forward Movement */}
         <Marquee pauseOnHover repeat={4} className="[--duration:40s]">
           {row1Techs.map((tech) => (

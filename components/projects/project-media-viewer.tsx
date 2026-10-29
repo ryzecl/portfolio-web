@@ -12,6 +12,17 @@ interface ProjectMediaViewerProps {
   className?: string;
 }
 
+function getImageLabel(src: string): string {
+  const filename = src.split('/').pop()?.toLowerCase() || '';
+  if (filename.includes('dashboard')) return 'Analytics Dashboard';
+  if (filename.includes('seo')) return 'SEO & Metadata Management';
+  if (filename.includes('login') || filename.includes('auth')) return 'Authentication Portal';
+  if (filename.includes('brava-cms') || filename.includes('cover') || filename.includes('overview')) return 'Platform Overview';
+  if (filename.includes('compro') || filename.includes('home')) return 'Homepage Interface';
+  const cleanName = filename.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+  return cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+}
+
 export function ProjectMediaViewer({
   title,
   coverImage,
@@ -89,7 +100,7 @@ export function ProjectMediaViewer({
           className
         )}
       >
-        <div className="relative aspect-[16/10] w-full bg-surface-raised">
+        <div className="relative aspect-16/10 w-full bg-surface-raised">
           <Image
             src="/images/project-placeholder.png"
             alt={`${title} - Preview Placeholder`}
@@ -112,7 +123,7 @@ export function ProjectMediaViewer({
           className
         )}
       >
-        <div className="relative aspect-[16/10] w-full bg-surface-raised">
+        <div className="relative aspect-16/10 w-full bg-surface-raised">
           <Image
             src={allImages[0]}
             alt={`${title} - Cover`}
@@ -136,7 +147,7 @@ export function ProjectMediaViewer({
       aria-label={`${title} screenshot carousel`}
     >
       {/* Main Viewport */}
-      <div className="relative aspect-[16/10] w-full rounded-2xl border border-border bg-surface-raised overflow-hidden shadow-sm group">
+      <div className="relative aspect-16/10 w-full rounded-2xl border border-border bg-surface-raised overflow-hidden shadow-sm group">
         <Image
           src={allImages[currentIndex]}
           alt={`${title} - Preview ${currentIndex + 1} of ${total}`}
@@ -166,6 +177,12 @@ export function ProjectMediaViewer({
           <ChevronRight className="w-5 h-5" />
         </button>
 
+        {/* Slide Context Label */}
+        <div className="absolute bottom-3 left-3 px-3 py-1 rounded-md bg-surface/90 border border-border backdrop-blur-sm font-mono text-xs text-foreground flex items-center gap-2 shadow-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+          <span className="font-medium text-foreground">{getImageLabel(allImages[currentIndex])}</span>
+        </div>
+
         {/* Slide Counter Overlay */}
         <div className="absolute bottom-3 right-3 px-3 py-1 rounded-md bg-surface/90 border border-border backdrop-blur-sm font-mono text-xs text-foreground">
           <span className="font-bold text-accent">
@@ -186,7 +203,7 @@ export function ProjectMediaViewer({
               onClick={() => setCurrentIndex(idx)}
               aria-label={`Jump to slide ${idx + 1}`}
               className={cn(
-                'relative w-16 h-10 sm:w-20 sm:h-12 aspect-[16/10] rounded-lg border overflow-hidden shrink-0 transition-all cursor-pointer',
+                'relative w-16 h-10 sm:w-20 sm:h-12 aspect-16/10 rounded-lg border overflow-hidden shrink-0 transition-all cursor-pointer',
                 currentIndex === idx
                   ? 'border-accent ring-1 ring-accent'
                   : 'border-border opacity-50 hover:opacity-85'

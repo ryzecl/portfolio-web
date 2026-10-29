@@ -2,117 +2,228 @@
   "projects": [
     {
       "slug": "brava",
-      "title": "Brava : Company Profile & CMS",
-      "summary": "A corporate website connected to a custom content management system.",
-      "description": "A client project combining a public-facing company profile website with a Laravel-powered CMS for managing website content.",
+      "title": "Brava : Corporate Company Profile",
+      "summary": "Official corporate company profile website for Brava, built with Next.js 16 App Router as a headless consumer.",
+      "description": "A high-performance corporate company profile website for Brava engineered with Next.js 16 and React 19. Designed as a headless consumer, it fetches live content, services, portfolio items, and SEO metadata from the Brava CMS REST API, complemented by smooth GSAP entrance animations.",
       "category": "Company Profile",
-      "status": "In Progress",
+      "status": "Completed",
       "year": "2026",
-      "role": "Full-Stack Developer",
+      "role": "Full-Stack Developer (Frontend Lead)",
       "featured": true,
-      "technologies": ["Next.js", "TypeScript", "Tailwind CSS", "Laravel", "REST API", "MySQL"],
+      "technologies": ["Next.js", "React", "TypeScript", "Tailwind CSS", "GSAP", "REST API"],
       "highlights": [
-        "Company profile frontend",
-        "CMS content management",
-        "Frontend-to-backend REST API integration",
-        "Blog and product content management",
-        "Shared media library",
-        "Multilingual content support"
+        "Headless consumer architecture powered by Next.js 16 App Router (RSC)",
+        "Interactive scroll and entrance micro-interactions built with GSAP 3",
+        "Tailwind CSS v4 styling with responsive mobile-to-desktop design tokens",
+        "Dynamic services, blog articles, and portfolio gallery showcase",
+        "Automated SEO suite: OpenGraph, JSON-LD structured data, dynamic sitemap.xml & robots.txt",
+        "Live production deployment on https://brava.id"
       ],
-      "problem": "The client needs a professional company website and a manageable way to update content without editing source code.",
-      "solution": "A Next.js frontend consumes a Laravel REST API, while the CMS provides content-management workflows for authorized editors.",
-      "contribution": "Contributed across frontend and backend development, API integration, CMS functionality, and client-facing problem solving.",
+      "problem": "Brava required an authoritative, modern, and blazingly fast corporate web presence to showcase services, client deliverables, and company credentials without sacrificing SEO or performance.",
+      "solution": "Developed a headless Next.js 16 frontend that consumes structured content from the backend REST API, utilizing React Server Components for instantaneous initial page loads and GSAP for premium brand animations.",
+      "contribution": "Architected the frontend application, designed responsive UI sections, integrated REST API query clients, optimized Core Web Vitals, and configured production deployment to brava.id.",
       "challenges": [],
       "learnings": [],
       "architecture": [
-        "Next.js public website",
-        "Laravel REST API",
-        "MySQL database"
+        "Next.js 16 App Router (RSC)",
+        "Headless REST API Consumer",
+        "GSAP Motion Layer",
+        "Production Edge on https://brava.id"
+      ],
+      "links": {
+        "demo": "https://brava.id",
+        "repository": ""
+      },
+      "coverImage": "/images/projects/brava-compro/brava-compro.jpg",
+      "previewImages": [
+        "/images/projects/brava-compro/brava-compro.jpg"
+      ],
+      "visual": {
+        "type": "image",
+        "image": "/images/projects/brava-compro/brava-compro.jpg",
+        "alt": "Brava corporate company profile website homepage interface"
+      }
+    },
+    {
+      "slug": "brava-cms",
+      "title": "Brava CMS : Headless Content Platform",
+      "summary": "A modular, high-performance headless CMS and REST API built with Laravel 13 to manage digital content, media, and SEO.",
+      "description": "A standalone, modular headless Content Management System engineered with Laravel 13 and Tailwind CSS v4. Features automated cache invalidation, media library compression, GA4 analytics integration, and granular REST API endpoints for decoupled frontends.",
+      "category": "Web Application",
+      "status": "Completed",
+      "year": "2026",
+      "role": "Backend / Full-Stack Developer",
+      "featured": true,
+      "technologies": ["Laravel", "PHP", "MySQL", "REST API", "Tailwind CSS", "Docker"],
+      "highlights": [
+        "Headless REST API with flexible caching and automated cache invalidation (ClearsApiCache)",
+        "Centralized media library with automated image resizing and compression (Intervention/Image)",
+        "Automated SEO meta generator with absolute URLs and dynamic sitemap endpoint",
+        "Google Analytics 4 (GA4) dashboard reporting with smart stale-while-revalidate caching",
+        "Modular content management: Portfolio, Blog, Testimonials, Services, and System Settings",
+        "Rigorous automated test coverage powered by Pest PHP"
+      ],
+      "problem": "Content editors needed an intuitive, centralized management portal to update marketing content, media galleries, and SEO metadata without touching codebase or redeploying the frontend.",
+      "solution": "Engineered a headless Laravel CMS with automated API cache clearing on updates, strict form validation, media pipelines, and a structured REST API contract.",
+      "contribution": "Designed database schemas, developed REST API endpoints, implemented automatic cache purging traits, and built administrative management interfaces.",
+      "challenges": [],
+      "learnings": [],
+      "architecture": [
+        "Laravel 13 Application",
+        "REST API Layer with Auto Cache Invalidation",
+        "MySQL Relational Database",
+        "Media Compression Pipeline"
       ],
       "links": {
         "demo": "",
         "repository": ""
       },
-      "coverImage": "",
-      "previewImages": [],
+      "coverImage": "/images/projects/brava-cms/brava-cms.jpg",
+      "previewImages": [
+        "/images/projects/brava-cms/brava-cms.jpg",
+        "/images/projects/brava-cms/dashboard.png",
+        "/images/projects/brava-cms/seo.png",
+        "/images/projects/brava-cms/login.png"
+      ],
       "visual": {
-        "type": "brava-preview",
-        "alt": "Preview diagram of the Brava corporate website and content management system"
+        "type": "image",
+        "image": "/images/projects/brava-cms/brava-cms.jpg",
+        "alt": "Brava CMS headless content management system administrative interface"
       }
     },
     {
       "slug": "sm-sport-center",
-      "title": "SM Sport Center : Online Court Booking",
-      "summary": "A futsal court booking platform with online reservation and payment integration.",
-      "description": "A client project in development to help customers reserve futsal courts and manage booking and payment flows online.",
+      "title": "SM Sport Center : Court Reservation & Payment",
+      "summary": "A responsive online court reservation platform for Futsal and Badminton featuring continuous slot validation and automated Midtrans Snap payment integration.",
+      "description": "A comprehensive sports court booking platform built with Laravel 13, Blade, and Tailwind CSS. Enables players to discover venues, inspect live schedules, and secure reservations with continuous time-slot validation. Integrated with Midtrans Snap for automated payments (QRIS, VA, E-Wallet) and secure SHA-512 webhook synchronization.",
       "category": "Web Application",
-      "status": "In Progress",
+      "status": "Completed",
       "year": "2026",
       "role": "Full-Stack Developer",
       "featured": true,
-      "technologies": ["Laravel", "MySQL", "Midtrans"],
+      "technologies": ["Laravel", "PHP", "MySQL", "Tailwind CSS", "Midtrans", "Vite"],
       "highlights": [
-        "Online court booking",
-        "Court and schedule management",
-        "Midtrans payment integration"
+        "Public court catalog with multi-sport filtering (Futsal and Badminton) and time-of-day slots",
+        "Real-time booking engine with concurrency protection to prevent double-booking",
+        "Continuous slot validation enforcing uninterrupted booking hours",
+        "End-to-end Midtrans Snap checkout supporting QRIS, Virtual Accounts, and E-Wallets",
+        "Secure automated webhook handler with SHA-512 cryptographic signature verification",
+        "Dynamic facility photo gallery and complete administrative management dashboard"
       ],
-      "problem": "The venue needs a more convenient way for customers to book courts and complete payment online.",
-      "solution": "A web-based booking workflow is being developed with payment gateway integration.",
-      "contribution": "Contributed to full-stack implementation and integration work.",
+      "problem": "Manual court booking through messaging apps led to frequent scheduling conflicts, unverified payment slips, double-booked hours, and tedious manual bookkeeping for venue operators.",
+      "solution": "Architected a centralized booking portal with atomic transaction locks to eliminate double-booking, enforced continuous time-slot selection rules, and integrated Midtrans Snap for automated payment settlement and instant confirmation.",
+      "contribution": "Designed relational database schemas, built booking state machines with overlap validation, integrated Midtrans Snap API and SHA-512 webhook listener, and developed the responsive Tailwind CSS user interface.",
       "challenges": [],
       "learnings": [],
       "architecture": [
-        "Customer booking interface",
-        "Laravel application",
-        "MySQL database",
-        "Midtrans payment flow"
+        "Public Court Catalog & Filtering Engine",
+        "Continuous Slot & Concurrency Lock Validator",
+        "Midtrans Snap Payment Gateway Integration",
+        "Cryptographic SHA-512 Webhook Sync Handler",
+        "Administrative Booking & Facility Dashboard"
       ],
       "links": {
         "demo": "",
-        "repository": ""
+        "repository": "https://github.com/nirwana-tim/sm-sport-center.git"
       },
-      "coverImage": "",
-      "previewImages": [],
+      "coverImage": "/images/projects/sm-sport-center/sm-sport-center.jpg",
+      "previewImages": [
+        "/images/projects/sm-sport-center/sm-sport-center.jpg"
+      ],
       "visual": {
-        "type": "sports-booking-preview",
-        "alt": "Preview diagram of a futsal court booking interface"
+        "type": "image",
+        "image": "/images/projects/sm-sport-center/sm-sport-center.jpg",
+        "alt": "SM Sport Center online court booking and payment interface"
+      }
+    },
+    {
+      "slug": "point-of-sale",
+      "title": "Point of Sale : Retail & ERP Management",
+      "summary": "An enterprise Point of Sale platform built with Laravel 13, Inertia.js React, and TypeScript featuring granular RBAC, real-time analytics, and automated reporting.",
+      "description": "A modern, full-stack Point of Sale (POS) and retail management application powered by Laravel 13, Inertia.js, React 19, and Tailwind CSS. Built with a granular Role-Based Access Control (RBAC) architecture using Spatie Permission, real-time revenue analytics charts via Recharts, automated financial reporting with Excel export, and integrated multi-channel checkout.",
+      "category": "Web Application",
+      "status": "Completed",
+      "year": "2026",
+      "role": "Full-Stack Developer",
+      "featured": true,
+      "technologies": ["Laravel", "React", "TypeScript", "Inertia.js", "Tailwind CSS", "MySQL", "Midtrans"],
+      "highlights": [
+        "Granular dynamic Role-Based Access Control (RBAC) with permission groups and policy enforcement",
+        "High-speed POS cashier terminal with real-time checkout dialog and receipt generation",
+        "Interactive business analytics dashboard with flexible temporal granularity (Daily, Weekly, Monthly, Yearly)",
+        "Real-time inventory catalog, stock level alerts, and multi-parameter product filtering",
+        "Automated financial and sales transaction reporting with spreadsheet (Excel) export",
+        "End-to-end type safety across the Inertia.js stack powered by TypeScript and Wayfinder"
+      ],
+      "problem": "Retail merchants and multi-branch businesses struggle with rigid POS systems that lack granular access control, leading to unauthorized staff overrides, cumbersome inventory tracking, and delayed sales reporting.",
+      "solution": "Engineered a decoupled, full-stack POS platform combining Laravel 13 with Inertia.js React. Implemented granular permission matrices, an intuitive reactive checkout interface, and instant analytical dashboards for real-time operational oversight.",
+      "contribution": "Architected the full-stack system from database schemas to reactive frontend components, implemented the Spatie RBAC authorization layer with custom frontend permission hooks, developed the analytics query pipeline, and styled the UI using Tailwind CSS and Radix UI primitives.",
+      "challenges": [],
+      "learnings": [],
+      "architecture": [
+        "Inertia.js React 19 UI & Wayfinder Routing",
+        "Granular RBAC & Policy Authorization Layer",
+        "POS Terminal Engine & Order Calculator",
+        "Analytical Aggregation Pipeline & Recharts",
+        "MySQL Database & Automated Reporting Export"
+      ],
+      "links": {
+        "demo": "",
+        "repository": "https://github.com/ryzecl/point-of-sale.git"
+      },
+      "coverImage": "/images/projects/point-of-sale/point-of-sale.jpg",
+      "previewImages": [
+        "/images/projects/point-of-sale/point-of-sale.jpg"
+      ],
+      "visual": {
+        "type": "image",
+        "image": "/images/projects/point-of-sale/point-of-sale.jpg",
+        "alt": "Point of Sale retail management platform dashboard interface"
       }
     },
     {
       "slug": "donelock",
-      "title": "Donelock : Productivity App",
-      "summary": "A mobile productivity app concept for organizing tasks, notes, and schedules.",
-      "description": "A Flutter-based productivity application project exploring task organization, notes, calendar experiences, and Firebase integration.",
+      "title": "DoneLock : Personal Productivity Journal",
+      "summary": "A brutalist mobile productivity journaling application built with Flutter and Firebase featuring annual contribution heatmaps and habit reflection.",
+      "description": "A cross-platform mobile productivity journaling application engineered with Flutter and Dart, backed by Firebase Authentication and Cloud Firestore. Built with an opinionated brutalist aesthetic, DoneLock replaces complex to-do lists with daily reflection journaling, visual 7x52 GitHub-style contribution heatmaps, monthly calendar views, and scheduled local notifications to build long-term consistency.",
       "category": "Mobile App",
-      "status": "In Progress",
-      "year": "2025",
-      "role": "Flutter Developer",
-      "featured": false,
+      "status": "Completed",
+      "year": "2026",
+      "role": "Mobile Developer",
+      "featured": true,
       "technologies": ["Flutter", "Dart", "Firebase", "Riverpod"],
       "highlights": [
-        "Task and note organization",
-        "Calendar experience",
-        "Authentication experiments"
+        "Daily reflection journaling with productive toggle, mood tracking, and reflective notes",
+        "7x52 annual contribution heatmap visualizing productivity momentum throughout the year",
+        "Interactive monthly calendar view with date-based status highlighting",
+        "Cloud Firestore real-time synchronization with offline persistence support",
+        "Timezone-aware scheduled local push notifications for daily habit reinforcement",
+        "Google Sign-In and secure Firebase Authentication integration"
       ],
-      "problem": "Users often struggle with disjointed note and task applications that create cognitive friction.",
-      "solution": "A streamlined mobile interface prioritizing fast capture, clear priority tagging, and date organization.",
-      "contribution": "Designed UI flows and implemented core task state management.",
+      "problem": "Traditional productivity tools like complex kanban boards and nested task managers overwhelm users with cognitive friction, focusing on busywork rather than meaningful self-reflection and habit consistency.",
+      "solution": "Designed a brutalist, distraction-free journaling experience centered on one core question: 'Was today productive?'. Combined with GitHub-style visual heatmaps and calendar trends to celebrate consistency over complexity.",
+      "contribution": "Architected the mobile application end-to-end, designed the brutalist UI system in Flutter, implemented Riverpod reactive state management, integrated Firebase Auth and Firestore with offline caching, and configured background local notifications.",
       "challenges": [],
       "learnings": [],
       "architecture": [
-        "Flutter framework",
-        "Firebase backend",
-        "Riverpod state management"
+        "Flutter Reactive UI & Brutalist Design System",
+        "Riverpod State Management & GoRouter Navigation",
+        "Cloud Firestore Data Models & Offline Cache",
+        "Timezone-Aware Local Notification Scheduler",
+        "Firebase Auth & Google Sign-In Pipeline"
       ],
       "links": {
-        "demo": "",
-        "repository": ""
+        "demo": "https://drive.google.com/drive/folders/1PH-QNujLutOjX1bNpldwa8Fq9TKCs1rW?usp=sharing",
+        "repository": "https://github.com/ryzecl/donelock_app.git"
       },
-      "coverImage": "",
-      "previewImages": [],
+      "coverImage": "/images/projects/donelock/donelock.jpg",
+      "previewImages": [
+        "/images/projects/donelock/donelock.jpg"
+      ],
       "visual": {
-        "type": "mobile-app-preview",
-        "alt": "Preview diagram of the mobile productivity application"
+        "type": "image",
+        "image": "/images/projects/donelock/donelock.jpg",
+        "alt": "DoneLock personal productivity journaling mobile app interface"
       }
     }
   ]

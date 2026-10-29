@@ -11,6 +11,11 @@ interface ContributionDay {
   text: string;
 }
 
+interface MonthItem {
+  name: string;
+  colspan: number;
+}
+
 interface GitHubCalendarCardProps {
   username?: string;
   githubUrl?: string;
@@ -44,6 +49,7 @@ export function GitHubCalendarCard({
   githubUrl = 'https://github.com/ryzecl',
 }: GitHubCalendarCardProps) {
   const [days, setDays] = useState<ContributionDay[]>([]);
+  const [months, setMonths] = useState<MonthItem[]>([]);
   const [total, setTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -58,9 +64,10 @@ export function GitHubCalendarCard({
         const res = await fetch(`/api/github-contributions?username=${encodeURIComponent(username)}`);
         const json = await res.json();
 
-        if (isSubscribed && json.success && Array.isArray(json.days)) {
-          setDays(json.days);
-          setTotal(json.totalContributions);
+        if (isSubscribed && json.success) {
+          if (Array.isArray(json.days)) setDays(json.days);
+          if (Array.isArray(json.months)) setMonths(json.months);
+          if (typeof json.totalContributions === 'number') setTotal(json.totalContributions);
         }
       } catch (err) {
         console.error('Error fetching GitHub calendar:', err);
@@ -162,25 +169,38 @@ export function GitHubCalendarCard({
         ) : weeks.length > 0 ? (
           <div className="inline-block min-w-full">
             {/* Month Labels Header */}
-            <div className="flex text-[10px] font-mono text-muted mb-2 ml-7 relative h-4">
-              {monthLabels.map((lbl, i) => (
-                <span
-                  key={i}
-                  className="absolute"
-                  style={{ left: `${lbl.weekIndex * 15.5}px` }}
-                >
-                  {lbl.name}
-                </span>
-              ))}
+            <div className="flex items-center gap-2 mb-2 select-none">
+              <div className="w-6 shrink-0" aria-hidden="true" />
+              <div className="flex text-[10px] font-mono text-muted relative h-4">
+                {months.length > 0
+                  ? months.map((m, i) => (
+                      <span
+                        key={i}
+                        style={{ width: `${m.colspan * 16}px` }}
+                        className="shrink-0 text-left overflow-visible"
+                      >
+                        {m.name}
+                      </span>
+                    ))
+                  : monthLabels.map((lbl, i) => (
+                      <span
+                        key={i}
+                        className="absolute text-left"
+                        style={{ left: `${lbl.weekIndex * 16}px` }}
+                      >
+                        {lbl.name}
+                      </span>
+                    ))}
+              </div>
             </div>
 
             {/* Grid Container */}
-            <div className="flex gap-2">
+            <div className="flex items-start gap-2">
               {/* Day of Week Labels (Mon, Wed, Fri) */}
-              <div className="flex flex-col justify-between text-[9px] font-mono text-muted py-0.5 pr-1 select-none">
-                <span>Mon</span>
-                <span>Wed</span>
-                <span>Fri</span>
+              <div className="w-6 shrink-0 flex flex-col justify-between text-[9px] font-mono text-muted py-0.5 select-none h-27">
+                <span className="leading-3">Mon</span>
+                <span className="leading-3">Wed</span>
+                <span className="leading-3">Fri</span>
               </div>
 
               {/* 53 Weeks Grid */}
@@ -221,11 +241,11 @@ export function GitHubCalendarCard({
               {/* Color Legend */}
               <div className="flex items-center gap-1.5 self-end sm:self-auto select-none">
                 <span className="text-[10px]">Less</span>
-                <div className="w-2.5 h-2.5 rounded-[2px] bg-border/60" />
-                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-200" />
-                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-400" />
-                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-600" />
-                <div className="w-2.5 h-2.5 rounded-[2px] bg-blue-800" />
+                <div className="w-2.5 h-2.5 rounded-xs bg-border/60" />
+                <div className="w-2.5 h-2.5 rounded-xs bg-blue-200" />
+                <div className="w-2.5 h-2.5 rounded-xs bg-blue-400" />
+                <div className="w-2.5 h-2.5 rounded-xs bg-blue-600" />
+                <div className="w-2.5 h-2.5 rounded-xs bg-blue-800" />
                 <span className="text-[10px]">More</span>
               </div>
             </div>

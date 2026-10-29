@@ -18,8 +18,9 @@ export function getAllProjects(): ProjectItem[] {
   return (projectsJson.projects || []) as ProjectItem[];
 }
 
-export function getFeaturedProjects(): ProjectItem[] {
-  return getAllProjects().filter((project) => project.featured);
+export function getFeaturedProjects(limit?: number): ProjectItem[] {
+  const featured = getAllProjects().filter((project) => project.featured);
+  return typeof limit === 'number' ? featured.slice(0, limit) : featured;
 }
 
 export function getProjectBySlug(slug: string): ProjectItem | undefined {

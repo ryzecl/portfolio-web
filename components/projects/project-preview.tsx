@@ -30,6 +30,11 @@ export function ProjectPreview({
     return <BravaSchematic className={className} />;
   }
 
+  // 1b. Brava CMS : Headless Platform Architecture
+  if (type === 'brava-cms-preview' || type === 'brava-cms') {
+    return <BravaCmsSchematic className={className} />;
+  }
+
   // 2. SM Sport Center : Court Booking & Payment Engine
   if (type === 'sports-booking-preview' || type === 'sm-sport-center') {
     return <SportsBookingSchematic className={className} />;
@@ -141,6 +146,74 @@ function BravaSchematic({ className }: { className?: string }) {
       <div className="flex items-center justify-between pt-3 border-t border-border-subtle text-[10px] font-mono text-muted">
         <span>Corporate Website + Decoupled CMS</span>
         <span className="text-foreground font-semibold">REST API Flow</span>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// 1b. Brava CMS: Headless Platform Architecture Schematic
+// ----------------------------------------------------
+function BravaCmsSchematic({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        'w-full aspect-video rounded-xl bg-surface border border-border flex flex-col justify-between p-5 sm:p-6 text-left shadow-xs',
+        className
+      )}
+    >
+      {/* Top Header */}
+      <div className="flex items-center justify-between border-b border-border-subtle pb-3">
+        <div className="flex items-center gap-2">
+          <Server className="w-3.5 h-3.5 text-accent" />
+          <span className="font-mono text-[11px] font-bold text-foreground">
+            BRAVA HEADLESS CMS
+          </span>
+        </div>
+        <span className="font-mono text-[10px] text-muted uppercase tracking-wider">
+          Backend Architecture
+        </span>
+      </div>
+
+      {/* Center: System Flow Diagram */}
+      <div className="py-2 sm:py-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 items-center">
+          {/* Node 1 */}
+          <div className="p-3 rounded-lg bg-surface-raised border border-border">
+            <div className="flex items-center gap-2 mb-1">
+              <Layers className="w-3.5 h-3.5 text-accent" />
+              <p className="text-xs font-bold text-foreground">Admin Portal</p>
+            </div>
+            <p className="text-[10px] font-mono text-muted">Blade · Tailwind v4</p>
+            <p className="text-[9px] text-muted/80 mt-1">GA4 Analytics & Editor</p>
+          </div>
+
+          {/* Node 2 */}
+          <div className="p-3 rounded-lg bg-surface-raised border border-accent/40 relative">
+            <div className="flex items-center gap-2 mb-1">
+              <Server className="w-3.5 h-3.5 text-accent" />
+              <p className="text-xs font-bold text-foreground">API Core</p>
+            </div>
+            <p className="text-[10px] font-mono text-accent font-semibold">Laravel 13 REST</p>
+            <p className="text-[9px] text-muted/80 mt-1">ClearsApiCache Purge</p>
+          </div>
+
+          {/* Node 3 */}
+          <div className="p-3 rounded-lg bg-surface-raised border border-border">
+            <div className="flex items-center gap-2 mb-1">
+              <Database className="w-3.5 h-3.5 text-accent" />
+              <p className="text-xs font-bold text-foreground">Data & Media</p>
+            </div>
+            <p className="text-[10px] font-mono text-muted">MySQL · Intervention</p>
+            <p className="text-[9px] text-muted/80 mt-1">Media Resizing Pipeline</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Metadata */}
+      <div className="flex items-center justify-between pt-3 border-t border-border-subtle text-[10px] font-mono text-muted">
+        <span>Headless REST API + Media Engine</span>
+        <span className="text-foreground font-semibold">Laravel 13 Architecture</span>
       </div>
     </div>
   );

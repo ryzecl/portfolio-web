@@ -149,7 +149,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
           </div>
 
           {/* Main Headline: Progressive Enhancement with SSR Fallback H1 + Interactive TechText */}
-          <div className="w-full py-1 flex justify-center sm:justify-start relative min-h-[7rem] sm:min-h-[5.5rem] md:min-h-[7rem] lg:min-h-[9rem] xl:min-h-[10rem]">
+          <div className="w-full py-1 flex justify-center sm:justify-start relative min-h-28 sm:min-h-22 md:min-h-28 lg:min-h-36 xl:min-h-40">
             {/* 1. Semantic SSR Fallback H1: Visible for SEO and before client canvas warms up */}
             <h1
               className={`w-full font-black tracking-tight text-foreground uppercase select-none transition-opacity duration-500 ${
