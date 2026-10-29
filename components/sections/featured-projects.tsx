@@ -31,7 +31,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top 85%',
-          toggleActions: 'play none none none',
+          toggleActions: 'play none none reverse',
         },
       });
 

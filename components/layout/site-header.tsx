@@ -15,7 +15,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             className={cn(
               'hidden sm:flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
-                ? 'max-w-15 opacity-100 pr-1'
+                ? 'max-w-[60px] opacity-100 pr-1'
                 : 'max-w-0 opacity-0 pointer-events-none'
             )}
             aria-hidden="true"
@@ -132,7 +132,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
                 ? 'sm:max-w-0 sm:opacity-0 sm:pointer-events-none sm:-translate-x-1 sm:scale-95 sm:overflow-hidden'
-                : 'sm:max-w-150 sm:opacity-100 sm:translate-x-0 sm:scale-100 sm:overflow-hidden'
+                : 'sm:max-w-[600px] sm:opacity-100 sm:translate-x-0 sm:scale-100 sm:overflow-hidden'
             )}
           >
             {/* Desktop Nav Links */}
@@ -167,10 +167,10 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             <Link
               href="/contact"
               className={cn(
-                'hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 sm:px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs hover:-translate-y-0.5 active:translate-y-0 shrink-0 ml-0.5 sm:ml-1',
+                'hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 sm:px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs shrink-0 ml-0.5 sm:ml-1',
                 pathname === '/contact'
                   ? 'bg-foreground text-background shadow-sm'
-                  : 'bg-foreground text-background hover:opacity-90'
+                  : 'bg-foreground text-background hover:opacity-80'
               )}
               title="Let's Collaborate"
             >
@@ -239,13 +239,16 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             </button>
           </div>
 
-          {/* Clean Navigation Links: Redundant Contact removed */}
-          <nav className="flex flex-col gap-1 py-3" aria-label="Mobile Navigation">
-            {primaryNavLinks.map((item) => {
+          {/* Mobile Navigation Links (including Let's Collaborate in the navlist) */}
+          <nav className="flex flex-col gap-1.5 py-3" aria-label="Mobile Navigation">
+            {navLinks.map((item) => {
               const isActive =
                 item.href === '/'
                   ? pathname === '/'
                   : pathname.startsWith(item.href);
+
+              const isContact = item.href === '/contact';
+              const label = isContact ? "Let's Collaborate" : item.label;
 
               return (
                 <Link
@@ -253,32 +256,26 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    'px-4 py-2.5 rounded-2xl text-sm font-medium transition-all flex items-center justify-between',
+                    'px-4 py-3 rounded-2xl text-sm font-medium transition-all flex items-center justify-between',
                     isActive
                       ? 'bg-surface-raised text-accent font-semibold border border-border/80 shadow-2xs'
+                      : isContact
+                      ? 'bg-surface-raised/80 text-foreground font-semibold hover:bg-surface-raised border border-border/60'
                       : 'text-muted hover:text-foreground hover:bg-surface-raised/60'
                   )}
                 >
-                  <span>{item.label}</span>
-                  {isActive && (
+                  <span className="flex items-center gap-2">
+                    {label}
+                  </span>
+                  {isActive ? (
                     <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  )}
+                  ) : isContact ? (
+                    <ArrowUpRight className="w-4 h-4 text-muted" />
+                  ) : null}
                 </Link>
               );
             })}
           </nav>
-
-          {/* Unified Primary Action: Let's Collaborate */}
-          <div className="pt-3 border-t border-border flex flex-col gap-2">
-            <Link
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-3 rounded-2xl bg-foreground text-background text-sm font-semibold text-center hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm"
-            >
-              <span>Let&apos;s Collaborate</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-          </div>
         </div>
       </div>
     </>

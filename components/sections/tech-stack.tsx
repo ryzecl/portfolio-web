@@ -1,9 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { SkillGroup, ContactData } from '@/lib/types';
 import { Marquee } from '@/components/ui/marquee';
 import { GitHubCalendarCard } from '@/components/ui/github-calendar-card';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 import {
   SiNextdotjs,
   SiReact,
@@ -96,10 +102,59 @@ export function TechStack({ contact }: TechStackProps) {
   const username = 'ryzecl';
   const githubUrl = contact?.github || 'https://github.com/ryzecl';
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.75,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      if (calendarRef.current) {
+        gsap.fromTo(
+          calendarRef.current,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: calendarRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-16 sm:py-24 lg:py-32 bg-transparent text-foreground overflow-hidden space-y-12 sm:space-y-16" id="skills">
+    <section ref={sectionRef} className="py-16 sm:py-24 lg:py-32 bg-transparent text-foreground overflow-hidden space-y-12 sm:space-y-16" id="skills">
       {/* Section Header */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div ref={headerRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-accent" />
@@ -156,7 +211,7 @@ export function TechStack({ contact }: TechStackProps) {
       </div>
 
       {/* Live GitHub Contributions Heatmap Card */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div ref={calendarRef} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <GitHubCalendarCard username={username} githubUrl={githubUrl} />
       </div>
     </section>

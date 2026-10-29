@@ -59,7 +59,7 @@ export function ExperienceEducationSection({
             scrollTrigger: {
               trigger: expBlockRef.current,
               start: 'top 85%',
-              toggleActions: 'play none none none',
+              toggleActions: 'play none none reverse',
             },
           }
         );
@@ -78,7 +78,7 @@ export function ExperienceEducationSection({
             scrollTrigger: {
               trigger: eduBlockRef.current,
               start: 'top 85%',
-              toggleActions: 'play none none none',
+              toggleActions: 'play none none reverse',
             },
           }
         );
