@@ -97,9 +97,9 @@ export function TechStack({ contact }: TechStackProps) {
   const githubUrl = contact?.github || 'https://github.com/ryzecl';
 
   return (
-    <section className="py-16 sm:py-24 lg:py-32 bg-transparent text-foreground overflow-hidden" id="skills">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
-        {/* Section Header */}
+    <section className="py-16 sm:py-24 lg:py-32 bg-transparent text-foreground overflow-hidden space-y-12 sm:space-y-16" id="skills">
+      {/* Section Header */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-accent" />
@@ -114,50 +114,50 @@ export function TechStack({ contact }: TechStackProps) {
             Everyday technologies, frameworks, and architecture patterns used to engineer responsive frontends, secure backend APIs, and real-world digital solutions.
           </p>
         </div>
+      </div>
 
-        {/* Infinite Marquee Rows (Magic UI Pattern with Edge Fade Masks) */}
-        <div className="relative w-full overflow-hidden space-y-4 py-2 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-          {/* Row 1: Forward Movement */}
-          <Marquee pauseOnHover repeat={4} className="[--duration:40s]">
-            {row1Techs.map((tech) => (
-              <div
-                key={tech.name}
-                className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
-              >
-                <span className="shrink-0">{tech.icon}</span>
-                <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
-                  {tech.name}
-                </span>
-                <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
-                  {tech.category}
-                </span>
-              </div>
-            ))}
-          </Marquee>
+      {/* Infinite Marquee Rows (Magic UI Pattern with Edge Fade Masks) - Full width edge-to-edge */}
+      <div className="relative w-full overflow-hidden space-y-4 py-2 [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] sm:[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        {/* Row 1: Forward Movement */}
+        <Marquee pauseOnHover repeat={4} className="[--duration:40s]">
+          {row1Techs.map((tech) => (
+            <div
+              key={tech.name}
+              className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
+            >
+              <span className="shrink-0">{tech.icon}</span>
+              <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
+                {tech.name}
+              </span>
+              <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
+                {tech.category}
+              </span>
+            </div>
+          ))}
+        </Marquee>
 
-          {/* Row 2: Reverse Movement */}
-          <Marquee reverse pauseOnHover repeat={4} className="[--duration:42s]">
-            {row2Techs.map((tech) => (
-              <div
-                key={tech.name}
-                className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
-              >
-                <span className="shrink-0">{tech.icon}</span>
-                <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
-                  {tech.name}
-                </span>
-                <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
-                  {tech.category}
-                </span>
-              </div>
-            ))}
-          </Marquee>
-        </div>
+        {/* Row 2: Reverse Movement */}
+        <Marquee reverse pauseOnHover repeat={4} className="[--duration:42s]">
+          {row2Techs.map((tech) => (
+            <div
+              key={tech.name}
+              className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
+            >
+              <span className="shrink-0">{tech.icon}</span>
+              <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
+                {tech.name}
+              </span>
+              <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
+                {tech.category}
+              </span>
+            </div>
+          ))}
+        </Marquee>
+      </div>
 
-        {/* Live GitHub Contributions Heatmap Card */}
-        <div className="pt-4 sm:pt-6">
-          <GitHubCalendarCard username={username} githubUrl={githubUrl} />
-        </div>
+      {/* Live GitHub Contributions Heatmap Card */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <GitHubCalendarCard username={username} githubUrl={githubUrl} />
       </div>
     </section>
   );
