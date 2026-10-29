@@ -24,7 +24,32 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   const greetings =
     hero.greetings && hero.greetings.length > 0
       ? hero.greetings
-      : ['HOLA!', 'HI!', 'HELLO!', 'HALO!'];
+      : [
+          'HALO!',
+          'SAMPURASUN!',
+          'SUGENG RAWUH!',
+          'OM SWASTYASTU!',
+          'HORAS!',
+          'TABE\'!',
+          'WA WA WA!',
+          'GIMANE KABAR!',
+          'APA KHABAR!',
+          'HELLO!',
+          'HOLA!',
+          'BONJOUR!',
+          'CIAO!',
+          'KONNICHIWA!',
+          'ANNYEONG!',
+          'NI HAO!',
+          'NAMASTE!',
+          'GUTEN TAG!',
+          'PRIVET!',
+          'SAWASDEE!',
+          'MARHABAN!',
+          'MERHABA!',
+          'ALOHA!',
+          'OLÀ!',
+        ];
 
   const [text, setText] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
