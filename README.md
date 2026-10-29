@@ -44,7 +44,7 @@ bun run build
 ## 🛠️ Tech Stack & Tooling
 
 - **Languages & Runtimes**: TypeScript, JavaScript, PHP, Dart, Go, Node.js, Bun
-- **Frontend & UI**: Next.js 16, React 19, Tailwind CSS v4, daisyUI v5, shadcn/ui, Bootstrap 5, Mazer Template, Vite, React Bits
+- **Frontend & UI**: Next.js 16, React 19, Tailwind CSS v4, daisyUI v5, shadcn/ui, Bootstrap 5, Mazer Template, Vite, React Bits, GSAP
 - **Mobile**: React Native, Expo, Flutter, Riverpod, GoRouter
 - **Backend & APIs**: Laravel 13, Express.js, Inertia.js, REST API, Midtrans Payment Gateway, Firebase
 - **Databases & DevOps**: MySQL, PostgreSQL, Supabase, Cloudflare, Docker, cPanel, Git, GitHub

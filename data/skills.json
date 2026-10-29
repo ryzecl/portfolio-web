@@ -8,7 +8,7 @@
     {
       "title": "Frontend & Mobile",
       "priority": 2,
-      "technologies": ["Next.js", "React", "React Native", "Expo", "Flutter", "Tailwind CSS", "Bootstrap", "daisyUI", "Mazer Template", "Inertia.js", "Vite", "shadcn/ui"]
+      "technologies": ["Next.js", "React", "React Native", "Expo", "Flutter", "Tailwind CSS", "Bootstrap", "daisyUI", "Mazer Template", "Inertia.js", "Vite", "shadcn/ui", "GSAP"]
     },
     {
       "title": "Backend & Cloud",

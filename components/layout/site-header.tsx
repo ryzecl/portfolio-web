@@ -115,7 +115,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             className={cn(
               'hidden sm:flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
-                ? 'max-w-[60px] opacity-100 pr-1'
+                ? 'max-w-15 opacity-100 pr-1'
                 : 'max-w-0 opacity-0 pointer-events-none'
             )}
             aria-hidden="true"
@@ -132,7 +132,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
                 ? 'sm:max-w-0 sm:opacity-0 sm:pointer-events-none sm:-translate-x-1 sm:scale-95 sm:overflow-hidden'
-                : 'sm:max-w-[600px] sm:opacity-100 sm:translate-x-0 sm:scale-100 sm:overflow-hidden'
+                : 'sm:max-w-150 sm:opacity-100 sm:translate-x-0 sm:scale-100 sm:overflow-hidden'
             )}
           >
             {/* Desktop Nav Links */}

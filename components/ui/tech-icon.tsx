@@ -28,6 +28,7 @@ import {
   SiNodedotjs,
   SiBun,
   SiCpanel,
+  SiGreensock,
 } from 'react-icons/si';
 import { Braces, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -160,6 +161,9 @@ export function TechIcon({ name, className = 'w-3.5 h-3.5 shrink-0', colored = t
     case 'inertiajs':
     case 'inertia':
       return <SiInertia className={cn(className, colored ? 'text-[#9553E9]' : 'text-foreground')} />;
+    case 'gsap':
+    case 'greensock':
+      return <SiGreensock className={cn(className, colored ? 'text-[#88CE02]' : 'text-foreground')} />;
     default:
       return <Terminal className={cn(className, 'text-muted')} />;
   }

@@ -42,6 +42,7 @@ import {
   SiNodedotjs,
   SiBun,
   SiCpanel,
+  SiGreensock,
 } from 'react-icons/si';
 import { RiverpodLogo, MazerLogo } from '@/components/ui/tech-icon';
 
@@ -100,6 +101,7 @@ const row1Techs: TechPill[] = [
   { name: 'Inertia.js', category: 'Fullstack Monolith', icon: <SiInertia className="w-4 h-4 text-[#9553E9]" /> },
   { name: 'shadcn/ui', category: 'Component System', icon: <SiShadcnui className="w-4 h-4 text-foreground" /> },
   { name: 'React Bits', category: 'Creative UI', icon: <ReactBitsIcon /> },
+  { name: 'GSAP', category: 'Animation', icon: <SiGreensock className="w-4 h-4 text-[#88CE02]" /> },
   { name: 'Figma', category: 'Design', icon: <SiFigma className="w-4 h-4 text-[#F24E1E]" /> },
 ];
 
