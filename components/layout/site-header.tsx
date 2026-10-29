@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { House, FolderGit2, SendHorizontal, ArrowUpRight } from 'lucide-react';
 import { SiteData } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -11,8 +11,13 @@ interface SiteHeaderProps {
   site: SiteData;
 }
 
+const mobileNavItems = [
+  { label: 'Home', href: '/', icon: House },
+  { label: 'Project', href: '/projects', icon: FolderGit2 },
+  { label: 'Contact', href: '/contact', icon: SendHorizontal },
+];
+
 export function SiteHeader({ site }: SiteHeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -20,17 +25,11 @@ export function SiteHeader({ site }: SiteHeaderProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 60);
+      setScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMobileMenuOpen(false);
-    setIsHovered(false);
-  }, [pathname]);
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -41,20 +40,6 @@ export function SiteHeader({ site }: SiteHeaderProps) {
     };
   }, []);
 
-  // Handle Escape key to close mobile menu
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setMobileMenuOpen(false);
-        setIsHovered(false);
-      }
-    };
-    if (mobileMenuOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-    }
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen]);
-
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
@@ -64,28 +49,46 @@ export function SiteHeader({ site }: SiteHeaderProps) {
   };
 
   const handleMouseLeave = () => {
-    // Gentle 150ms buffer so it feels calm and doesn't snap abruptly
     hoverTimeoutRef.current = setTimeout(() => {
       setIsHovered(false);
     }, 150);
   };
 
   const navLinks = site.navigation || [];
-  // Primary navigation for center pill and modal (exclude contact which lives as the CTA button)
+  // Primary navigation for center pill (exclude contact which lives as the action CTA button on desktop)
   const primaryNavLinks = navLinks.filter((item) => item.href !== '/contact');
 
   // When scrolled down and NOT hovered, desktop pill collapses into minimal logo + 3-dots indicator
   const isCollapsed = scrolled && !isHovered;
 
+  const isItemActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
   return (
     <>
+      {/* Mobile Top Header Bar (Glass Acrylic Look, Wordmark Only) */}
       <header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 flex items-center justify-center px-4 sm:px-6 py-5 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none',
+          'fixed top-0 inset-x-0 z-40 sm:hidden flex items-center justify-between px-5 py-3.5 bg-white/40 dark:bg-background/50 backdrop-blur-xl backdrop-saturate-180 border-b border-white/40 dark:border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.4)] transition-all duration-300'
+        )}
+      >
+        <Link
+          href="/"
+          className="text-base font-bold font-mono tracking-wider text-foreground hover:text-accent transition-colors"
+        >
+          {site.identity.wordmark || 'FNH.'}
+        </Link>
+      </header>
+
+      {/* Desktop Floating Capsule Header (sm and up) */}
+      <header
+        className={cn(
+          'fixed top-0 left-0 right-0 z-50 hidden sm:flex items-center justify-center px-6 py-5 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none',
           scrolled && 'py-3'
         )}
       >
-        {/* Interactive Floating Capsule Navbar */}
         <div
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -98,8 +101,8 @@ export function SiteHeader({ site }: SiteHeaderProps) {
           className={cn(
             'pointer-events-auto flex items-center rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none',
             isCollapsed
-              ? 'sm:px-3.5 sm:py-1.5 sm:gap-2 sm:hover:border-foreground/40 sm:cursor-pointer sm:shadow-sm sm:hover:shadow-md p-1.5 gap-1.5'
-              : 'p-1.5 gap-1 sm:gap-1.5'
+              ? 'px-3.5 py-1.5 gap-2 hover:border-foreground/40 cursor-pointer shadow-sm hover:shadow-md'
+              : 'p-1.5 gap-1.5'
           )}
         >
           {/* Brand Wordmark */}
@@ -110,10 +113,10 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             {site.identity.wordmark || 'FNH.'}
           </Link>
 
-          {/* 3-dots Loading / Menu indicator (Desktop Only: Smooth fluid fade on scroll, hidden on mobile) */}
+          {/* 3-dots Loading / Menu indicator (Smooth fluid fade on scroll) */}
           <div
             className={cn(
-              'hidden sm:flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+              'flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
                 ? 'max-w-15 opacity-100 pr-1'
                 : 'max-w-0 opacity-0 pointer-events-none'
@@ -126,32 +129,29 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_0.5s_infinite]" />
           </div>
 
-          {/* Navigation Cluster: Desktop expandable links + CTA + Mobile always-ready hamburger */}
+          {/* Navigation Cluster: Desktop expandable links + CTA */}
           <div
             className={cn(
               'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
               isCollapsed
-                ? 'sm:max-w-0 sm:opacity-0 sm:pointer-events-none sm:-translate-x-1 sm:scale-95 sm:overflow-hidden'
-                : 'sm:max-w-150 sm:opacity-100 sm:translate-x-0 sm:scale-100 sm:overflow-hidden'
+                ? 'max-w-0 opacity-0 pointer-events-none -translate-x-1 scale-95 overflow-hidden'
+                : 'max-w-150 opacity-100 translate-x-0 scale-100 overflow-hidden'
             )}
           >
             {/* Desktop Nav Links */}
             <nav
-              aria-label="Main Navigation"
-              className="hidden sm:flex items-center gap-0.5 shrink-0"
+              aria-label="Desktop Navigation"
+              className="flex items-center gap-0.5 shrink-0"
             >
               {primaryNavLinks.map((item) => {
-                const isActive =
-                  item.href === '/'
-                    ? pathname === '/'
-                    : pathname.startsWith(item.href);
+                const isActive = isItemActive(item.href);
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'text-xs font-medium px-3 sm:px-3.5 py-1.5 rounded-full transition-all duration-200',
+                      'text-xs font-medium px-3.5 py-1.5 rounded-full transition-all duration-200',
                       isActive
                         ? 'bg-surface-raised text-foreground font-semibold border border-border shadow-2xs'
                         : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
@@ -163,11 +163,11 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               })}
             </nav>
 
-            {/* Let's Collaborate Action Button (Desktop Only) */}
+            {/* Let's Collaborate Action Button */}
             <Link
               href="/contact"
               className={cn(
-                'hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 sm:px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs shrink-0 ml-0.5 sm:ml-1',
+                'inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs shrink-0 ml-1',
                 pathname === '/contact'
                   ? 'bg-foreground text-background shadow-sm'
                   : 'bg-foreground text-background hover:opacity-80'
@@ -177,107 +177,50 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               <span>Let&apos;s Collaborate</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
-
-            {/* Mobile Menu Toggle Button (Direct hamburger on mobile, never collapsed or hidden) */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={
-                mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'
-              }
-              aria-expanded={mobileMenuOpen}
-              className="sm:hidden p-1.5 rounded-full text-foreground hover:bg-surface-raised transition-colors focus:outline-none ml-0.5"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-4 h-4 text-foreground" />
-              ) : (
-                <Menu className="w-4 h-4 text-foreground" />
-              )}
-            </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Navigation Modal Dialog (Smooth, high aesthetic, editorial) */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation Menu"
-        className={cn(
-          'fixed inset-0 z-50 bg-background/80 backdrop-blur-md sm:hidden flex flex-col justify-start pt-20 px-4 pb-8 transition-all duration-300 ease-out',
-          mobileMenuOpen
-            ? 'opacity-100 pointer-events-auto'
-            : 'opacity-0 pointer-events-none'
-        )}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) setMobileMenuOpen(false);
-        }}
+      {/* Mobile Glass Acrylic Bottom Navigation Bar (sm:hidden) */}
+      <nav
+        aria-label="Mobile Navigation"
+        className="fixed bottom-0 inset-x-0 z-50 sm:hidden bg-white/40 dark:bg-background/50 backdrop-blur-xl backdrop-saturate-180 border-t border-white/50 dark:border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 px-6"
       >
-        <div
-          className={cn(
-            'flex flex-col gap-2 bg-surface border border-border rounded-3xl p-6 shadow-2xl max-w-sm mx-auto w-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
-            mobileMenuOpen
-              ? 'translate-y-0 scale-100 opacity-100'
-              : '-translate-y-6 scale-95 opacity-0'
-          )}
-        >
-          {/* Modal Header */}
-          <div className="flex items-center justify-between pb-3.5 border-b border-border">
-            <div>
-              <p className="text-sm font-bold font-mono tracking-tight text-foreground">
-                {site.identity.wordmark || 'FNH.'}
-              </p>
-              <p className="text-xs text-muted">
-                {site.identity.name} · {site.identity.statusLabel || 'Available for projects'}
-              </p>
-            </div>
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-1.5 rounded-full text-muted hover:text-foreground hover:bg-surface-raised transition-colors focus:outline-none"
-              aria-label="Close menu"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+        <div className="max-w-md mx-auto flex items-center justify-around">
+          {mobileNavItems.map((item) => {
+            const Icon = item.icon;
+            const active = isItemActive(item.href);
 
-          {/* Mobile Navigation Links (including Let's Collaborate in the navlist) */}
-          <nav className="flex flex-col gap-1.5 py-3" aria-label="Mobile Navigation">
-            {navLinks.map((item) => {
-              const isActive =
-                item.href === '/'
-                  ? pathname === '/'
-                  : pathname.startsWith(item.href);
-
-              const isContact = item.href === '/contact';
-              const label = isContact ? "Let's Collaborate" : item.label;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex flex-col items-center justify-center gap-1 py-1 px-4 min-w-[64px] min-h-[46px] transition-all duration-200 active:scale-95"
+                aria-current={active ? 'page' : undefined}
+              >
+                <Icon
                   className={cn(
-                    'px-4 py-3 rounded-2xl text-sm font-medium transition-all flex items-center justify-between',
-                    isActive
-                      ? 'bg-surface-raised text-accent font-semibold border border-border/80 shadow-2xs'
-                      : isContact
-                      ? 'bg-surface-raised/80 text-foreground font-semibold hover:bg-surface-raised border border-border/60'
-                      : 'text-muted hover:text-foreground hover:bg-surface-raised/60'
+                    'w-5 h-5 transition-colors stroke-[1.8]',
+                    active
+                      ? 'text-accent'
+                      : 'text-foreground/75 hover:text-foreground'
+                  )}
+                />
+                <span
+                  className={cn(
+                    'text-[10px] tracking-wider transition-colors',
+                    active
+                      ? 'font-bold text-accent'
+                      : 'font-medium text-foreground/75 hover:text-foreground'
                   )}
                 >
-                  <span className="flex items-center gap-2">
-                    {label}
-                  </span>
-                  {isActive ? (
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                  ) : isContact ? (
-                    <ArrowUpRight className="w-4 h-4 text-muted" />
-                  ) : null}
-                </Link>
-              );
-            })}
-          </nav>
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
-      </div>
+      </nav>
     </>
   );
 }

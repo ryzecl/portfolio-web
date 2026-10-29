@@ -54,7 +54,7 @@ export function SiteFooter({ site }: SiteFooterProps) {
         />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 flex flex-col justify-between gap-10 sm:gap-14 lg:gap-16">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-28 sm:py-16 lg:py-20 flex flex-col justify-between gap-10 sm:gap-14 lg:gap-16">
         {/* Editorial Quote */}
         <div className="max-w-2xl">
           <blockquote className="font-serif italic text-xl sm:text-2xl md:text-3xl text-foreground/90 font-normal leading-snug sm:leading-relaxed tracking-normal text-pretty">

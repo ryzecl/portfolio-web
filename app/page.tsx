@@ -59,7 +59,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Gradual Blur Effect at the bottom of the viewport (ReactBits) */}
+      {/* Gradual Blur Effect at the bottom of the viewport (Desktop only) */}
       <GradualBlur
         target="page"
         position="bottom"
@@ -67,6 +67,7 @@ export default function HomePage() {
         strength={1.5}
         zIndex={30}
         autoHide={true}
+        className="hidden sm:block"
       />
     </div>
   );

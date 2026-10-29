@@ -148,3 +148,8 @@ body {
   background-image: radial-gradient(circle, rgba(9, 9, 11, 0.16) 1.5px, transparent 1.5px);
   background-size: 24px 24px;
 }
+
+/* Hide Next.js dev badge */
+nextjs-portal {
+  display: none !important;
+}
