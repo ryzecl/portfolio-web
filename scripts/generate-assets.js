@@ -102,32 +102,31 @@ async function run() {
   fs.writeFileSync(path.join(imagesDir, 'project-placeholder.svg'), svgProject.trim());
   console.log('Generated project-placeholder.png (size:', projectPngBuffer.length, 'bytes)');
 
-  // 2. Generate and compress high-impact OG Image (1200x630)
-  // Perfectly matched with the portfolio's clean technical theme & Ferry's portrait
+  // 2. Generate and compress clean, professional, minimalist OG Image (1200x630)
   const width = 1200;
   const height = 630;
   const photoW = 380;
   const photoH = 430;
-  const photoRx = 20;
+  const photoRx = 24;
 
   const photoPath = path.join(imagesDir, 'linkedin-photo.png');
-  const photoMaskSvg = Buffer.from(`
+  const maskSvg = Buffer.from(`
     <svg width="${photoW}" height="${photoH}">
       <rect x="0" y="0" width="${photoW}" height="${photoH}" rx="${photoRx}" ry="${photoRx}" fill="#ffffff" />
     </svg>
   `);
 
-  const borderOverlaySvg = Buffer.from(`
+  const borderSvg = Buffer.from(`
     <svg width="${photoW}" height="${photoH}">
-      <rect x="1" y="1" width="${photoW - 2}" height="${photoH - 2}" rx="${photoRx}" fill="none" stroke="#E2E8F0" stroke-width="1.5" />
+      <rect x="1" y="1" width="${photoW - 2}" height="${photoH - 2}" rx="${photoRx}" fill="none" stroke="#E4E4E7" stroke-width="1.5" />
     </svg>
   `);
 
   const processedPhoto = await sharp(photoPath)
-    .resize(photoW, photoH, { fit: 'cover', position: sharp.strategy.attention })
+    .resize(photoW, photoH, { fit: 'cover', position: 'center' })
     .composite([
-      { input: photoMaskSvg, blend: 'dest-in' },
-      { input: borderOverlaySvg, blend: 'over' },
+      { input: maskSvg, blend: 'dest-in' },
+      { input: borderSvg, blend: 'over' },
     ])
     .png()
     .toBuffer();
@@ -135,184 +134,94 @@ async function run() {
   const svgOg = `
 <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="canvasBg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="70%" stop-color="#FFFFFF" />
-      <stop offset="100%" stop-color="#F8FAFC" />
+      <stop offset="100%" stop-color="#FBFBFD" />
     </linearGradient>
 
-    <pattern id="techDots" width="28" height="28" patternUnits="userSpaceOnUse">
-      <circle cx="2" cy="2" r="1.2" fill="#09090B" opacity="0.10" />
+    <pattern id="cleanDots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#09090B" opacity="0.06" />
     </pattern>
 
-    <filter id="photoShadow" x="-10%" y="-10%" width="120%" height="125%" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#2563EB" flood-opacity="0.10" />
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#09090B" flood-opacity="0.06" />
+    <filter id="softShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.06" />
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.04" />
     </filter>
   </defs>
 
-  <!-- 1. Background Fill & Pattern -->
-  <rect width="${width}" height="${height}" fill="url(#bgGrad)" />
-  <rect width="${width}" height="${height}" fill="url(#techDots)" />
+  <rect width="${width}" height="${height}" fill="url(#canvasBg)" />
+  <rect width="${width}" height="${height}" fill="url(#cleanDots)" />
 
-  <!-- 2. Outer Technical Border Frame -->
-  <rect x="24" y="24" width="1152" height="582" rx="16" fill="none" stroke="#E4E4E7" stroke-width="1.5" />
+  <rect x="32" y="32" width="1136" height="566" rx="20" fill="none" stroke="#E4E4E7" stroke-width="1" />
 
-  <!-- Corner Crosshairs (+) in Electric Blue -->
-  <g stroke="#2563EB" stroke-width="2" opacity="0.9">
-    <!-- Top-Left -->
-    <line x1="32" y1="42" x2="52" y2="42" />
-    <line x1="42" y1="32" x2="42" y2="52" />
-
-    <!-- Top-Right -->
-    <line x1="1148" y1="42" x2="1168" y2="42" />
-    <line x1="1158" y1="32" x2="1158" y2="52" />
-
-    <!-- Bottom-Left -->
-    <line x1="32" y1="588" x2="52" y2="588" />
-    <line x1="42" y1="578" x2="42" y2="598" />
-
-    <!-- Bottom-Right -->
-    <line x1="1148" y1="588" x2="1168" y2="588" />
-    <line x1="1158" y1="578" x2="1158" y2="598" />
-  </g>
-
-  <!-- 3. Top Header Bar -->
-  <g font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif">
-    <text x="68" y="70" font-size="22" font-weight="800" fill="#09090B" letter-spacing="-0.5">FNH<tspan fill="#2563EB">.</tspan></text>
-  </g>
-  <line x1="134" y1="52" x2="134" y2="74" stroke="#E4E4E7" stroke-width="1.5" />
-  <text x="148" y="69" font-family="'JetBrains Mono', Consolas, monospace" font-size="14" font-weight="600" fill="#71717A">ferryhendriawan.my.id</text>
-
-  <!-- Status Pill at Top Right -->
-  <g transform="translate(810, 48)">
-    <rect x="0" y="0" width="320" height="34" rx="17" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-    <circle cx="18" cy="17" r="4.5" fill="#10B981" />
-    <circle cx="18" cy="17" r="8" fill="#10B981" opacity="0.25" />
-    <text x="34" y="22" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#3F3F46">
-      Open to internship opportunities
+  <!-- Top Navigation / Brand Anchor -->
+  <g transform="translate(80, 78)">
+    <text x="0" y="0" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="20" font-weight="800" fill="#09090B" letter-spacing="-0.5">
+      FNH<tspan fill="#2563EB">.</tspan>
     </text>
-  </g>
-
-  <!-- 4. Left Hero Content Column -->
-  <!-- Technical Eyebrow Pill -->
-  <g transform="translate(68, 116)">
-    <rect x="0" y="0" width="395" height="30" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1" />
-    <text x="14" y="20" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1">
-      // INFORMATION SYSTEMS · SOFTWARE DEVELOPER
+    <line x1="62" y1="-14" x2="62" y2="2" stroke="#E4E4E7" stroke-width="1" />
+    <text x="76" y="-1" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" font-weight="500" fill="#71717A">
+      ferryhendriawan.my.id
     </text>
-  </g>
 
-  <!-- Main Name Display Headline -->
-  <text x="68" y="205" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="46" font-weight="800" fill="#09090B" letter-spacing="-1.2">
-    Ferry Noer Hendriawan
-  </text>
-
-  <!-- Professional Sub-headline -->
-  <text x="68" y="246" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="20" font-weight="600" fill="#2563EB" letter-spacing="-0.3">
-    Full-Stack Web Developer &amp; Systems Builder
-  </text>
-
-  <!-- Description / Pitch -->
-  <g font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="16" fill="#52525B">
-    <text x="68" y="286">Building clean, scalable web applications and practical digital solutions</text>
-    <text x="68" y="312">with modern component architecture and robust backend API design.</text>
-  </g>
-
-  <!-- Tech Stack Chips -->
-  <g transform="translate(68, 350)" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" font-weight="600">
-    <!-- Next.js -->
-    <rect x="0" y="0" width="94" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-    <text x="47" y="22" fill="#18181B" text-anchor="middle">Next.js</text>
-
-    <!-- TypeScript -->
-    <rect x="106" y="0" width="118" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-    <text x="165" y="22" fill="#18181B" text-anchor="middle">TypeScript</text>
-
-    <!-- Laravel -->
-    <rect x="236" y="0" width="96" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-    <text x="284" y="22" fill="#18181B" text-anchor="middle">Laravel</text>
-
-    <!-- Tailwind -->
-    <rect x="344" y="0" width="128" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-    <text x="408" y="22" fill="#18181B" text-anchor="middle">Tailwind CSS</text>
-
-    <!-- REST API -->
-    <rect x="484" y="0" width="102" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-    <text x="535" y="22" fill="#18181B" text-anchor="middle">REST API</text>
-  </g>
-
-  <!-- Bottom Academic & Agency Banner -->
-  <g transform="translate(68, 432)">
-    <rect x="0" y="0" width="620" height="92" rx="14" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2" />
-
-    <!-- Education Column -->
-    <g transform="translate(24, 28)">
-      <text x="0" y="0" font-family="'JetBrains Mono', Consolas, monospace" font-size="11" font-weight="700" fill="#2563EB" letter-spacing="1">
-        EDUCATION
-      </text>
-      <text x="0" y="22" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#09090B">
-        Horizon University Indonesia
-      </text>
-      <text x="0" y="42" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
-        Information Systems (S1) · GPA 3.96
-      </text>
-    </g>
-
-    <!-- Divider -->
-    <line x1="340" y1="18" x2="340" y2="74" stroke="#E2E8F0" stroke-width="1.2" />
-
-    <!-- Agency / Role Column -->
-    <g transform="translate(364, 28)">
-      <text x="0" y="0" font-family="'JetBrains Mono', Consolas, monospace" font-size="11" font-weight="700" fill="#2563EB" letter-spacing="1">
-        FOUNDER &amp; BUILDER
-      </text>
-      <text x="0" y="22" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#09090B">
-        JDNirwana
-      </text>
-      <text x="0" y="42" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#64748B">
-        Software Development Agency
+    <!-- Status pill -->
+    <g transform="translate(730, -14)">
+      <rect x="0" y="0" width="246" height="32" rx="16" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
+      <circle cx="16" cy="16" r="4" fill="#10B981" />
+      <text x="28" y="20.5" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#3F3F46">
+        Available for Opportunities
       </text>
     </g>
   </g>
 
-  <!-- Footer Meta Line -->
-  <g transform="translate(68, 568)" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" fill="#94A3B8">
-    <text x="0" y="0">PORTFOLIO EDITION // 2026</text>
-    <circle cx="210" cy="-4" r="2.5" fill="#CBD5E1" />
-    <text x="225" y="0">BASED IN INDONESIA</text>
-    <circle cx="390" cy="-4" r="2.5" fill="#CBD5E1" />
-    <text x="405" y="0">GITHUB @ryzecl</text>
+  <!-- Left Main Content -->
+  <g transform="translate(80, 160)">
+    <text x="0" y="0" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" font-weight="700" fill="#2563EB" letter-spacing="1.5">
+      PORTFOLIO // SOFTWARE DEVELOPER
+    </text>
+
+    <text x="0" y="60" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="52" font-weight="800" fill="#09090B" letter-spacing="-1.5">
+      Ferry Noer Hendriawan
+    </text>
+
+    <text x="0" y="105" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="22" font-weight="600" fill="#3F3F46" letter-spacing="-0.3">
+      Full-Stack Developer &amp; Information Systems
+    </text>
+
+    <g font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="16" fill="#71717A">
+      <text x="0" y="152">Building clean, scalable web applications and robust digital systems</text>
+      <text x="0" y="178">focused on practical architecture, high performance, and intuitive UX.</text>
+    </g>
+
+    <g transform="translate(0, 224)" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" font-weight="600">
+      <rect x="0" y="0" width="92" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
+      <text x="46" y="21.5" fill="#18181B" text-anchor="middle">Next.js</text>
+
+      <rect x="104" y="0" width="116" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
+      <text x="162" y="21.5" fill="#18181B" text-anchor="middle">TypeScript</text>
+
+      <rect x="232" y="0" width="94" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
+      <text x="279" y="21.5" fill="#18181B" text-anchor="middle">Laravel</text>
+
+      <rect x="338" y="0" width="126" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
+      <text x="401" y="21.5" fill="#18181B" text-anchor="middle">Tailwind CSS</text>
+
+      <rect x="476" y="0" width="96" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
+      <text x="524" y="21.5" fill="#18181B" text-anchor="middle">REST API</text>
+    </g>
+
+    <g transform="translate(0, 318)" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" fill="#71717A">
+      <text x="0" y="0">HORIZON UNIVERSITY INDONESIA</text>
+      <circle cx="254" cy="-4" r="2.5" fill="#CBD5E1" />
+      <text x="268" y="0">CO-FOUNDER JDNIRWANA</text>
+      <circle cx="468" cy="-4" r="2.5" fill="#CBD5E1" />
+      <text x="482" y="0">INDONESIA</text>
+    </g>
   </g>
 
-  <!-- 5. Right Column: Corner Brackets around Photo Card -->
-  <g stroke="#2563EB" stroke-width="2.5" fill="none" stroke-linecap="round">
-    <!-- Top-Left -->
-    <path d="M 736 138 L 736 122 Q 736 114 744 114 L 760 114" />
-    <!-- Top-Right -->
-    <path d="M 1120 114 L 1136 114 Q 1144 114 1144 122 L 1144 138" />
-    <!-- Bottom-Left -->
-    <path d="M 736 532 L 736 548 Q 736 556 744 556 L 760 556" />
-    <!-- Bottom-Right -->
-    <path d="M 1120 556 L 1136 556 Q 1144 556 1144 548 L 1144 532" />
-  </g>
+  <rect x="740" y="100" width="${photoW}" height="${photoH}" rx="${photoRx}" fill="#FFFFFF" filter="url(#softShadow)" />
 </svg>
 `;
-
-  const overlayBadgeW = 280;
-  const overlayBadgeH = 46;
-  const badgeSvg = Buffer.from(`
-    <svg width="${overlayBadgeW}" height="${overlayBadgeH}">
-      <rect x="0" y="0" width="${overlayBadgeW}" height="${overlayBadgeH}" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" />
-      <circle cx="22" cy="23" r="5" fill="#2563EB" />
-      <text x="36" y="28" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#09090B">
-        Ferry N. Hendriawan
-      </text>
-      <text x="195" y="28" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" font-weight="600" fill="#2563EB">
-        [DEV]
-      </text>
-    </svg>
-  `);
 
   const basePng = await sharp(Buffer.from(svgOg)).png().toBuffer();
 
@@ -320,13 +229,8 @@ async function run() {
     .composite([
       {
         input: processedPhoto,
-        top: 120,
-        left: 750,
-      },
-      {
-        input: badgeSvg,
-        top: 520,
-        left: 800,
+        top: 100,
+        left: 740,
       },
     ])
     .png({ quality: 90, compressionLevel: 9, palette: true })
@@ -337,7 +241,7 @@ async function run() {
   fs.writeFileSync(path.join(appDir, 'opengraph-image.png'), finalOgImage);
   fs.writeFileSync(path.join(appDir, 'twitter-image.png'), finalOgImage);
 
-  console.log('Generated public/images/og-image.png (size:', finalOgImage.length, 'bytes /', (finalOgImage.length / 1024).toFixed(1), 'KB)');
+  console.log('Generated clean public/images/og-image.png (size:', finalOgImage.length, 'bytes /', (finalOgImage.length / 1024).toFixed(1), 'KB)');
   console.log('Synchronized app/opengraph-image.png & app/twitter-image.png');
 }
 
