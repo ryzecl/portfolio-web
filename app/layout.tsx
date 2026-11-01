@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { getSiteData } from '@/lib/data';
@@ -6,6 +6,13 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { JsonLd } from '@/components/ui/json-ld';
 import { PagePreloader } from '@/components/ui/page-preloader';
+
+export const viewport: Viewport = {
+  themeColor: '#2563eb',
+  colorScheme: 'light',
+  width: 'device-width',
+  initialScale: 1,
+};
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -33,6 +40,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description,
     authors: [{ name: site.identity.name, url: baseUrl }],
+    creator: site.identity.name,
+    publisher: site.identity.name,
     keywords: [
       site.identity.name,
       'Ferry Noer Hendriawan',
@@ -73,7 +82,7 @@ export async function generateMetadata(): Promise<Metadata> {
       alternateLocale: ['id_ID'],
       images: [
         {
-          url: '/images/og-image.png',
+          url: `${baseUrl}/images/og-image.png`,
           secureUrl: `${baseUrl}/images/og-image.png`,
           width: 1200,
           height: 630,
@@ -86,10 +95,16 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/images/og-image.png'],
+      images: [`${baseUrl}/images/og-image.png`],
+      creator: '@ryzecl',
+      site: '@ryzecl',
     },
     alternates: {
       canonical: baseUrl,
+    },
+    other: {
+      'theme-color': '#2563eb',
+      'msapplication-TileColor': '#2563eb',
     },
   };
 }

@@ -9,6 +9,7 @@ import { JsonLd } from '@/components/ui/json-ld';
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
   const title = `Contact ${site.identity.name}`;
   const description = `Reach out to ${site.identity.name} for internship opportunities, software engineering collaborations, or project inquiries. Based in ${site.identity.location}.`;
   return {
@@ -17,13 +18,15 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: '/contact',
+      url: `${baseUrl}/contact`,
       type: 'website',
       images: [
         {
-          url: '/images/og-image.png',
+          url: `${baseUrl}/images/og-image.png`,
+          secureUrl: `${baseUrl}/images/og-image.png`,
           width: 1200,
           height: 630,
+          type: 'image/png',
           alt: `Contact ${site.identity.name}`,
         },
       ],
@@ -32,10 +35,12 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/images/og-image.png'],
+      images: [`${baseUrl}/images/og-image.png`],
+      creator: '@ryzecl',
+      site: '@ryzecl',
     },
     alternates: {
-      canonical: '/contact',
+      canonical: `${baseUrl}/contact`,
     },
   };
 }

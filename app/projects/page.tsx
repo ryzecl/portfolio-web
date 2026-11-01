@@ -9,6 +9,7 @@ import { ContactCta } from '@/components/sections/contact-cta';
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
   const title = `Projects by ${site.identity.name}`;
   const description =
     'A catalog of client software, full-stack web applications, backend APIs, and personal engineering projects built by Ferry Noer Hendriawan.';
@@ -18,13 +19,15 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: '/projects',
+      url: `${baseUrl}/projects`,
       type: 'website',
       images: [
         {
-          url: '/images/project-placeholder.png',
+          url: `${baseUrl}/images/project-placeholder.png`,
+          secureUrl: `${baseUrl}/images/project-placeholder.png`,
           width: 1600,
           height: 1000,
+          type: 'image/png',
           alt: `Projects by ${site.identity.name}`,
         },
       ],
@@ -33,10 +36,12 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/images/project-placeholder.png'],
+      images: [`${baseUrl}/images/project-placeholder.png`],
+      creator: '@ryzecl',
+      site: '@ryzecl',
     },
     alternates: {
-      canonical: '/projects',
+      canonical: `${baseUrl}/projects`,
     },
   };
 }

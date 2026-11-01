@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "generate:assets": "bun scripts/generate-assets.js",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

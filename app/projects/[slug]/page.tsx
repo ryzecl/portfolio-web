@@ -54,14 +54,16 @@ export async function generateMetadata({
     };
   }
 
+  const baseUrl = `https://${site.identity.domain}`;
   const title = `${project.title} — Project by ${site.identity.name}`;
   const description = project.summary;
-  const canonical = `/projects/${slug}`;
+  const canonical = `${baseUrl}/projects/${slug}`;
 
   const ogImage =
     project.coverImage && project.coverImage.trim() !== ''
       ? project.coverImage
       : '/images/project-placeholder.png';
+  const fullOgImage = ogImage.startsWith('http') ? ogImage : `${baseUrl}${ogImage}`;
 
   return {
     title,
@@ -73,7 +75,8 @@ export async function generateMetadata({
       type: 'article',
       images: [
         {
-          url: ogImage,
+          url: fullOgImage,
+          secureUrl: fullOgImage,
           alt: project.title,
         },
       ],
@@ -82,7 +85,9 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImage],
+      images: [fullOgImage],
+      creator: '@ryzecl',
+      site: '@ryzecl',
     },
     alternates: {
       canonical,

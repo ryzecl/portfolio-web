@@ -19,6 +19,7 @@ import {
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = getSiteData();
+  const baseUrl = `https://${site.identity.domain}`;
   const title = `About ${site.identity.name}`;
   const description = `${site.identity.name} is an Information Systems student and software developer based in ${site.identity.location}. Learn about his background, work experience, education, and technical skills.`;
   return {
@@ -27,13 +28,15 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: '/about',
+      url: `${baseUrl}/about`,
       type: 'profile',
       images: [
         {
-          url: '/images/og-image.png',
+          url: `${baseUrl}/images/og-image.png`,
+          secureUrl: `${baseUrl}/images/og-image.png`,
           width: 1200,
           height: 630,
+          type: 'image/png',
           alt: `About ${site.identity.name}`,
         },
       ],
@@ -42,10 +45,12 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/images/og-image.png'],
+      images: [`${baseUrl}/images/og-image.png`],
+      creator: '@ryzecl',
+      site: '@ryzecl',
     },
     alternates: {
-      canonical: '/about',
+      canonical: `${baseUrl}/about`,
     },
   };
 }
