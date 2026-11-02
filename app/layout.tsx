@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { JetBrains_Mono, Plus_Jakarta_Sans } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { getSiteData } from '@/lib/data';
 import { SiteHeader } from '@/components/layout/site-header';
@@ -17,12 +17,6 @@ export const viewport: Viewport = {
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-sans',
-  display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
   display: 'swap',
 });
 
@@ -165,7 +159,7 @@ export default function RootLayout({
   ];
 
   return (
-    <html lang="en" className={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={plusJakartaSans.variable}>
       <body className="font-sans bg-background text-foreground min-h-screen flex flex-col">
         <PagePreloader brandName="FNH ." />
         {structuredSchemas.map((schema, i) => (

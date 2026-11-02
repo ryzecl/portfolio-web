@@ -15,9 +15,9 @@
   --color-accent-strong: #1d4ed8;
   --color-accent-subtle: rgba(37, 99, 235, 0.08);
 
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --font-jakarta: var(--font-sans);
+  --font-sans: var(--font-sans), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-sans), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-jakarta: var(--font-sans), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
 :root,
