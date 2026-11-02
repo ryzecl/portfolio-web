@@ -2,12 +2,14 @@ import siteJson from '@/data/site.json';
 import projectsJson from '@/data/projects.json';
 import experienceJson from '@/data/experience.json';
 import skillsJson from '@/data/skills.json';
+import certificatesJson from '@/data/certificates.json';
 
 import {
   SiteData,
   ProjectItem,
   ExperienceItem,
   SkillGroup,
+  CertificateItem,
 } from './types';
 
 export function getSiteData(): SiteData {
@@ -50,3 +52,24 @@ export function getProjectCategories(): string[] {
   });
   return Array.from(categories);
 }
+
+export function getAllCertificates(): CertificateItem[] {
+  return (certificatesJson.certificates || []) as CertificateItem[];
+}
+
+export function getFeaturedCertificates(limit?: number): CertificateItem[] {
+  const featured = getAllCertificates().filter((c) => c.featured);
+  return typeof limit === 'number' ? featured.slice(0, limit) : featured;
+}
+
+export function getCertificateCategories(): string[] {
+  const certs = getAllCertificates();
+  const categories = new Set<string>();
+  certs.forEach((c) => {
+    if (c.category) {
+      categories.add(c.category);
+    }
+  });
+  return Array.from(categories);
+}
+

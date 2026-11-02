@@ -4,12 +4,14 @@ import {
   getFeaturedProjects,
   getAllExperiences,
   getAllSkillGroups,
+  getFeaturedCertificates,
 } from '@/lib/data';
 import { HeroSection } from '@/components/sections/hero-section';
 import { VelocityDivider } from '@/components/sections/velocity-divider';
 import { AboutMeSection } from '@/components/sections/about-me-section';
 import { ExperienceEducationSection } from '@/components/sections/experience-education-section';
 import { FeaturedProjects } from '@/components/sections/featured-projects';
+import { CredentialsTeaser } from '@/components/sections/credentials-teaser';
 import { TechStack } from '@/components/sections/tech-stack';
 import { ContactCta } from '@/components/sections/contact-cta';
 import { GradualBlur } from '@/components/ui/gradual-blur';
@@ -19,6 +21,7 @@ export default function HomePage() {
   const featuredProjects = getFeaturedProjects(4);
   const experiences = getAllExperiences();
   const skillGroups = getAllSkillGroups();
+  const featuredCertificates = getFeaturedCertificates(4);
 
   return (
     <div className="flex flex-col">
@@ -52,6 +55,11 @@ export default function HomePage() {
           <ExperienceEducationSection
             experiences={experiences}
             education={site.education}
+          />
+
+          {/* Credentials Teaser (Certificates Only) */}
+          <CredentialsTeaser
+            certificates={featuredCertificates}
           />
 
           <TechStack groups={skillGroups} contact={site.contact} spotify={site.spotify} />

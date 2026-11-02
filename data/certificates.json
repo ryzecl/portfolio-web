@@ -1,0 +1,194 @@
+{
+  "certificates": [
+    {
+      "id": "bnsp-junior-web-programmer",
+      "title": "Junior Web Programmer",
+      "issuer": "BNSP · LSP Teknologi Digital",
+      "issueDate": "2026",
+      "category": "Web Development",
+      "credentialId": "TIK 1565 66081 2026",
+      "credentialUrl": "https://drive.google.com/file/d/1BuAI7h0fJ3QP_hN26Y_ph4_l8_xwkkrh/view?usp=sharing",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Web Development",
+        "Structured Programming",
+        "Database Implementation",
+        "Clean Code Architecture",
+        "Software Testing"
+      ],
+      "featured": true,
+      "summary": "National Professional Certification of Competence issued under Indonesian National Work Competency Standards (SKKNI) by the Indonesian Professional Certification Authority (BNSP) through LSP Teknologi Digital."
+    },
+    {
+      "id": "hacktiv8-ibm-ai-agent",
+      "title": "IT - AI Agent for Programming",
+      "issuer": "Hacktiv8 Indonesia × IBM SkillsBuild",
+      "issueDate": "2026",
+      "category": "Artificial Intelligence",
+      "credentialId": "420046c6-2577-4bff-ab4c-c8120971bbfc",
+      "credentialUrl": "https://students.hacktiv8.com/certificates/420046c6-2577-4bff-ab4c-c8120971bbfc",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "AI Agent Development",
+        "LLM Programming",
+        "Prompt Engineering",
+        "Software Engineering",
+        "Autonomous Workflows"
+      ],
+      "featured": true,
+      "summary": "Completed the intensive IT - AI Agent for Programming learning track under the IBM SkillsBuild University Education program in partnership with Hacktiv8 Indonesia."
+    },
+    {
+      "id": "gdgoc-ai-2025",
+      "title": "AI Mini Project Completion",
+      "issuer": "GDGoC Widyatama University",
+      "issueDate": "2025",
+      "category": "Artificial Intelligence",
+      "credentialId": "GDGOC-WIDYATAMA-2025",
+      "credentialUrl": "https://drive.google.com/file/d/1Yy1Nv5dNmqrw89aLLRVAixvKPgjv-9L4/view?usp=sharing",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Machine Learning",
+        "Python",
+        "Deep Learning",
+        "LLM Integration",
+        "Problem Solving"
+      ],
+      "featured": true,
+      "summary": "Certificate of Appreciation for successfully completing the Artificial Intelligence learning path and technical Mini Project organized by Google Developer Groups on Campus (GDGoC) Widyatama University."
+    },
+    {
+      "id": "dicoding-prompt-engineering",
+      "title": "Prompt Engineering for Software Developers",
+      "issuer": "Dicoding Indonesia",
+      "issueDate": "2026",
+      "category": "Artificial Intelligence",
+      "credentialId": "QLZ99YYY9Z5D",
+      "credentialUrl": "https://www.dicoding.com/certificates/QLZ99YYY9Z5D",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Prompt Engineering",
+        "Generative AI",
+        "AI-Assisted Programming",
+        "Software Development Lifecycle",
+        "LLM Best Practices"
+      ],
+      "featured": true,
+      "summary": "Industry competency certificate from Dicoding Academy verifying proficiency in prompt engineering patterns, generative AI integration, and best practices across software development workflows."
+    },
+    {
+      "id": "dicoding-python",
+      "title": "Getting Started with Python Programming",
+      "issuer": "Dicoding Indonesia",
+      "issueDate": "2026",
+      "category": "Software Engineering",
+      "credentialId": "L4PQ9VQR4PO1",
+      "credentialUrl": "https://www.dicoding.com/certificates/L4PQ9VQR4PO1",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Python",
+        "Object-Oriented Programming (OOP)",
+        "Data Structures",
+        "Python Libraries",
+        "Algorithms"
+      ],
+      "featured": false,
+      "summary": "Mastered Python core fundamentals, OOP principles, and key industry libraries foundational for data science, machine learning, and backend services."
+    },
+    {
+      "id": "dicoding-ai-foundations",
+      "title": "AI Foundations (Belajar Dasar AI)",
+      "issuer": "Dicoding Indonesia",
+      "issueDate": "2026",
+      "category": "Artificial Intelligence",
+      "credentialId": "EYX4Q5MKWPDL",
+      "credentialUrl": "https://www.dicoding.com/certificates/EYX4Q5MKWPDL",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Artificial Intelligence",
+        "Machine Learning Basics",
+        "Deep Learning Foundations",
+        "Computer Vision",
+        "Natural Language Processing"
+      ],
+      "featured": false,
+      "summary": "Comprehensive grounding in core Artificial Intelligence concepts, historical evolution, machine learning algorithms, and deep learning neural architectures."
+    },
+    {
+      "id": "dicoding-machine-learning",
+      "title": "Machine Learning for Beginners",
+      "issuer": "Dicoding Indonesia",
+      "issueDate": "2026",
+      "category": "Artificial Intelligence",
+      "credentialId": "N9ZONKRO8XG5",
+      "credentialUrl": "https://www.dicoding.com/certificates/N9ZONKRO8XG5",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Machine Learning",
+        "Supervised Learning",
+        "Unsupervised Learning",
+        "Scikit-Learn",
+        "Model Optimization"
+      ],
+      "featured": false,
+      "summary": "Practical implementation of supervised and unsupervised machine learning models, feature engineering, classification, clustering, and evaluation metrics using Scikit-Learn."
+    },
+    {
+      "id": "dicoding-project-management",
+      "title": "Project Management Foundations",
+      "issuer": "Dicoding Indonesia",
+      "issueDate": "2026",
+      "category": "Project Management",
+      "credentialId": "07Z67NKORPQR",
+      "credentialUrl": "https://www.dicoding.com/certificates/07Z67NKORPQR",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Project Management",
+        "Agile & Scrum Methodologies",
+        "SDLC Planning",
+        "Scope & Risk Control",
+        "Resource Allocation"
+      ],
+      "featured": false,
+      "summary": "End-to-end software project management fundamentals covering project initiation, Agile and Scrum workflows, risk assessment, and team delivery governance."
+    },
+    {
+      "id": "ibm-skillsbuild-build-ai-agent",
+      "title": "Intelligent by Design: Build an AI Agent",
+      "issuer": "IBM SkillsBuild",
+      "issueDate": "2026",
+      "category": "Artificial Intelligence",
+      "credentialId": "ALM-COURSE_3946359",
+      "credentialUrl": "https://skills.yourlearning.ibm.com/certificate/share/982ac35c79ewogICJsZWFybmVyQ05VTSIgOiAiNzc2MDM2MFJFRyIsCiAgIm9iamVjdElkIiA6ICJBTE0tQ09VUlNFXzM5NDYzNTkiLAogICJvYmplY3RUeXBlIiA6ICJBQ1RJVklUWSIKfQ4996952491-10",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Autonomous AI Agents",
+        "Agentic Workflows",
+        "LLM Tool Calling",
+        "Multi-Step Reasoning",
+        "System Architecture"
+      ],
+      "featured": false,
+      "summary": "Practical certification from IBM SkillsBuild focusing on architecting autonomous AI agents, prompt chaining, reasoning patterns, and tool-augmented LLM systems."
+    },
+    {
+      "id": "ibm-skillsbuild-intro-llm",
+      "title": "Introduction to Large Language Models",
+      "issuer": "IBM SkillsBuild",
+      "issueDate": "2026",
+      "category": "Artificial Intelligence",
+      "credentialId": "ALM-COURSE_4058915",
+      "credentialUrl": "https://skills.yourlearning.ibm.com/certificate/share/9cfceb56a0ewogICJvYmplY3RUeXBlIiA6ICJBQ1RJVklUWSIsCiAgIm9iamVjdElkIiA6ICJBTE0tQ09VUlNFXzQwNTg5MTUiLAogICJsZWFybmVyQ05VTSIgOiAiNzc2MDM2MFJFRyIKfQ70a1bf5560-10",
+      "imageUrl": "/images/certificates/placeholder-cert.png",
+      "skills": [
+        "Large Language Models",
+        "Prompt Engineering",
+        "Generative AI",
+        "Transformer Architectures",
+        "NLP"
+      ],
+      "featured": false,
+      "summary": "Official IBM SkillsBuild verification covering fundamental concepts of Large Language Models, generative AI architectures, prompt design, and practical enterprise LLM use cases."
+    }
+  ]
+}

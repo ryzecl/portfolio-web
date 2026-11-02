@@ -51,6 +51,7 @@ Top-level object with a `projects` array. Each project item contains:
 Top-level object with a `groups` array categorized into distinct technical disciplines:
 - `title`: Discipline title (`Programming Languages`, `Frontend & Mobile`, `Backend & Cloud`, `Data & DevOps`).
 - `priority`: Numeric sort order (1 = highest).
+- `description`: Optional contextual summary of domain focus and engineering execution.
 - `technologies`: Array of specific technology names (e.g. `Next.js`, `React Native`, `Expo`, `Flutter`, `Laravel`, `Express.js`, `Node.js`, `Bootstrap`, `daisyUI`, `Mazer Template`, `Firebase`, `Riverpod`, `Docker`, `Bun`, `cPanel`).
 
 ---
@@ -69,7 +70,23 @@ Top-level object with an `experiences` array documenting professional and agency
 
 ---
 
-## 5. Data Editing Rules
+## 5. `data/certificates.json`
+Top-level object with a `certificates` array documenting licenses, course accreditations, and academic honors:
+- `id`: Unique identifier string (e.g. `gdgoc-ai-2025`).
+- `title`: Name of the certificate or cohort program.
+- `issuer`: Issuing institution or organization.
+- `issueDate`: Year or date string of issuance.
+- `category`: Classification (`Artificial Intelligence`, `Web Development`, `Cloud & DevOps`, `Academic`).
+- `credentialId`: Unique verifiable credential code or ID.
+- `credentialUrl`: Official verification URL (optional, empty string if verified on-record).
+- `imageUrl`: Preview asset path.
+- `skills`: Array of verified technical competencies.
+- `featured`: Boolean indicating whether to highlight in the homepage teaser.
+- `summary`: Brief description of curriculum or achievements.
+
+---
+
+## 6. Data Editing Rules
 1. **Valid JSON**: Strict double quotes, no comments, and no trailing commas.
 2. **Never Fabricate**: Keep unknown fields empty `""` or omit optional properties. Never invent fake statistics or private URLs.
 3. **Slugs**: Keep slugs stable to avoid breaking routes or bookmarks.

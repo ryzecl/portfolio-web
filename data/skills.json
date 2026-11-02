@@ -3,21 +3,25 @@
     {
       "title": "Programming Languages",
       "priority": 1,
+      "description": "Core syntax and strongly typed languages used for scalable system architecture, cross-platform mobile, and backend logic.",
       "technologies": ["TypeScript", "JavaScript", "PHP", "Dart", "Go"]
     },
     {
       "title": "Frontend & Mobile",
       "priority": 2,
+      "description": "Cross-platform mobile applications, component-driven reactive web architectures, and high-performance UI toolkits.",
       "technologies": ["Next.js", "React", "React Native", "Expo", "Flutter", "Tailwind CSS", "Bootstrap", "daisyUI", "Mazer Template", "Inertia.js", "Vite", "shadcn/ui", "GSAP"]
     },
     {
       "title": "Backend & Cloud",
       "priority": 3,
+      "description": "RESTful services, MVC frameworks, client state managers, and authentication infrastructure.",
       "technologies": ["Laravel", "Express.js", "Node.js", "Firebase", "REST API", "Riverpod", "Authentication", "CMS Development"]
     },
     {
       "title": "Data & DevOps",
       "priority": 4,
+      "description": "Relational databases, containerized workflows, edge DNS routing, and CI/CD version control.",
       "technologies": ["MySQL", "PostgreSQL", "Supabase", "Cloudflare", "cPanel", "Docker", "Bun", "Git", "GitHub"]
     }
   ]

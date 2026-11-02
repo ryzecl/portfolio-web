@@ -156,5 +156,33 @@ export interface ExperienceItem {
 export interface SkillGroup {
   title: string;
   priority: number;
+  description?: string;
   technologies: string[];
 }
+
+export interface CertificateItem {
+  id: string;
+  title: string;
+  issuer: string;
+  issueDate: string;
+  category: string;
+  credentialId?: string;
+  credentialUrl?: string;
+  imageUrl?: string;
+  skills: string[];
+  featured: boolean;
+  summary: string;
+}
+
+export interface GalleryItem {
+  id: string;
+  title: string;
+  category: string;
+  date: string;
+  location: string;
+  description: string;
+  imageUrl: string;
+  tags: string[];
+  featured: boolean;
+}
+

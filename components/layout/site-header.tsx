@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { House, FolderGit2, SendHorizontal, ArrowUpRight } from 'lucide-react';
+import { House, FolderGit2, SendHorizontal, ArrowUpRight, Award } from 'lucide-react';
 import { SiteData } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +14,7 @@ interface SiteHeaderProps {
 const mobileNavItems = [
   { label: 'Home', href: '/', icon: House },
   { label: 'Project', href: '/projects', icon: FolderGit2 },
+  { label: 'Credentials', href: '/credentials', icon: Award },
   { label: 'Contact', href: '/contact', icon: SendHorizontal },
 ];
 

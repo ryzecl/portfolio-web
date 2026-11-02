@@ -29,8 +29,10 @@ import {
   SiBun,
   SiCpanel,
   SiGreensock,
+  SiCloudflare,
+  SiShadcnui,
 } from 'react-icons/si';
-import { Braces, Terminal } from 'lucide-react';
+import { Braces, Terminal, KeyRound, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function MidtransLogo({ className }: { className?: string }) {
@@ -164,6 +166,17 @@ export function TechIcon({ name, className = 'w-3.5 h-3.5 shrink-0', colored = t
     case 'gsap':
     case 'greensock':
       return <SiGreensock className={cn(className, colored ? 'text-[#88CE02]' : 'text-foreground')} />;
+    case 'shadcnui':
+    case 'shadcn':
+      return <SiShadcnui className={cn(className, colored && 'text-foreground')} />;
+    case 'cloudflare':
+      return <SiCloudflare className={cn(className, colored ? 'text-[#F38020]' : 'text-foreground')} />;
+    case 'authentication':
+    case 'auth':
+      return <KeyRound className={cn(className, colored ? 'text-accent' : 'text-foreground')} />;
+    case 'cmsdevelopment':
+    case 'cms':
+      return <Layers className={cn(className, colored ? 'text-accent' : 'text-foreground')} />;
     default:
       return <Terminal className={cn(className, 'text-muted')} />;
   }

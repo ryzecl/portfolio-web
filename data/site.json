@@ -42,6 +42,7 @@
   "navigation": [
     { "label": "Home", "href": "/" },
     { "label": "Projects", "href": "/projects" },
+    { "label": "Credentials", "href": "/credentials" },
     { "label": "Contact", "href": "/contact" }
   ],
   "about": {
