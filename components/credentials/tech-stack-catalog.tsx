@@ -2,14 +2,6 @@
 
 import React from 'react';
 import { SkillGroup } from '@/lib/types';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { TechIcon } from '@/components/ui/tech-icon';
 import { Code2, Smartphone, Server, Database, Cpu } from 'lucide-react';
 
@@ -48,66 +40,61 @@ export function TechStackCatalog({
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+    <div className="rounded-2xl bg-surface border border-border divide-y divide-border/60 overflow-hidden shadow-2xs">
       {groups.map((group) => {
         const icon = getGroupIcon(group.title);
         return (
-          <Card
+          <div
             key={group.title}
-            className="group relative flex flex-col justify-between bg-surface border-border hover:border-accent/40 transition-all duration-300 overflow-hidden"
+            className="group relative p-5 sm:p-6 lg:p-7 hover:bg-surface-raised/30 transition-colors duration-200"
           >
-            {/* Top Accent Line */}
-            <div className="absolute top-0 inset-x-0 h-0.5 bg-transparent group-hover:bg-accent/70 transition-all duration-300" />
-
-            <div>
-              <CardHeader className="p-5 sm:p-6 pb-3 sm:pb-4 space-y-2 border-b border-border/50">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center shrink-0">
-                      {icon}
-                    </div>
-                    <CardTitle className="text-base sm:text-lg font-bold text-foreground">
-                      {group.title}
-                    </CardTitle>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-start">
+              {/* Left Column: Category Spec & Details */}
+              <div className="md:col-span-4 lg:col-span-3 space-y-2.5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center shrink-0">
+                    {icon}
                   </div>
-                  <Badge
-                    variant="outline"
-                    className="font-mono text-[10px] sm:text-[11px] tracking-wider border-border bg-surface-raised text-foreground/80 shrink-0"
-                  >
-                    {group.technologies.length} Tools
-                  </Badge>
+                  <h4 className="text-base font-bold text-foreground tracking-tight">
+                    {group.title}
+                  </h4>
                 </div>
 
                 {group.description && (
-                  <CardDescription className="text-xs text-muted leading-relaxed">
+                  <p className="text-xs text-muted leading-relaxed">
                     {group.description}
-                  </CardDescription>
+                  </p>
                 )}
-              </CardHeader>
 
-              <CardContent className="p-5 sm:p-6 pt-4 sm:pt-5">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
+                <div className="pt-1">
+                  <span className="inline-block font-mono text-[11px] text-muted px-2 py-0.5 rounded-md bg-surface-raised border border-border/80">
+                    {group.technologies.length} {group.technologies.length === 1 ? 'Technology' : 'Technologies'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Column: Minimalist Technical Matrix Grid */}
+              <div className="md:col-span-8 lg:col-span-9">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2.5">
                   {group.technologies.map((tech) => (
                     <div
                       key={tech}
-                      className="group/item flex items-center gap-2.5 p-2 sm:p-2.5 rounded-xl bg-surface-raised/70 border border-border/70 hover:border-accent/50 hover:bg-surface-raised transition-all duration-200"
+                      className="group/item flex items-center gap-2.5 px-3 py-2 rounded-xl bg-surface-raised/50 border border-border/60 hover:border-accent/40 hover:bg-surface-raised transition-all duration-150 cursor-default"
                     >
-                      <div className="w-6 h-6 rounded-md bg-surface border border-border/70 flex items-center justify-center shrink-0">
-                        <TechIcon
-                          name={tech}
-                          className="w-3.5 h-3.5"
-                          colored={true}
-                        />
-                      </div>
-                      <span className="text-xs font-medium text-foreground/90 group-hover/item:text-foreground truncate transition-colors">
+                      <TechIcon
+                        name={tech}
+                        className="w-4 h-4 shrink-0 opacity-80 group-hover/item:opacity-100 group-hover/item:scale-105 transition-all duration-150"
+                        colored={true}
+                      />
+                      <span className="text-xs font-mono font-medium text-foreground/90 group-hover/item:text-foreground truncate transition-colors">
                         {tech}
                       </span>
                     </div>
                   ))}
                 </div>
-              </CardContent>
+              </div>
             </div>
-          </Card>
+          </div>
         );
       })}
     </div>

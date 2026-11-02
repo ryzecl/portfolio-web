@@ -55,22 +55,24 @@ export function ProjectFilters({
       <div className="space-y-4">
         {/* Top Row: Tabs Switcher on the left, Search input on the right */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-auto"
-          >
-            <TabsList className="bg-surface border border-border p-1 rounded-xl">
-              <TabsTrigger value="all" className="gap-1.5 text-xs">
-                <Layers className="w-3.5 h-3.5" />
-                All Works ({initialProjects.length})
-              </TabsTrigger>
-              <TabsTrigger value="featured" className="gap-1.5 text-xs">
-                <Sparkles className="w-3.5 h-3.5" />
-                Featured ({featuredCount})
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="w-full sm:w-auto overflow-x-auto scrollbar-none pb-1 sm:pb-0 -mb-1 sm:mb-0">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-auto"
+            >
+              <TabsList className="inline-flex w-max min-w-full sm:min-w-0 sm:w-auto bg-surface border border-border p-1 rounded-xl">
+                <TabsTrigger value="all" className="gap-1.5 text-xs shrink-0 px-3 sm:px-3.5 flex-1 sm:flex-initial">
+                  <Layers className="w-3.5 h-3.5" />
+                  All Works ({initialProjects.length})
+                </TabsTrigger>
+                <TabsTrigger value="featured" className="gap-1.5 text-xs shrink-0 px-3 sm:px-3.5 flex-1 sm:flex-initial">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Featured ({featuredCount})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
           {/* Search bar */}
           <div className="relative w-full sm:w-64">

@@ -24,12 +24,9 @@ export function CertificateCard({
           onSelect(certificate);
         }
       }}
-      className="group relative flex flex-col justify-between p-5 rounded-2xl bg-surface border border-border hover:border-accent/40 hover:bg-surface-raised transition-all duration-300 overflow-hidden cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent h-full min-h-[140px]"
+      className="group relative flex flex-col justify-between p-5 rounded-2xl bg-surface border border-border hover:border-accent/60 hover:bg-surface-raised transition-all duration-200 overflow-hidden cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent h-full min-h-[140px]"
       aria-label={`View certificate details for ${certificate.title}`}
     >
-      {/* Top Accent Line */}
-      <div className="absolute top-0 inset-x-0 h-0.5 bg-transparent group-hover:bg-accent/70 transition-all duration-300" />
-
       {/* Top Row: Category Pill + Up-Right Arrow Icon */}
       <div className="flex items-center justify-between gap-2 w-full mb-3">
         <span className="inline-block text-[10px] sm:text-[11px] font-mono font-medium tracking-wider uppercase px-2 py-0.5 rounded-md bg-surface-raised border border-border/80 text-muted group-hover:text-accent group-hover:border-accent/30 transition-colors">

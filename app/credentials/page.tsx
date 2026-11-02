@@ -123,20 +123,39 @@ export default function CredentialsPage() {
         className="space-y-8"
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
-          <TabsList className="bg-surface border border-border p-1 rounded-xl">
-            <TabsTrigger value="all" className="gap-1.5 text-xs">
-              <Layers className="w-3.5 h-3.5" />
-              All Archive
-            </TabsTrigger>
-            <TabsTrigger value="certificates" className="gap-1.5 text-xs">
-              <Award className="w-3.5 h-3.5" />
-              Certifications ({filteredCertificates.length})
-            </TabsTrigger>
-            <TabsTrigger value="tech-stack" className="gap-1.5 text-xs">
-              <Cpu className="w-3.5 h-3.5" />
-              Tech Stack ({totalTechCount})
-            </TabsTrigger>
-          </TabsList>
+          {/* Scrollable Container for Tabs to prevent mobile overflow */}
+          <div className="w-full sm:w-auto overflow-x-auto scrollbar-none pb-1 sm:pb-0 -mb-1 sm:mb-0">
+            <TabsList className="inline-flex w-max min-w-full sm:min-w-0 sm:w-auto bg-surface border border-border p-1 rounded-xl">
+              <TabsTrigger
+                value="all"
+                className="gap-1.5 text-xs shrink-0 px-3 sm:px-3.5 flex-1 sm:flex-initial"
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>All Archive</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="certificates"
+                className="gap-1.5 text-xs shrink-0 px-3 sm:px-3.5 flex-1 sm:flex-initial"
+              >
+                <Award className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Certifications</span>
+                <span className="sm:hidden">Certs</span>
+                <span className="font-mono text-[10px] opacity-70 ml-0.5">
+                  ({filteredCertificates.length})
+                </span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="tech-stack"
+                className="gap-1.5 text-xs shrink-0 px-3 sm:px-3.5 flex-1 sm:flex-initial"
+              >
+                <Cpu className="w-3.5 h-3.5" />
+                <span>Tech Stack</span>
+                <span className="font-mono text-[10px] opacity-70 ml-0.5">
+                  ({totalTechCount})
+                </span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Search bar */}
           <div className="relative w-full sm:w-64">
