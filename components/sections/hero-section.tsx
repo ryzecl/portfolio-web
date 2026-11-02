@@ -166,7 +166,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
           </div>
 
           {/* Main Headline: Progressive Enhancement with SSR Fallback H1 + Interactive TechText */}
-          <div className="w-full py-1 flex justify-center sm:justify-start relative min-h-28 sm:min-h-22 md:min-h-28 lg:min-h-36 xl:min-h-40">
+          <div className="w-full py-1 flex justify-center sm:justify-start relative min-h-36 sm:min-h-22 md:min-h-28 lg:min-h-36 xl:min-h-40">
             {/* 1. Semantic SSR Fallback H1: Visible for SEO and before client canvas warms up */}
             <h1
               className={`w-full font-black tracking-tight text-foreground uppercase select-none transition-opacity duration-500 ${
@@ -174,7 +174,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
               }`}
             >
               {/* Mobile layout: 2 stacked lines matching TechText dimensions */}
-              <span className="sm:hidden flex flex-col items-center gap-1 text-[2.75rem] leading-[1.05] font-black tracking-tighter">
+              <span className="sm:hidden flex flex-col items-center gap-1.5 text-[3.25rem] leading-[0.98] font-black tracking-tighter">
                 {headlineWords.map((word, idx) => (
                   <span key={idx} className="block">{word}</span>
                 ))}
@@ -196,15 +196,15 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
               >
                 {isMobile ? (
                   /* Mobile: 2 stacked words */
-                  <div className="w-full flex flex-col items-center gap-1.5">
+                  <div className="w-full flex flex-col items-center gap-2">
                     {headlineWords.map((word, idx) => (
-                      <div key={idx} className="h-14 w-full">
+                      <div key={idx} className="h-[72px] sm:h-18 w-full">
                         <TechText
                           text={word}
                           fitText={widestWord}
                           align="center"
                           fontWeight={900}
-                          fontSize={150}
+                          fontSize={160}
                           letterSpacing={-0.03}
                           color="currentColor"
                           accentColor="#2563eb"
@@ -251,9 +251,10 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             <ShinyText
               text={hero.locationText || 'from Indonesia'}
               color="#52525b"
-              shineColor="#09090b"
-              speed={3}
+              shineColor="#ffffff"
+              speed={2.5}
               shineWidth={45}
+              glow={0.2}
             />
             <IndonesiaFlag className="w-7 h-4.75 sm:w-9 sm:h-6 md:w-11 md:h-7.25 lg:w-12 lg:h-8" />
           </div>
