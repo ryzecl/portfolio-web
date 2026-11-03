@@ -31,6 +31,7 @@ export interface LanyardProps {
   strapLength?: number;
   strapImage?: string;
   strapColor?: string;
+  strapText?: string;
   strapWidth?: number;
   metal?: Metal;
   gravity?: number;
@@ -56,6 +57,7 @@ interface Settings {
   strapLength: number;
   strapImage?: string;
   strapColor: string;
+  strapText?: string;
   strapWidth: number;
   metal: Metal;
   gravity: number;
@@ -152,6 +154,7 @@ interface Applied {
   imageKey?: string;
   faceKey?: string;
   strapColor?: string;
+  strapText?: string;
   strapScale?: number;
 }
 
@@ -597,15 +600,27 @@ const paintFace = (canvas: HTMLCanvasElement, image: HTMLImageElement | null, co
   if (image) drawFitted(ctx, image, canvas.width, canvas.height, fit);
 };
 
-const paintStrap = (canvas: HTMLCanvasElement, image: HTMLImageElement | null, color: Rgb) => {
+const paintStrap = (
+  canvas: HTMLCanvasElement,
+  image: HTMLImageElement | null,
+  color: Rgb,
+  strapText?: string
+) => {
   const across = 192;
-  const along = image ? Math.max(64, Math.round((image.width / image.height) * across)) : across * 2;
+  const along = image
+    ? Math.max(64, Math.round((image.width / image.height) * across))
+    : strapText
+    ? 1536
+    : across * 2;
   canvas.width = across;
   canvas.height = along;
   const ctx = canvas.getContext('2d');
   if (!ctx) return along / across;
+
+  // Fill base color
   ctx.fillStyle = toCss(color);
   ctx.fillRect(0, 0, across, along);
+
   if (image) {
     ctx.save();
     ctx.translate(across, 0);
@@ -614,14 +629,42 @@ const paintStrap = (canvas: HTMLCanvasElement, image: HTMLImageElement | null, c
     ctx.restore();
     return along / across;
   }
+
+  // Subtle fabric rib texture
   const ink: Rgb = luminance(color) > 0.5 ? [0, 0, 0] : [1, 1, 1];
-  ctx.fillStyle = toCss(ink, 0.05);
+  ctx.fillStyle = toCss(ink, 0.04);
   for (let y = 0; y < along; y += 4) ctx.fillRect(0, y, across, 1);
+
+  // Stitched border accents on strap edges
   ctx.fillStyle = toCss(ink, 0.2);
   for (let y = 0; y < along; y += 14) {
-    ctx.fillRect(across * 0.075, y, 2, 8);
-    ctx.fillRect(across * 0.925 - 2, y, 2, 8);
+    ctx.fillRect(across * 0.06, y, 2.5, 8);
+    ctx.fillRect(across * 0.94 - 2.5, y, 2.5, 8);
   }
+
+  // Crisp white typography repeating along the lanyard strap
+  if (strapText) {
+    ctx.save();
+    // Center horizontally across the strap width
+    ctx.translate(across / 2, 0);
+    ctx.rotate(Math.PI / 2);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 46px "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const segment = `${strapText.trim()}    ✦    `;
+    const segmentWidth = Math.max(ctx.measureText(segment).width, 320);
+    const count = Math.ceil(along / segmentWidth) + 1;
+
+    for (let i = 0; i < count; i++) {
+      ctx.fillText(segment, i * segmentWidth + segmentWidth / 2, 0);
+    }
+
+    ctx.restore();
+  }
+
   return along / across;
 };
 
@@ -880,6 +923,7 @@ const Lanyard = ({
   strapLength = 0.5,
   strapImage,
   strapColor = '#111111',
+  strapText,
   strapWidth = 0.65,
   metal = 'silver',
   gravity = 1,
@@ -908,6 +952,7 @@ const Lanyard = ({
     strapLength,
     strapImage,
     strapColor,
+    strapText,
     strapWidth,
     metal,
     gravity,
@@ -1070,7 +1115,12 @@ const Lanyard = ({
 
     const repaintStrap = () => {
       const s = settingsRef.current!;
-      tileRatio = paintStrap(strapCanvas, images.strap, parseColor(s.strapColor, [0.07, 0.07, 0.07]));
+      tileRatio = paintStrap(
+        strapCanvas,
+        images.strap,
+        parseColor(s.strapColor, [0.04, 0.04, 0.05]),
+        s.strapText
+      );
       weave.repeat.set(2, 2 * tileRatio);
       strapTexture.dispose();
       strapTexture.needsUpdate = true;
@@ -1149,7 +1199,7 @@ const Lanyard = ({
       }
       const faceKey = `${layoutKey}|${s.cardColor}|${s.imageFit}`;
       if (faceKey !== applied.faceKey) paintFaces();
-      if (s.strapColor !== applied.strapColor) repaintStrap();
+      if (s.strapColor !== applied.strapColor || s.strapText !== applied.strapText) repaintStrap();
 
       const finish = FINISHES[s.finish] || FINISHES.glossy;
       const card = parseColor(s.cardColor, [1, 1, 1]);
@@ -1177,7 +1227,7 @@ const Lanyard = ({
       }
       canvas.style.touchAction = s.interactive ? 'pan-y' : 'auto';
 
-      applied = { layoutKey, framingKey, imageKey, faceKey, strapColor: s.strapColor, strapScale };
+      applied = { layoutKey, framingKey, imageKey, faceKey, strapColor: s.strapColor, strapText: s.strapText, strapScale };
       start();
     };
 
