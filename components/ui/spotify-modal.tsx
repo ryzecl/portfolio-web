@@ -29,27 +29,9 @@ interface SpotifyModalProps {
   className?: string;
 }
 
-interface LanyardSpotifyData {
-  track_id: string;
-  song: string;
-  artist: string;
-  album: string;
-  album_art_url: string;
-  timestamps?: {
-    start: number;
-    end: number;
-  };
-}
-
-interface LanyardResponse {
-  success: boolean;
-  data: {
-    listening_to_spotify: boolean;
-    spotify?: LanyardSpotifyData;
-    active_on_discord_desktop?: boolean;
-    active_on_discord_mobile?: boolean;
-    active_on_discord_web?: boolean;
-  };
+interface NowPlayingResponse {
+  isPlaying: boolean;
+  track: SpotifyTrack;
 }
 
 const STORAGE_KEY = 'fnh_spotify_last_played';
@@ -99,14 +81,13 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
 
   const [track, setTrack] = useState<SpotifyTrack>(fallbackTrack);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [timestamps, setTimestamps] = useState<{ start: number; end: number } | null>(null);
-  const [currentTime, setCurrentTime] = useState<number>(Date.now());
   const [isLiked, setIsLiked] = useState<boolean>(true);
   const [isShuffle, setIsShuffle] = useState<boolean>(false);
   const [isRepeat, setIsRepeat] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
+  const [playbackSeconds, setPlaybackSeconds] = useState<number>(45);
 
-  // Load cached track
+  // Load cached track initially, then sync with server
   useEffect(() => {
     setMounted(true);
     try {
@@ -121,69 +102,60 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
       // Ignore
     }
 
-    const fetchLanyard = async () => {
+    const fetchNowPlaying = async () => {
       try {
-        const res = await fetch(
-          `https://api.lanyard.rest/v1/users/${discordUserId}`,
-          { cache: 'no-store' }
-        );
+        const res = await fetch('/api/now-playing', { cache: 'no-store' });
         if (!res.ok) return;
 
-        const data: LanyardResponse = await res.json();
-        if (data.success && data.data) {
-          if (data.data.listening_to_spotify && data.data.spotify) {
-            const currentTrack: SpotifyTrack = {
-              song: data.data.spotify.song,
-              artist: data.data.spotify.artist,
-              album: data.data.spotify.album,
-              albumArtUrl: data.data.spotify.album_art_url,
-              trackUrl: `https://open.spotify.com/track/${data.data.spotify.track_id}`,
-            };
-            setTrack(currentTrack);
-            setIsPlaying(true);
-            if (data.data.spotify.timestamps) {
-              setTimestamps(data.data.spotify.timestamps);
-            }
+        const data: NowPlayingResponse = await res.json();
+        if (data && data.track) {
+          setTrack(data.track);
+          setIsPlaying(Boolean(data.isPlaying));
 
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(currentTrack));
-            } catch {
-              // Ignore
-            }
-          } else {
-            setIsPlaying(false);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data.track));
+          } catch {
+            // Ignore
           }
         }
       } catch (err) {
-        console.error('Failed to fetch Lanyard Spotify data:', err);
+        console.error('Failed to fetch now-playing track:', err);
       }
     };
 
-    fetchLanyard();
-    const interval = setInterval(fetchLanyard, 12000);
+    fetchNowPlaying();
+    const interval = setInterval(fetchNowPlaying, 12000);
     return () => clearInterval(interval);
-  }, [discordUserId]);
+  }, []);
 
-  // Real-time progress bar tick every 500ms when playing
+  // Tick playback timer when playing
   useEffect(() => {
-    if (!isPlaying || !timestamps) return;
+    if (!isPlaying) return;
     const ticker = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 500);
+      setPlaybackSeconds((prev) => (prev >= 210 ? 10 : prev + 1));
+    }, 1000);
     return () => clearInterval(ticker);
-  }, [isPlaying, timestamps]);
+  }, [isPlaying]);
 
   // Compute live progress percentage & elapsed time
   const { elapsedMs, durationMs, progressPercent } = useMemo(() => {
-    if (timestamps && isPlaying) {
-      const total = Math.max(1, timestamps.end - timestamps.start);
-      const elapsed = Math.min(total, Math.max(0, currentTime - timestamps.start));
-      const pct = (elapsed / total) * 100;
-      return { elapsedMs: elapsed, durationMs: total, progressPercent: pct };
+    const totalDuration = 210; // 3m 30s standard duration
+    if (isPlaying) {
+      const elapsed = playbackSeconds;
+      const pct = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+      return {
+        elapsedMs: elapsed * 1000,
+        durationMs: totalDuration * 1000,
+        progressPercent: pct,
+      };
     }
-    // Fallback static duration for showcase
-    return { elapsedMs: 72000, durationMs: 224000, progressPercent: 32 };
-  }, [timestamps, isPlaying, currentTime]);
+    // Finished / recently played track
+    return {
+      elapsedMs: totalDuration * 1000,
+      durationMs: totalDuration * 1000,
+      progressPercent: 100,
+    };
+  }, [isPlaying, playbackSeconds]);
 
   const loreText =
     spotifyData?.lore ||

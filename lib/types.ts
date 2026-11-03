@@ -82,7 +82,8 @@ export interface SpotifyTrack {
 }
 
 export interface SpotifyData {
-  discordUserId: string;
+  lastfmUsername?: string;
+  discordUserId?: string;
   tagline: string;
   lore: string;
   defaultTrack: SpotifyTrack;

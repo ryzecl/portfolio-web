@@ -11,22 +11,9 @@ interface SpotifyBadgeProps {
   className?: string;
 }
 
-interface LanyardResponse {
-  success: boolean;
-  data: {
-    listening_to_spotify: boolean;
-    spotify?: {
-      track_id: string;
-      song: string;
-      artist: string;
-      album: string;
-      album_art_url: string;
-      timestamps?: {
-        start: number;
-        end: number;
-      };
-    };
-  };
+interface NowPlayingResponse {
+  isPlaying: boolean;
+  track: SpotifyTrack;
 }
 
 const STORAGE_KEY = 'fnh_spotify_last_played';
@@ -85,46 +72,31 @@ export function SpotifyBadge({ spotifyData, className }: SpotifyBadgeProps) {
       // Ignore localStorage errors
     }
 
-    const fetchLanyard = async () => {
+    const fetchNowPlaying = async () => {
       try {
-        const res = await fetch(
-          `https://api.lanyard.rest/v1/users/${discordUserId}`,
-          { cache: 'no-store' }
-        );
+        const res = await fetch('/api/now-playing', { cache: 'no-store' });
         if (!res.ok) return;
 
-        const data: LanyardResponse = await res.json();
-        if (data.success && data.data) {
-          if (data.data.listening_to_spotify && data.data.spotify) {
-            const currentTrack: SpotifyTrack = {
-              song: data.data.spotify.song,
-              artist: data.data.spotify.artist,
-              album: data.data.spotify.album,
-              albumArtUrl: data.data.spotify.album_art_url,
-              trackUrl: `https://open.spotify.com/track/${data.data.spotify.track_id}`,
-            };
-            setTrack(currentTrack);
-            setIsPlaying(true);
+        const data: NowPlayingResponse = await res.json();
+        if (data && data.track) {
+          setTrack(data.track);
+          setIsPlaying(Boolean(data.isPlaying));
 
-            // Persist as last played
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(currentTrack));
-            } catch {
-              // Ignore
-            }
-          } else {
-            setIsPlaying(false);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data.track));
+          } catch {
+            // Ignore
           }
         }
       } catch (err) {
-        console.error('Failed to fetch Lanyard Spotify data:', err);
+        console.error('Failed to fetch now-playing track:', err);
       }
     };
 
-    fetchLanyard();
-    const interval = setInterval(fetchLanyard, 15000);
+    fetchNowPlaying();
+    const interval = setInterval(fetchNowPlaying, 15000);
     return () => clearInterval(interval);
-  }, [discordUserId]);
+  }, []);
 
   const loreText =
     spotifyData?.lore ||
