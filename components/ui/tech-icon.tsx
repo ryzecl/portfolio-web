@@ -80,7 +80,8 @@ interface TechIconProps {
 export function TechIcon({ name, className = 'w-3.5 h-3.5 shrink-0', colored = true }: TechIconProps) {
   const normalized = name.toLowerCase().replace(/[\s\.-]/g, '');
 
-  switch (normalized) {
+  const getIcon = () => {
+    switch (normalized) {
     case 'nextjs':
     case 'next':
       return <SiNextdotjs className={cn(className, colored && 'text-foreground')} />;
@@ -179,5 +180,12 @@ export function TechIcon({ name, className = 'w-3.5 h-3.5 shrink-0', colored = t
       return <Layers className={cn(className, colored ? 'text-accent' : 'text-foreground')} />;
     default:
       return <Terminal className={cn(className, 'text-muted')} />;
-  }
+    }
+  };
+
+  return (
+    <span aria-hidden="true" className="inline-flex shrink-0">
+      {getIcon()}
+    </span>
+  );
 }

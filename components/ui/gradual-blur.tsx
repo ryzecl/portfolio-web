@@ -27,7 +27,7 @@ export interface GradualBlurProps {
   style?: CSSProperties;
 }
 
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = useEffect;
 
 const CURVES: Record<string, (t: number) => number> = {
   linear: t => t,

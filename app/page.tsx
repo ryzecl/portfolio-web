@@ -74,7 +74,7 @@ export default function HomePage() {
         height="6rem"
         strength={1.5}
         zIndex={30}
-        autoHide={true}
+        autoHide={false}
         className="hidden sm:block"
       />
     </div>

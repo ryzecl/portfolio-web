@@ -224,12 +224,13 @@ export function GitHubCalendarCard({
                       return (
                         <div
                           key={day.date}
+                          role="img"
+                          aria-label={day.text}
                           title={day.text}
                           className={cn(
                             'w-3 h-3 rounded-[3px] border border-transparent transition-all duration-150 cursor-pointer hover:scale-125 hover:z-10',
                             colorClass
                           )}
-                          aria-label={day.text}
                         />
                       );
                     })}

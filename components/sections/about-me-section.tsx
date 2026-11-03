@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { SiteIdentity, ContactData, AboutData, EducationItem, ExperienceItem } from '@/lib/types';
@@ -99,7 +100,7 @@ export function AboutMeSection({
           observer.disconnect();
         }
       },
-      { rootMargin: '300px' }
+      { rootMargin: '100px' }
     );
 
     observer.observe(el);

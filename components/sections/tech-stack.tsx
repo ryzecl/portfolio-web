@@ -233,7 +233,7 @@ export function TechStack({ contact, spotify }: TechStackProps) {
               key={tech.name}
               className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
             >
-              <span className="shrink-0">{tech.icon}</span>
+              <span className="shrink-0" aria-hidden="true">{tech.icon}</span>
               <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
                 {tech.name}
               </span>
@@ -251,7 +251,7 @@ export function TechStack({ contact, spotify }: TechStackProps) {
               key={tech.name}
               className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
             >
-              <span className="shrink-0">{tech.icon}</span>
+              <span className="shrink-0" aria-hidden="true">{tech.icon}</span>
               <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
                 {tech.name}
               </span>

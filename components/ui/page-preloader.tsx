@@ -11,8 +11,9 @@ export function PagePreloader({ brandName = 'FNH .' }: PagePreloaderProps) {
   const [isDestroyed, setIsDestroyed] = useState(false);
 
   useEffect(() => {
-    // Respect user's motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Respect user's motion preference or mobile screen (instant paint for mobile / bot audits)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || isMobile) {
       setIsLoaded(true);
       setIsDestroyed(true);
       return;
@@ -20,10 +21,10 @@ export function PagePreloader({ brandName = 'FNH .' }: PagePreloaderProps) {
 
     // Wait until document and fonts are warm, then lift the curtain smoothly
     const handleReady = () => {
-      // Small graceful buffer (400ms) to allow WebGL, Canvas, and GSAP to prepare first frame
+      // Small graceful buffer (150ms on desktop) to allow layout stabilization
       const timer = setTimeout(() => {
         setIsLoaded(true);
-      }, 400);
+      }, 150);
       return () => clearTimeout(timer);
     };
 
@@ -33,10 +34,10 @@ export function PagePreloader({ brandName = 'FNH .' }: PagePreloaderProps) {
       window.addEventListener('load', handleReady, { once: true });
     }
 
-    // Safety timeout: ensure preloader dismisses within 1.2s even on slow networks
+    // Safety timeout: ensure preloader dismisses within 600ms even on slow networks
     const safetyTimer = setTimeout(() => {
       setIsLoaded(true);
-    }, 1200);
+    }, 600);
 
     return () => {
       window.removeEventListener('load', handleReady);

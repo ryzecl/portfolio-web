@@ -49,6 +49,9 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [canvasReady, setCanvasReady] = useState(false);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -64,13 +67,25 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
       setCanvasReady(true);
     }, 180);
 
+    // Observe hero visibility to stop canvas & WebGL RAF loops when scrolled out of view
+    const el = containerRef.current;
+    let observer: IntersectionObserver | null = null;
+    if (el && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsHeroVisible(entry.isIntersecting);
+        },
+        { threshold: 0.05 }
+      );
+      observer.observe(el);
+    }
+
     return () => {
       window.removeEventListener('resize', checkMobile);
       clearTimeout(readyTimer);
+      observer?.disconnect();
     };
   }, []);
-
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const currentWord = greetings[wordIndex % greetings.length];
@@ -109,9 +124,9 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
       ref={containerRef}
       className="relative h-screen min-h-dvh w-full flex flex-col justify-center pt-20 pb-10 sm:pt-24 sm:pb-12 bg-background text-foreground overflow-hidden"
     >
-      {/* MicroSlats Ambient Background from ReactBits (Mount only when client is active to eliminate SSR/TBT blocking) */}
-      {isMounted && (
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-35 transition-opacity duration-1000">
+      {/* MicroSlats Ambient Background: Desktop only, paused/unmounted when scrolled out of view */}
+      {isMounted && !isMobile && isHeroVisible && (
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-25 dark:opacity-35 transition-opacity duration-1000 hidden sm:block">
           <MicroSlats
             preset="swell"
             color="#2563eb"
@@ -127,6 +142,12 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
           />
         </div>
       )}
+
+      {/* Mobile Ambient Glow (CSS only, zero CPU impact) */}
+      <div
+        className="sm:hidden absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_80%_50%_at_50%_20%,rgba(37,99,235,0.08),transparent_70%)]"
+        aria-hidden="true"
+      />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 text-center sm:text-left my-auto">
         <div className="max-w-5xl mx-auto sm:mx-0 flex flex-col items-center sm:items-start">
@@ -165,83 +186,57 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
             </div>
           </div>
 
-          {/* Main Headline: Progressive Enhancement with SSR Fallback H1 + Interactive TechText */}
+          {/* Main Headline: Semantic H1 for SEO & Mobile, Interactive TechText on Desktop */}
           <div className="w-full py-1 flex justify-center sm:justify-start relative min-h-36 sm:min-h-22 md:min-h-28 lg:min-h-36 xl:min-h-40">
-            {/* 1. Semantic SSR Fallback H1: Visible for SEO and before client canvas warms up */}
+            {/* 1. Semantic H1: Always active on mobile, SSR/fallback on desktop before warm up */}
             <h1
-              className={`w-full font-black tracking-tight text-foreground uppercase select-none transition-opacity duration-500 ${
-                canvasReady ? 'opacity-0 pointer-events-none absolute inset-0' : 'opacity-100'
+              className={`w-full font-black tracking-tight text-foreground sm:uppercase select-none transition-opacity duration-500 ${
+                !isMobile && canvasReady ? 'opacity-0 pointer-events-none absolute inset-0' : 'opacity-100'
               }`}
             >
-              {/* Mobile layout: 2 stacked lines matching TechText dimensions */}
-              <span className="sm:hidden flex flex-col items-center gap-1.5 text-[3.25rem] leading-[0.98] font-black tracking-tighter">
-                {headlineWords.map((word, idx) => (
-                  <span key={idx} className="block">{word}</span>
-                ))}
+              {/* Mobile layout: 2 stacked lines with initial capital only */}
+              <span className="sm:hidden flex flex-col items-center gap-1.5 text-[3.25rem] leading-[0.98] font-black tracking-tight normal-case">
+                {headlineWords.map((word, idx) => {
+                  const titleCased = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                  return (
+                    <span key={idx} className="block">{titleCased}</span>
+                  );
+                })}
               </span>
 
-              {/* Desktop layout: single clean headline matching TechText */}
+              {/* Desktop layout: single clean headline */}
               <span className="hidden sm:block text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[96px] font-black leading-none tracking-tight">
                 {headline}
               </span>
             </h1>
 
-            {/* 2. Interactive TechText Canvas: Mounted only on client, restricted to active viewport */}
-            {isMounted && (
+            {/* 2. Interactive TechText Canvas: Mounted only on Desktop when hero is in view */}
+            {isMounted && !isMobile && isHeroVisible && (
               <div
-                className={`w-full transition-opacity duration-500 ${
+                className={`w-full transition-opacity duration-500 hidden sm:block ${
                   canvasReady ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 }`}
                 aria-hidden="true"
               >
-                {isMobile ? (
-                  /* Mobile: 2 stacked words */
-                  <div className="w-full flex flex-col items-center gap-2">
-                    {headlineWords.map((word, idx) => (
-                      <div key={idx} className="h-[72px] sm:h-18 w-full">
-                        <TechText
-                          text={word}
-                          fitText={widestWord}
-                          align="center"
-                          fontWeight={900}
-                          fontSize={160}
-                          letterSpacing={-0.03}
-                          color="currentColor"
-                          accentColor="#2563eb"
-                          lineStyle="dashed"
-                          draggable={true}
-                          clickKick={true}
-                          sweep={true}
-                          labels={true}
-                          selection={true}
-                          guides={false}
-                          className="text-foreground"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  /* Desktop: Single continuous line */
-                  <div className="h-20 sm:h-22 md:h-28 lg:h-36 xl:h-40 w-full">
-                    <TechText
-                      text={headline}
-                      align="left"
-                      fontWeight={900}
-                      fontSize={120}
-                      letterSpacing={-0.03}
-                      color="currentColor"
-                      accentColor="#2563eb"
-                      lineStyle="dashed"
-                      draggable={true}
-                      clickKick={true}
-                      sweep={true}
-                      labels={true}
-                      selection={true}
-                      guides={false}
-                      className="text-foreground"
-                    />
-                  </div>
-                )}
+                <div className="h-20 sm:h-22 md:h-28 lg:h-36 xl:h-40 w-full">
+                  <TechText
+                    text={headline}
+                    align="left"
+                    fontWeight={900}
+                    fontSize={120}
+                    letterSpacing={-0.03}
+                    color="currentColor"
+                    accentColor="#2563eb"
+                    lineStyle="dashed"
+                    draggable={true}
+                    clickKick={true}
+                    sweep={true}
+                    labels={true}
+                    selection={true}
+                    guides={false}
+                    className="text-foreground"
+                  />
+                </div>
               </div>
             )}
           </div>

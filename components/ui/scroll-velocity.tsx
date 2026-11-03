@@ -90,7 +90,7 @@ function wrap(min: number, max: number, v: number): number {
   return mod + min;
 }
 
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = useEffect;
 
 function useElementWidth<T extends HTMLElement>(ref: React.RefObject<T | null>): number {
   const [width, setWidth] = useState(0);
@@ -158,6 +158,23 @@ function VelocityText({
 
   const copyRef = useRef<HTMLSpanElement>(null);
   const copyWidth = useElementWidth(copyRef);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const isVisibleRef = useRef<boolean>(true);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const x = useTransform(baseX, v => {
     if (copyWidth === 0) return '0px';
@@ -170,7 +187,7 @@ function VelocityText({
   const drag = useRef({ active: false, pointerId: -1, lastX: 0, lastTime: 0, velocity: 0, travel: 0 });
 
   useAnimationFrame((t, delta) => {
-    if (reduceMotion) return;
+    if (reduceMotion || !isVisibleRef.current) return;
 
     const grab = drag.current;
     const seconds = Math.min(delta, 64) / 1000;
@@ -290,6 +307,7 @@ function VelocityText({
 
   return (
     <div
+      ref={wrapperRef}
       className={`${parallaxClassName} relative overflow-hidden`}
       style={{
         ...(draggable ? { cursor: 'grab', userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'pan-y' } : {}),
