@@ -1130,22 +1130,34 @@ const Lanyard = ({
     const frameView = () => {
       const s = settingsRef.current!;
       const aspect = view.width / view.height;
-      let viewHeight = layout.height / clamp(s.size, 0.15, 0.9);
-      const minimumWidth = layout.width / 0.72;
-      if (viewHeight * aspect < minimumWidth) viewHeight = minimumWidth / aspect;
+
+      // Base view height derived from card height (2.25) ensuring proportional height coverage
+      const baseViewHeight = layout.height / clamp(s.size, 0.35, 0.90);
+
+      // In narrow/mobile viewports, guarantee the card width fits comfortably with ~15% margins
+      const minimumWidth = layout.width / 0.70;
+      let viewHeight = baseViewHeight;
+      if (viewHeight * aspect < minimumWidth) {
+        viewHeight = minimumWidth / aspect;
+      }
       const viewWidth = viewHeight * aspect;
+
       camera.aspect = aspect;
       camera.position.set(0, 0, viewHeight / 2 / Math.tan((FOV * Math.PI) / 360));
       camera.lookAt(0, 0, 0);
       camera.updateProjectionMatrix();
       camera.updateMatrixWorld();
+
       foilUniforms.foilKey.value.set(-2.5, 4, 6).normalize().transformDirection(camera.matrixWorldInverse);
       foilUniforms.foilFill.value.set(3, -1, 4).normalize().transformDirection(camera.matrixWorldInverse);
       foilUniforms.foilTop.value.set(0.5, 4.5, 8).normalize().transformDirection(camera.matrixWorldInverse);
+
       const anchorX = ((ANCHORS[s.anchor] ?? 0.5) - 0.5) * viewWidth;
-      const anchorY = viewHeight / 2 + 0.2;
-      const cardTop = viewHeight / 2 - viewHeight * mix(0.12, 0.42, clamp(s.strapLength, 0, 1));
+      const anchorY = viewHeight / 2 + 0.15;
+      const strapLength = clamp(s.strapLength, 0.1, 0.9);
+      const cardTop = viewHeight / 2 - viewHeight * mix(0.12, 0.32, strapLength);
       const hangTop = cardTop + (layout.hangY - layout.height / 2);
+
       sim.anchor.set(anchorX, anchorY, 0);
       configureSimulation(sim, layout, anchorY - hangTop);
       sim.nodes[0].copy(sim.anchor);

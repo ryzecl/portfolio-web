@@ -4,8 +4,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { SiteIdentity, ContactData, AboutData, EducationItem, ExperienceItem } from '@/lib/types';
-import { ArrowRight, ArrowUpRight, FileText, Mail } from 'lucide-react';
-import { ShinyText } from '@/components/ui/shiny-text';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  FileText,
+  Mail,
+  Layers,
+  Sparkles,
+  Move3d,
+} from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -16,7 +23,7 @@ const Lanyard = dynamic(
     loading: () => (
       <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-muted">
         <div className="w-8 h-8 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
-        <span className="text-xs font-mono uppercase tracking-wider">Loading 3D Card...</span>
+        <span className="text-xs uppercase tracking-wider font-medium">Loading 3D Card...</span>
       </div>
     ),
   }
@@ -61,12 +68,21 @@ export function AboutMeSection({
   experience,
 }: AboutMeSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const textColRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const bentoGridRef = useRef<HTMLDivElement>(null);
   const lanyardCardRef = useRef<HTMLDivElement>(null);
   const [shouldLoadLanyard, setShouldLoadLanyard] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Viewport-based lazy loading: only instantiate Three.js when nearing viewport
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const el = lanyardCardRef.current;
     if (!el) return;
@@ -91,7 +107,6 @@ export function AboutMeSection({
   }, []);
 
   const name = about?.name || identity.name;
-  const status = about?.status || 'Information System Student - Freelancer';
   const description =
     about?.description ||
     about?.paragraphs?.[0] ||
@@ -102,159 +117,117 @@ export function AboutMeSection({
   const currentUrl = experience?.url || 'nirwana.biz.id';
   const formattedUrl = currentUrl.startsWith('http') ? currentUrl : `https://${currentUrl}`;
 
-  const renderStatus = () => {
-    const match = status.match(/information systems? students?/i);
-    if (match && match.index !== undefined) {
-      const matchedText = match[0];
-      const before = status.slice(0, match.index);
-      const after = status.slice(match.index + matchedText.length);
-      return (
-        <>
-          {before}
-          <ShinyText
-            text={matchedText}
-            color="#52525b"
-            shineColor="#09090b"
-            speed={3}
-            shineWidth={45}
-            className="font-medium"
-          />
-          {after}
-        </>
-      );
-    }
-    return (
-      <ShinyText
-        text={status}
-        color="#52525b"
-        shineColor="#09090b"
-        speed={3}
-        shineWidth={45}
-        className="font-medium"
-      />
-    );
-  };
+  const defaultFocus = [
+    'Full-stack web & mobile apps',
+    'Backend & REST API architecture',
+    'Relational database design',
+    'Business process optimization',
+  ];
+  const focusAreas = about?.focus && about.focus.length > 0 ? about.focus : defaultFocus;
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (typeof window !== 'undefined') {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-      });
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        });
 
-      // 1. Entrance animation for the Main Card Container itself
-      if (cardRef.current) {
-        tl.fromTo(
-          cardRef.current,
-          { y: 40, opacity: 0, scale: 0.98 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out' }
-        );
-      }
+        if (headerRef.current) {
+          tl.fromTo(
+            headerRef.current,
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }
+          );
+        }
 
-      // 2. Entrance animation for Left Column children
-      if (textColRef.current) {
-        tl.fromTo(
-          textColRef.current.children,
-          { y: 22, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.65, stagger: 0.12, ease: 'power3.out' },
-          '-=0.55'
-        );
-      }
+        if (bentoGridRef.current) {
+          tl.fromTo(
+            bentoGridRef.current.children,
+            { y: 35, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.75, stagger: 0.12, ease: 'power3.out' },
+            '-=0.4'
+          );
+        }
+      }, sectionRef);
 
-      // 3. Entrance animation for 3D Lanyard Card
-      if (lanyardCardRef.current) {
-        tl.fromTo(
-          lanyardCardRef.current,
-          { y: 28, opacity: 0, scale: 0.96 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.75, ease: 'power3.out' },
-          '-=0.5'
-        );
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
+      return () => ctx.revert();
+    }
   }, []);
 
   return (
     <section
       ref={sectionRef}
       id="about-me"
-      className="relative z-10 py-12 sm:py-16 lg:py-24 bg-transparent text-foreground overflow-hidden"
+      className="py-16 sm:py-24 lg:py-28 bg-transparent text-foreground overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Card Container with Entrance Animation */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+        {/* Section Header */}
         <div
-          ref={cardRef}
-          className="rounded-3xl border border-border bg-surface p-6 sm:p-10 lg:p-12 shadow-xs transition-shadow duration-300 hover:shadow-sm will-change-transform"
+          ref={headerRef}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-4 border-b border-border/80"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-            {/* Left Column: Top block (Name, Status, Bio, Current Role) aligned to top, Bottom block (Socials + 2 balanced CTAs) aligned to bottom */}
-            <div
-              ref={textColRef}
-              className="lg:col-span-7 flex flex-col justify-between py-1 lg:py-2 gap-8 lg:gap-0"
-            >
-              {/* Top Block: Name, Status, Bio Description & Current Role Highlight */}
-              <div className="space-y-6">
-                <div className="space-y-1.5">
-                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-[1.12]">
-                    {name}
-                  </h2>
-                  <p className="text-base sm:text-lg lg:text-xl text-muted font-normal">
-                    {renderStatus()}
-                  </p>
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-accent font-bold text-xs" aria-hidden="true">✦</span>
+              <span className="text-xs uppercase tracking-widest text-muted font-semibold">
+                About Me
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-[1.08]">
+              Software, Systems &<br />Real-World Needs
+            </h2>
+          </div>
+
+          <p className="text-xs sm:text-sm text-muted max-w-sm md:text-right leading-relaxed text-pretty">
+            Bridging structured information systems with production-grade fullstack web and mobile engineering.
+          </p>
+        </div>
+
+        {/* Bento Grid Layout */}
+        <div
+          ref={bentoGridRef}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch"
+        >
+          {/* Left Column (7 Columns) */}
+          <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6 justify-between">
+            {/* Top Narrative Card */}
+            <div className="group rounded-2xl bg-surface border border-border hover:border-accent/40 transition-all duration-300 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-raised border border-border text-xs text-muted">
+                    <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                    <span className="font-semibold text-foreground">{name}</span>
+                    <span className="text-border">|</span>
+                    <span>Horizon University & JDNirwana</span>
+                  </div>
+
+                  <span className="text-xs text-muted">
+                    Based in Indonesia (GMT+7)
+                  </span>
                 </div>
 
-                <p className="text-sm sm:text-base lg:text-[17px] text-foreground/80 leading-relaxed max-w-xl text-pretty">
+                <p className="text-sm sm:text-base text-foreground/90 leading-relaxed text-pretty">
                   {description}
                 </p>
-
-                {/* Current Role (Shadcn-styled, refined & anti-slop) */}
-                <div className="pt-1">
-                  <div className="inline-flex flex-wrap items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-2xl bg-surface-raised border border-border text-xs sm:text-sm font-sans shadow-2xs">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-accent/10 border border-accent/20 text-accent font-mono text-[11px] font-semibold uppercase tracking-wider">
-                      <span className="w-1.5 h-1.5 rounded-full bg-accent" aria-hidden="true" />
-                      Current Role
-                    </span>
-                    <span className="text-border hidden sm:inline" aria-hidden="true">|</span>
-                    <span className="text-foreground font-medium flex items-center flex-wrap gap-1.5">
-                      <span>{currentRole} at</span>
-                      <a
-                        href={formattedUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold text-accent hover:underline inline-flex items-center gap-1 group/role focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-xs"
-                      >
-                        <span>{currentOrg}</span>
-                        <span className="hidden sm:inline-block text-xs font-normal text-muted group-hover/role:text-accent font-mono">
-                          ({currentUrl})
-                        </span>
-                        <ArrowUpRight className="w-3.5 h-3.5 text-muted group-hover/role:text-accent transition-transform group-hover/role:-translate-y-0.5 group-hover/role:translate-x-0.5" />
-                      </a>
-                    </span>
-                  </div>
-                </div>
               </div>
 
-              {/* Bottom Block: 2-Tier Action Area */}
-              <div className="space-y-4 pt-4 lg:pt-0 max-w-lg">
-                {/* 1. Upper Tier: Social Media Links */}
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xs font-mono uppercase tracking-wider text-muted font-medium mr-1">
-                    Connect Online:
-                  </span>
+              {/* Bottom Actions & Socials inside Narrative Card */}
+              <div className="pt-6 mt-6 border-t border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                {/* Social Connect Icons */}
+                <div className="flex items-center gap-2">
                   {contact.github && (
                     <a
                       href={contact.github}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="GitHub Profile"
-                      className="w-9 h-9 rounded-full bg-surface-raised border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors"
                     >
                       <GitHubIcon />
                     </a>
@@ -265,7 +238,7 @@ export function AboutMeSection({
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="LinkedIn Profile"
-                      className="w-9 h-9 rounded-full bg-surface-raised border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors"
                     >
                       <LinkedInIcon />
                     </a>
@@ -274,54 +247,128 @@ export function AboutMeSection({
                     <a
                       href={`mailto:${contact.email}`}
                       aria-label="Send Email"
-                      className="w-9 h-9 rounded-full bg-surface-raised border border-border flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      className="w-9 h-9 rounded-xl bg-surface-raised border border-border/80 flex items-center justify-center text-muted hover:text-foreground hover:border-accent transition-colors"
                     >
                       <Mail className="w-4 h-4" />
                     </a>
                   )}
                 </div>
 
-                {/* 2. Lower Tier: 2 Balanced Symmetrical CTAs (Left: Connect, Right: Resume) */}
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  {/* Left CTA: Get in Touch */}
-                  <Link
-                    href="#contact"
-                    className="inline-flex items-center justify-center gap-2.5 p-2 sm:p-2.5 rounded-full bg-surface-raised border border-border hover:border-accent/60 hover:bg-surface-raised/90 transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                  >
-                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-accent flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:translate-x-0.5 shrink-0">
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    </span>
-                    <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground truncate">
-                      Get in Touch
-                    </span>
-                  </Link>
-
-                  {/* Right CTA: Resume */}
+                {/* CTAs */}
+                <div className="flex items-center gap-3">
                   {contact.cv && (
                     <a
                       href={contact.cv}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2.5 p-2 sm:p-2.5 rounded-full bg-surface border border-border hover:border-accent/60 hover:bg-surface-raised transition-all duration-200 group shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-foreground"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-raised border border-border hover:border-accent/60 text-xs font-semibold text-foreground transition-all duration-200 shadow-2xs"
                     >
-                      <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 shrink-0">
-                        <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      </span>
-                      <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground truncate">
-                        Resume
-                      </span>
+                      <FileText className="w-3.5 h-3.5 text-accent" />
+                      <span>Resume</span>
                     </a>
                   )}
+                  <Link
+                    href="#contact"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground text-background hover:bg-accent hover:text-white text-xs font-semibold transition-all duration-200 shadow-2xs"
+                  >
+                    <span>Get in Touch</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: 3D Interactive Lanyard Card */}
-            <div className="lg:col-span-5 flex justify-center items-center h-full">
-              <div
-                ref={lanyardCardRef}
-                className="w-full h-105 sm:h-120 lg:h-135 rounded-2xl sm:rounded-3xl bg-surface-raised border border-border/70 relative overflow-hidden flex items-center justify-center"
-              >
+            {/* Bottom Row: Agency Venture + Engineering Pillars Subgrid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+              {/* Card A: Co-Founder Venture */}
+              <div className="group rounded-2xl bg-surface border border-border hover:border-accent/40 transition-all duration-300 p-5 sm:p-6 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-accent uppercase tracking-wider px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20">
+                      Agency Venture
+                    </span>
+                    <a
+                      href={formattedUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-7 h-7 rounded-full bg-surface-raised border border-border flex items-center justify-center text-muted hover:text-accent hover:border-accent/50 transition-colors"
+                      aria-label={`Visit ${currentOrg}`}
+                    >
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-foreground">
+                      {currentOrg}
+                    </h4>
+                    <p className="text-xs text-muted font-medium mt-0.5">
+                      {currentRole}
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted leading-relaxed">
+                    Co-founded software agency crafting custom web applications, client solutions, and business automation.
+                  </p>
+                </div>
+                <div className="pt-3 mt-3 border-t border-border/50 text-[11px] text-muted flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>Active Client Operations</span>
+                </div>
+              </div>
+
+              {/* Card B: Core Engineering Focus */}
+              <div className="group rounded-2xl bg-surface border border-border hover:border-accent/40 transition-all duration-300 p-5 sm:p-6 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-muted uppercase tracking-wider px-2 py-0.5 rounded-md bg-surface-raised border border-border">
+                      Core Focus
+                    </span>
+                    <Layers className="w-4 h-4 text-accent" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-foreground">
+                      Engineering Pillars
+                    </h4>
+                    <p className="text-xs text-muted font-medium mt-0.5">
+                      Primary development disciplines
+                    </p>
+                  </div>
+                  <div className="space-y-1.5">
+                    {focusAreas.map((focus) => (
+                      <div key={focus} className="flex items-center gap-2 text-xs text-foreground/85">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent/80 shrink-0" />
+                        <span className="truncate">{focus}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="pt-3 mt-3 border-t border-border/50 text-[11px] text-muted flex items-center gap-1.5">
+                  <Sparkles className="w-3 h-3 text-accent" />
+                  <span>Architecture & Modeling</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: 3D Interactive Lanyard ID Pass Card (5 Columns) */}
+          <div className="lg:col-span-5 flex flex-col">
+            <div
+              ref={lanyardCardRef}
+              className="group rounded-2xl bg-surface border border-border hover:border-accent/40 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between h-[390px] sm:h-[450px] lg:h-full relative overflow-hidden"
+            >
+              {/* Top Pass Header */}
+              <div className="flex items-center justify-between gap-2 z-10">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-surface-raised border border-border text-[11px] font-medium text-foreground">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Interactive ID Pass</span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 text-[11px] text-muted bg-surface-raised/70 border border-border/60 px-2 py-1 rounded-md select-none">
+                  <Move3d className="w-3 h-3 text-accent" />
+                  <span>Drag to Rotate</span>
+                </div>
+              </div>
+
+              {/* 3D Canvas Area */}
+              <div className="grow w-full relative flex items-center justify-center min-h-[290px] sm:min-h-[340px] lg:min-h-0">
                 {shouldLoadLanyard ? (
                   <Lanyard
                     frontImage="/images/about-photo.png"
@@ -330,7 +377,10 @@ export function AboutMeSection({
                     orientation="portrait"
                     finish="glossy"
                     metal="silver"
-                    strapColor="#2563eb"
+                    strapColor="#09090b"
+                    strapText="FERRY NOER HENDRIAWAN • FULLSTACK DEVELOPER"
+                    strapLength={isMobile ? 0.26 : 0.4}
+                    size={isMobile ? 0.82 : 0.65}
                     cardColor="#ffffff"
                     interactive={true}
                     className="w-full h-full"
@@ -338,9 +388,15 @@ export function AboutMeSection({
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-muted">
                     <div className="w-8 h-8 rounded-full border-2 border-accent/20 border-t-accent animate-spin" />
-                    <span className="text-xs font-mono uppercase tracking-wider">Loading 3D Card...</span>
+                    <span className="text-xs uppercase tracking-wider font-medium">Loading 3D Card...</span>
                   </div>
                 )}
+              </div>
+
+              {/* Bottom Pass Meta */}
+              <div className="z-10 pt-3 border-t border-border/50 flex items-center justify-between text-[11px] text-muted">
+                <span>FNH • Verified 2026</span>
+                <span className="text-accent/80 font-medium">Physics Simulated</span>
               </div>
             </div>
           </div>
