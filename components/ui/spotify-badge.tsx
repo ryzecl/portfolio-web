@@ -43,7 +43,6 @@ function Equalizer() {
 }
 
 export function SpotifyBadge({ spotifyData, className }: SpotifyBadgeProps) {
-  const discordUserId = spotifyData?.discordUserId || '1129671251271622746';
   const fallbackTrack: SpotifyTrack = spotifyData?.defaultTrack || {
     song: 'Teh Hijau',
     artist: 'Tulus',

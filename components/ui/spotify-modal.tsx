@@ -69,7 +69,6 @@ function formatTime(ms: number): string {
 
 export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const discordUserId = spotifyData?.discordUserId || '1129671251271622746';
 
   const fallbackTrack: SpotifyTrack = spotifyData?.defaultTrack || {
     song: 'Teh Hijau',
@@ -376,7 +375,7 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
               <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 min-w-0">
                 <Laptop className="w-3.5 h-3.5 text-[#1DB954] shrink-0" />
                 <span className="truncate">
-                  {isPlaying ? 'Listening via Spotify' : 'Synced with Discord'}
+                  {isPlaying ? 'Listening on Spotify' : 'Last played on Spotify'}
                 </span>
               </div>
 
