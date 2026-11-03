@@ -71,11 +71,11 @@ export function SpotifyModal({ spotifyData, className }: SpotifyModalProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const fallbackTrack: SpotifyTrack = spotifyData?.defaultTrack || {
-    song: 'Teh Hijau',
-    artist: 'Tulus',
-    album: 'Monokrom',
-    albumArtUrl: 'https://i.scdn.co/image/ab67616d0000b273fb31e82b5f6ff9e5ed448dd4',
-    trackUrl: 'https://open.spotify.com',
+    song: 'Every Breath You Take',
+    artist: 'The Police',
+    album: 'Synchronicity (Remastered)',
+    albumArtUrl: 'https://i.scdn.co/image/ab67616d0000b273c8e97cafeb2acb85b21a777e',
+    trackUrl: 'https://open.spotify.com/track/1JSTJqkT5qHq8MDJnJbRE1',
   };
 
   const [track, setTrack] = useState<SpotifyTrack>(fallbackTrack);
