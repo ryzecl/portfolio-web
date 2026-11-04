@@ -1,0 +1,93 @@
+// app/admin/layout.tsx
+import React from 'react';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/server';
+import { AppSidebar } from '@/components/app-sidebar';
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+import { Separator } from '@/components/ui/separator';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // 1. Verifikasi User di Sisi Server
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Jika belum login, redirect ke login page
+  if (!user) {
+    redirect('/admin/login');
+  }
+
+  const userData = {
+    name: user.user_metadata?.full_name || 'Ferry N. Hendriawan',
+    email: user.email || 'ferry@admin.local',
+    avatar: user.user_metadata?.avatar_url || '/images/avatar.jpg',
+  };
+
+  return (
+    <SidebarProvider>
+      {/* 2. Sidebar Shadcn Block 07 */}
+      <AppSidebar user={userData} />
+
+      {/* 3. Inset Area Utama Dashboard */}
+      <SidebarInset className="bg-background">
+        {/* Topbar Header Dashboard */}
+        <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border/80 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 bg-surface/50 backdrop-blur-xs">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="-ml-1 text-muted hover:text-foreground" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="/admin" className="font-mono text-xs">
+                    CMS Control
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="font-mono text-xs font-semibold text-accent">
+                    Workspace
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+
+          {/* Quick Action: Buka Website Publik di Tab Baru */}
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg border border-border bg-surface text-muted hover:text-foreground hover:border-accent/40 transition-colors shadow-2xs"
+          >
+            <span>Live Portfolio</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Link>
+        </header>
+
+        {/* 4. Canvas Halaman Admin */}
+        <main className="flex-1 p-6 md:p-8 space-y-6 max-w-7xl w-full mx-auto">
+          {children}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}

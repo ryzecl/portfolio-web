@@ -1,0 +1,60 @@
+// app/admin/actions.ts
+'use server';
+
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/server';
+
+export interface ActionResponse {
+  error?: string;
+  success?: boolean;
+}
+
+/**
+ * Server Action untuk autentikasi login admin
+ */
+export async function loginAction(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const redirectTo = (formData.get('redirectTo') as string) || '/admin';
+
+  if (!email || !password) {
+    return { error: 'Email dan password wajib diisi.' };
+  }
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    return {
+      error:
+        error.message === 'Invalid login credentials'
+          ? 'Email atau password yang Anda masukkan salah.'
+          : error.message,
+    };
+  }
+
+  // Bersihkan cache layout admin agar data user baru langsung dimuat
+  revalidatePath('/admin', 'layout');
+
+  // PENTING: Panggil redirect di luar blok penanganan error (lihat Gotcha 1)
+  redirect(redirectTo);
+}
+
+/**
+ * Server Action untuk proses logout admin
+ */
+export async function logoutAction() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+
+  revalidatePath('/', 'layout');
+  redirect('/admin/login');
+}

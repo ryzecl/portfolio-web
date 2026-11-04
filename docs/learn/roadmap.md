@@ -170,24 +170,28 @@ Bagi pengembang dengan latar belakang Laravel, konsep Supabase dan Next.js App R
   - `lib/server.ts` untuk Server Components, Server Actions, dan Route Handlers.
   - `lib/middleware.ts` untuk helper sinkronisasi cookie auth di Next.js middleware.
 
-### Fase 3: Autentikasi & Proteksi Rute Admin
-- [ ] Buat halaman login: `app/admin/login/page.tsx` menggunakan komponen Card, Input, dan Button Shadcn.
-- [ ] Buat Server Action untuk login via email & password (`supabase.auth.signInWithPassword`).
-- [ ] Buat file `middleware.ts` di root project:
+### Fase 3: Autentikasi & Proteksi Rute Admin (Shadcn Block `login-02`)
+> 📖 **Panduan Lengkap & Kode**: Lihat [Fase 3: Panduan Autentikasi Admin, Proteksi Proxy & Shadcn Block login-02](file:///C:/Users/ferry/Documents/coding/web-porto-profesional/docs/learn/phase-3-auth-and-protection.md)
+- [x] Tambahkan blok Shadcn `login-02` via Bun: `bun x --bun shadcn@latest add login-02`
+- [x] Adaptasi halaman login split-screen 2 kolom: `app/admin/login/page.tsx`
+- [x] Buat form interaktif Client Component: `components/admin/login-form.tsx` terintegrasi `useActionState`
+- [x] Buat Server Action untuk login & logout (`app/admin/actions.ts` via Supabase SSR)
+- [x] Buat file `proxy.ts` (konvensi Next.js 16+ pengganti `middleware.ts`) di root project:
   - Proteksi rute `/admin/*` (kecuali `/admin/login`).
   - Refresh cookie session Supabase secara otomatis pada setiap request masuk.
 
-### Fase 4: Shell Layout Dashboard Shadcn UI
-- [ ] Buat layout admin: `app/admin/layout.tsx`.
-- [ ] Pasang sidebar navigasi vertikal:
-  - 📊 Overview (`/admin`)
-  - 🛠️ Tech Stack (`/admin/tech-stack`)
-  - 📁 Projects (`/admin/projects`)
-  - 📜 Certificates (`/admin/certificates`)
-  - 💼 Experiences (`/admin/experiences`)
-  - 🎓 Educations (`/admin/educations`)
-  - ⚙️ Settings / Bio (`/admin/settings`)
-- [ ] Pasang tombol Logout yang memicu `supabase.auth.signOut()` dan redirect ke login.
+### Fase 4: Shell Layout Dashboard Shadcn UI (Block `sidebar-07` & Route Groups)
+> 📖 **Panduan Lengkap & Kode**: Lihat [Fase 4: Shell Layout Dashboard Shadcn UI (sidebar-07) & Route Groups](file:///C:/Users/ferry/Documents/coding/web-porto-profesional/docs/learn/phase-4-admin-layout-and-shell.md)
+- [ ] Tambahkan blok Shadcn `sidebar-07` via Bun: `bun x --bun shadcn@latest add sidebar-07`
+- [ ] Pisahkan layout publik dan admin menggunakan Route Groups:
+  - `app/(public)/layout.tsx` (Navbar floating publik, preloader, footer)
+  - `app/admin/layout.tsx` (Sidebar Shell dashboard admin terisolasi)
+- [ ] Konfigurasi komponen sidebar:
+  - `components/app-sidebar.tsx`: Collapsible icon sidebar shell
+  - `components/team-switcher.tsx`: Identitas brand CMS
+  - `components/nav-main.tsx`: Menu navigasi berjenjang (Overview, Projects, Tech Stack, Certificates, Experience, Settings)
+  - `components/nav-user.tsx`: Profil admin dan tombol sign out via Server Action
+- [ ] Buat dashboard overview awal di `app/admin/page.tsx`
 
 ### Fase 5: Modul Master Data — Tech Stack & Kategori CRUD
 - [ ] Buat halaman index: `app/admin/tech-stack/page.tsx` dengan Table Shadcn.

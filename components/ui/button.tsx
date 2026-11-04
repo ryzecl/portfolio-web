@@ -4,10 +4,10 @@ import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
   href?: string;
   external?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -30,6 +30,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       sm: 'text-xs px-3.5 py-2 min-h-[36px] rounded-full gap-1.5',
       md: 'text-sm px-5 py-2.5 min-h-[44px] rounded-full gap-2',
       lg: 'text-base px-6 py-3 min-h-[48px] rounded-full gap-2.5',
+      icon: 'size-9 p-0 rounded-lg flex items-center justify-center shrink-0',
     };
 
     const combinedClassName = cn(baseStyles, variants[variant], sizes[size], className);
