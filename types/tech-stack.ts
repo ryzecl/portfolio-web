@@ -1,0 +1,29 @@
+// types/tech-stack.ts
+
+export interface TechCategory {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  priority: number;
+  created_at: string;
+  technologies?: Technology[];
+}
+
+export interface Technology {
+  id: string;
+  category_id: string;
+  name: string;
+  slug: string;
+  icon_key: string;
+  is_featured: boolean;
+  priority: number;
+  created_at: string;
+  category?: TechCategory;
+}
+
+export interface ActionState {
+  error?: string;
+  success?: boolean;
+  message?: string;
+}

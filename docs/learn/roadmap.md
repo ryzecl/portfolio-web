@@ -182,22 +182,26 @@ Bagi pengembang dengan latar belakang Laravel, konsep Supabase dan Next.js App R
 
 ### Fase 4: Shell Layout Dashboard Shadcn UI (Block `sidebar-07` & Route Groups)
 > 📖 **Panduan Lengkap & Kode**: Lihat [Fase 4: Shell Layout Dashboard Shadcn UI (sidebar-07) & Route Groups](file:///C:/Users/ferry/Documents/coding/web-porto-profesional/docs/learn/phase-4-admin-layout-and-shell.md)
-- [ ] Tambahkan blok Shadcn `sidebar-07` via Bun: `bun x --bun shadcn@latest add sidebar-07`
-- [ ] Pisahkan layout publik dan admin menggunakan Route Groups:
+- [x] Tambahkan blok Shadcn `sidebar-07` via Bun: `bun x --bun shadcn@latest add sidebar-07`
+- [x] Pisahkan layout publik dan admin menggunakan Route Groups:
   - `app/(public)/layout.tsx` (Navbar floating publik, preloader, footer)
   - `app/admin/layout.tsx` (Sidebar Shell dashboard admin terisolasi)
-- [ ] Konfigurasi komponen sidebar:
+- [x] Konfigurasi komponen sidebar:
   - `components/app-sidebar.tsx`: Collapsible icon sidebar shell
   - `components/team-switcher.tsx`: Identitas brand CMS
   - `components/nav-main.tsx`: Menu navigasi berjenjang (Overview, Projects, Tech Stack, Certificates, Experience, Settings)
   - `components/nav-user.tsx`: Profil admin dan tombol sign out via Server Action
-- [ ] Buat dashboard overview awal di `app/admin/page.tsx`
+- [x] Buat dashboard overview awal di `app/admin/page.tsx`
 
 ### Fase 5: Modul Master Data — Tech Stack & Kategori CRUD
-- [ ] Buat halaman index: `app/admin/tech-stack/page.tsx` dengan Table Shadcn.
-- [ ] Buat form modal/drawer untuk menambah & mengedit kategori tech stack.
-- [ ] Buat form modal/drawer untuk menambah & mengedit teknologi (nama, slug, pilih kategori via Select Shadcn, icon key, toggle featured).
-- [ ] Implementasikan Server Action untuk mutasi database + `revalidatePath`.
+> 📖 **Panduan Lengkap & Kode**: Lihat [Fase 5: Modul Master Data — Tech Stack & Kategori CRUD](file:///C:/Users/ferry/Documents/coding/web-porto-profesional/docs/learn/phase-5-tech-stack-crud.md)
+- [ ] Install komponen Shadcn UI via Bun: `bun x --bun shadcn@latest add table select switch`
+- [ ] Buat tipe data TypeScript di `types/tech-stack.ts`
+- [ ] Buat Server Actions mutasi CRUD di `app/admin/tech-stack/actions.ts`
+- [ ] Buat form modal dialog kategori (`components/admin/tech-category-dialog.tsx`)
+- [ ] Buat form modal dialog teknologi (`components/admin/technology-dialog.tsx`)
+- [ ] Buat tabel interaktif dengan search & filter (`components/admin/tech-stack-table.tsx`)
+- [ ] Buat halaman Server Component index: `app/admin/tech-stack/page.tsx`
 
 ### Fase 6: Modul Proyek & Kategori Proyek (Many-to-Many Tags)
 - [ ] Buat CRUD `project_categories`: Mengelola kategori proyek (Company Profile, Web App, Mobile App, dll.) beserta prioritas urutan tampil pada tab filter.
