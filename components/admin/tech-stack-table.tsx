@@ -22,7 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Edit2 } from 'lucide-react';
 
 interface TechStackTableProps {
-  categories: (TechCategory & { technologies: Technology[] })[];
+  categories: TechCategory[];
 }
 
 export function TechStackTable({ categories }: TechStackTableProps) {
@@ -34,17 +34,22 @@ export function TechStackTable({ categories }: TechStackTableProps) {
   const [editingTech, setEditingTech] = useState<Technology | null>(null);
 
   // Filter Items
-  const allTechnologies = categories.flatMap((cat) =>
-    (cat.technologies || []).map((tech) => ({ ...tech, categoryTitle: cat.title }))
+  const allTechnologies: (Technology & { categoryTitle: string })[] = categories.flatMap(
+    (cat) =>
+      (cat.technologies || []).map((tech) => ({
+        ...tech,
+        categoryTitle: cat.title,
+      }))
   );
 
   const filteredTechnologies = allTechnologies.filter((tech) => {
     const matchCategory =
       selectedCategory === 'all' || tech.category_id === selectedCategory;
+    const query = search.toLowerCase();
     const matchSearch =
-      tech.name.toLowerCase().includes(search.toLowerCase()) ||
-      tech.slug.toLowerCase().includes(search.toLowerCase()) ||
-      tech.icon_key.toLowerCase().includes(search.toLowerCase());
+      (tech.name || '').toLowerCase().includes(query) ||
+      (tech.slug || '').toLowerCase().includes(query) ||
+      (tech.icon_key || '').toLowerCase().includes(query);
     return matchCategory && matchSearch;
   });
 

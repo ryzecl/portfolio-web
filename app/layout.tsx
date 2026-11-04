@@ -4,6 +4,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { getSiteData } from '@/lib/data';
 import { JsonLd } from '@/components/ui/json-ld';
+import { Analytics } from '@vercel/analytics/next';
 
 export const viewport: Viewport = {
   themeColor: '#2563eb',
@@ -165,6 +166,7 @@ export default function RootLayout({
         ))}
         {/* Konten halaman dirender di sini tanpa navbar/footer publik menimpa dashboard */}
         {children}
+        <Analytics />
       </body>
     </html>
   );

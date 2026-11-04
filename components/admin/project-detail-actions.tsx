@@ -2,7 +2,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { Project } from '@/types/projects';
 import { ProjectDeleteDialog } from '@/components/admin/project-delete-dialog';
 import { Button } from '@/components/ui/button';
@@ -15,18 +14,25 @@ interface ProjectDetailActionsProps {
 export function ProjectDetailActions({ project }: ProjectDetailActionsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button asChild variant="outline" size="sm" className="font-mono text-xs">
-        <Link href={`/projects/${project.slug}`} target="_blank">
-          <ExternalLink className="w-3.5 h-3.5 mr-1.5 text-accent" />
-          View Live Page
-        </Link>
+      <Button
+        variant="outline"
+        size="sm"
+        href={`/projects/${project.slug}`}
+        external
+        className="font-mono text-xs cursor-pointer"
+      >
+        <ExternalLink className="w-3.5 h-3.5 mr-1.5 text-accent" />
+        View Live Page
       </Button>
 
-      <Button asChild variant="outline" size="sm" className="font-mono text-xs">
-        <Link href={`/admin/projects/${project.id}/edit`}>
-          <Edit2 className="w-3.5 h-3.5 mr-1.5" />
-          Edit Project
-        </Link>
+      <Button
+        variant="outline"
+        size="sm"
+        href={`/admin/projects/${project.id}/edit`}
+        className="font-mono text-xs cursor-pointer"
+      >
+        <Edit2 className="w-3.5 h-3.5 mr-1.5" />
+        Edit Project
       </Button>
 
       <ProjectDeleteDialog

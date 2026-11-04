@@ -15,6 +15,7 @@ import {
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { TeamSwitcher } from '@/components/team-switcher';
+import { SidebarSpotifyCard } from '@/components/admin/sidebar-spotify-card';
 import {
   Sidebar,
   SidebarContent,
@@ -105,6 +106,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarContent>
 
       <SidebarFooter>
+        <SidebarSpotifyCard />
         <NavUser user={user} />
       </SidebarFooter>
 
