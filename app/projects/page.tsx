@@ -81,8 +81,10 @@ export default function ProjectsPage() {
       <JsonLd data={collectionSchema} />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          number="CATALOG"
-          eyebrow="Index of Works"
+          breadcrumb={[
+            { label: 'Home', href: '/' },
+            { label: 'Projects' },
+          ]}
           title="All Projects"
           description="A comprehensive archive of client deliverables, full-stack applications, and technical prototypes."
         />

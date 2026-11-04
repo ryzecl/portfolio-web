@@ -20,9 +20,28 @@ const LiquidEther = dynamic(
 interface ContactCtaProps {
   contact: ContactData;
   identity: SiteIdentity;
+  badgeNumber?: string | null;
+  badgeLabel?: string;
+  title?: string;
+  description?: string;
+  primaryButtonText?: string;
+  primaryButtonHref?: string;
+  secondaryButtonText?: string;
+  secondaryButtonHref?: string;
 }
 
-export function ContactCta({ contact, identity }: ContactCtaProps) {
+export function ContactCta({
+  contact,
+  identity,
+  badgeNumber = '04',
+  badgeLabel = 'Collaboration & Opportunities',
+  title = 'Let’s build something practical.',
+  description = 'I am open to internship opportunities, full-stack or backend developer roles (especially Laravel, Next.js, and modern APIs), and collaborating on software projects.',
+  primaryButtonText = 'Get in touch',
+  primaryButtonHref = '/contact',
+  secondaryButtonText = 'Review full catalog',
+  secondaryButtonHref = '/projects',
+}: ContactCtaProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -79,17 +98,21 @@ export function ContactCta({ contact, identity }: ContactCtaProps) {
 
           <div className="relative z-10 space-y-4 max-w-xl">
             <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted font-medium">
-              <span className="text-accent font-bold">04</span>
-              <span className="text-border">/</span>
-              <span>Collaboration & Opportunities</span>
+              {badgeNumber && (
+                <>
+                  <span className="text-accent font-bold">{badgeNumber}</span>
+                  <span className="text-border">/</span>
+                </>
+              )}
+              <span>{badgeLabel}</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-tight">
-              Let’s build something practical.
+              {title}
             </h2>
 
             <p className="text-base text-muted leading-relaxed font-normal">
-              I am open to internship opportunities, full-stack or backend developer roles (especially Laravel, Next.js, and modern APIs), and collaborating on software projects.
+              {description}
             </p>
 
             <div className="pt-2 flex items-center gap-2 text-xs font-mono text-muted">
@@ -99,13 +122,13 @@ export function ContactCta({ contact, identity }: ContactCtaProps) {
           </div>
 
           <div className="relative z-10 flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
-            <Button href="/contact" size="lg" variant="primary">
+            <Button href={primaryButtonHref} size="lg" variant="primary">
               <Mail className="w-4 h-4 mr-1" />
-              <span>Get in touch</span>
+              <span>{primaryButtonText}</span>
             </Button>
 
-            <Button href="/projects" size="lg" variant="secondary">
-              <span>Review full catalog</span>
+            <Button href={secondaryButtonHref} size="lg" variant="secondary">
+              <span>{secondaryButtonText}</span>
               <ArrowUpRight className="w-4 h-4 ml-1" />
             </Button>
           </div>

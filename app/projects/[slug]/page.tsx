@@ -11,6 +11,7 @@ import {
 import { ProjectMediaViewer } from '@/components/projects/project-media-viewer';
 import { JsonLd } from '@/components/ui/json-ld';
 import { DotBackground } from '@/components/ui/dot-background';
+import { PageBreadcrumb } from '@/components/ui/page-breadcrumb';
 import { ContactCta } from '@/components/sections/contact-cta';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -152,21 +153,21 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 relative z-10">
         {/* Top Breadcrumb & Index Bar */}
-        <div className="flex items-center justify-between pb-6 border-b border-border/80">
-          <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 text-xs font-mono text-muted hover:text-foreground transition-colors group"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-            <span>Back to catalog</span>
-          </Link>
-
-          <div className="flex items-center gap-2 font-mono text-xs text-muted">
-            <span className="text-foreground font-semibold">PROJECT {projectNumber}</span>
-            <span>/</span>
-            <span>{totalProjects}</span>
-          </div>
-        </div>
+        <PageBreadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Projects', href: '/projects' },
+            { label: project.title },
+          ]}
+          rightElement={
+            <div className="flex items-center gap-2 font-mono text-xs text-muted">
+              <span className="text-foreground font-semibold">PROJECT {projectNumber}</span>
+              <span>/</span>
+              <span>{totalProjects}</span>
+            </div>
+          }
+          className="pb-6 border-b border-border/80 mb-0"
+        />
 
         {/* Hero Header Area */}
         <header className="space-y-6">
