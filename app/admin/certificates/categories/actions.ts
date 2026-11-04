@@ -10,19 +10,27 @@ export async function upsertCertificateCategoryAction(
   formData: FormData
 ): Promise<GenericActionState> {
   const id = formData.get('id') as string | null;
-  const name = (formData.get('name') as string)?.trim();
-  let slug = (formData.get('slug') as string)?.trim().toLowerCase();
+  const name = (formData.get('name') as string)?.trim() || '';
+  const slug = (formData.get('slug') as string)?.trim().toLowerCase() || '';
 
+  const errors: Record<string, string> = {};
   if (!name) {
-    return { error: 'Nama kategori wajib diisi.' };
+    errors.name = 'Nama kategori sertifikat wajib diisi.';
+  } else if (name.length < 2) {
+    errors.name = 'Nama kategori minimal 2 karakter.';
   }
 
-  // Jika slug tidak diisi, generate otomatis dari nama
   if (!slug) {
-    slug = name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+    errors.slug = 'Slug identifier wajib diisi.';
+  } else if (!/^[a-z0-9-]+$/.test(slug)) {
+    errors.slug = 'Slug hanya boleh berisi huruf kecil, angka, dan tanda strip (-).';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      error: 'Mohon periksa kembali kolom yang ditandai merah.',
+      errors,
+    };
   }
 
   const supabase = await createClient();

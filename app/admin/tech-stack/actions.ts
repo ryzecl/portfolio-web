@@ -14,13 +14,33 @@ export async function upsertCategoryAction(
   formData: FormData
 ): Promise<ActionState> {
   const id = formData.get('id') as string | null;
-  const title = (formData.get('title') as string)?.trim();
-  const slug = (formData.get('slug') as string)?.trim().toLowerCase();
+  const title = (formData.get('title') as string)?.trim() || '';
+  const slug = (formData.get('slug') as string)?.trim().toLowerCase() || '';
   const description = (formData.get('description') as string)?.trim() || null;
   const priority = parseInt((formData.get('priority') as string) || '0', 10);
 
-  if (!title || !slug) {
-    return { error: 'Judul dan slug kategori wajib diisi.' };
+  const errors: Record<string, string> = {};
+  if (!title) {
+    errors.title = 'Judul kategori wajib diisi.';
+  } else if (title.length < 2) {
+    errors.title = 'Judul kategori minimal 2 karakter.';
+  }
+
+  if (!slug) {
+    errors.slug = 'Slug kategori wajib diisi.';
+  } else if (!/^[a-z0-9-]+$/.test(slug)) {
+    errors.slug = 'Slug hanya boleh berisi huruf kecil, angka, dan tanda strip (-).';
+  }
+
+  if (isNaN(priority) || priority < 0) {
+    errors.priority = 'Urutan prioritas harus berupa angka 0 atau lebih.';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      error: 'Mohon periksa kembali kolom yang ditandai merah.',
+      errors,
+    };
   }
 
   const supabase = await createClient();
@@ -77,13 +97,34 @@ export async function upsertTechnologyAction(
   formData: FormData
 ): Promise<ActionState> {
   const id = formData.get('id') as string | null;
-  const category_id = formData.get('category_id') as string;
-  const name = (formData.get('name') as string)?.trim();
-  const slug = (formData.get('slug') as string)?.trim().toLowerCase();
-  const icon_key = (formData.get('icon_key') as string)?.trim().toLowerCase();
+  const category_id = ((formData.get('category_id') as string) || '').trim();
+  const name = (formData.get('name') as string)?.trim() || '';
+  const slug = (formData.get('slug') as string)?.trim().toLowerCase() || '';
+  const icon_key = (formData.get('icon_key') as string)?.trim().toLowerCase() || '';
 
-  if (!name || !slug || !category_id || !icon_key) {
-    return { error: 'Semua kolom bertanda bintang wajib diisi.' };
+  const errors: Record<string, string> = {};
+  if (!category_id) {
+    errors.category_id = 'Kategori teknologi wajib dipilih.';
+  }
+  if (!name) {
+    errors.name = 'Nama teknologi wajib diisi.';
+  } else if (name.length < 2) {
+    errors.name = 'Nama teknologi minimal 2 karakter.';
+  }
+  if (!slug) {
+    errors.slug = 'Slug identifier wajib diisi.';
+  } else if (!/^[a-z0-9-]+$/.test(slug)) {
+    errors.slug = 'Slug hanya boleh berisi huruf kecil, angka, dan tanda strip (-).';
+  }
+  if (!icon_key) {
+    errors.icon_key = 'Icon key wajib diisi.';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      error: 'Mohon periksa kembali kolom yang ditandai merah.',
+      errors,
+    };
   }
 
   const supabase = await createClient();

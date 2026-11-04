@@ -18,11 +18,11 @@ import { Badge } from '@/components/ui/badge';
 import {
   FolderKanban,
   Plus,
-  ExternalLink,
   Edit2,
   Sparkles,
   Trash2,
   Tag,
+  Eye,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -42,7 +42,6 @@ export default async function AdminProjectsPage() {
       summary,
       year,
       status,
-      featured,
       cover_image,
       priority,
       category:project_categories(id, name),
@@ -86,23 +85,22 @@ export default async function AdminProjectsPage() {
         </div>
       </div>
 
-      {/* Tabel Proyek */}
+      {/* Tabel Proyek Ringkas */}
       <div className="rounded-xl border border-border bg-surface overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
               <TableHead className="font-mono text-xs uppercase text-muted">Proyek</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted">Kategori</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Tech Stack (Many-to-Many)</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Status</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Posisi &amp; Status</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {!projects || projects.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-10 text-muted text-xs font-mono">
-                  Belum ada proyek yang dibuat. Klik tombol "Tambah Proyek" di atas.
+                <TableCell colSpan={4} className="text-center py-10 text-muted text-xs font-mono">
+                  Belum ada proyek yang dibuat. Klik tombol &ldquo;Tambah Proyek&rdquo; di atas.
                 </TableCell>
               </TableRow>
             ) : (
@@ -114,22 +112,27 @@ export default async function AdminProjectsPage() {
                         <img
                           src={proj.cover_image}
                           alt={proj.title}
-                          className="w-12 h-8 rounded-md object-cover border border-border"
+                          className="w-12 h-8 rounded-md object-cover border border-border shrink-0"
                         />
                       ) : (
-                        <div className="w-12 h-8 rounded-md bg-surface-raised border border-border flex items-center justify-center text-muted text-[10px] font-mono">
+                        <div className="w-12 h-8 rounded-md bg-surface-raised border border-border flex items-center justify-center text-muted text-[10px] font-mono shrink-0">
                           NO IMG
                         </div>
                       )}
-                      <div>
+                      <div className="space-y-0.5">
                         <div className="font-semibold text-foreground text-sm flex items-center gap-1.5">
-                          <span>{proj.title}</span>
-                          {proj.featured && (
-                            <Sparkles className="w-3.5 h-3.5 text-accent" />
+                          <Link
+                            href={`/admin/projects/${proj.id}`}
+                            className="hover:text-accent hover:underline transition-colors"
+                          >
+                            {proj.title}
+                          </Link>
+                          {proj.priority > 0 && proj.priority <= 4 && (
+                            <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
                           )}
                         </div>
-                        <span className="text-[11px] font-mono text-muted">
-                          /{proj.slug} · {proj.year || 'N/A'}
+                        <span className="text-[11px] font-mono text-muted block">
+                          /{proj.slug} · {proj.year || 'N/A'} · {proj.technologies?.length || 0} Tech
                         </span>
                       </div>
                     </div>
@@ -142,33 +145,50 @@ export default async function AdminProjectsPage() {
                   </TableCell>
 
                   <TableCell>
-                    <div className="flex flex-wrap gap-1 max-w-xs">
-                      {proj.technologies && proj.technologies.length > 0 ? (
-                        proj.technologies.map((t: any) => (
-                          <span
-                            key={t.id}
-                            className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-surface-raised border border-border text-foreground"
-                          >
-                            {t.name}
-                          </span>
-                        ))
+                    <div className="flex flex-wrap items-center gap-2">
+                      {proj.priority && proj.priority > 0 ? (
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[11px] font-semibold border ${
+                            proj.priority <= 4
+                              ? 'bg-accent/15 border-accent/40 text-accent'
+                              : 'bg-surface-raised border-border text-foreground'
+                          }`}
+                        >
+                          #{proj.priority} {proj.priority <= 4 ? '★ Featured' : ''}
+                        </span>
                       ) : (
-                        <span className="text-muted text-[11px] font-mono">-</span>
+                        <span className="text-muted text-[11px] font-mono">Standar</span>
                       )}
+                      <span className="text-border">·</span>
+                      <span className="text-xs font-mono text-emerald-400">
+                        {proj.status}
+                      </span>
                     </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="text-xs font-mono text-emerald-400">
-                      {proj.status}
-                    </span>
                   </TableCell>
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        title="Lihat Detail Proyek"
+                        className="h-8 w-8 p-0 text-muted hover:text-foreground"
+                      >
+                        <Link href={`/admin/projects/${proj.id}`}>
+                          <Eye className="w-3.5 h-3.5" />
+                        </Link>
+                      </Button>
+
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        title="Edit Proyek"
+                        className="h-8 w-8 p-0 text-muted hover:text-foreground"
+                      >
                         <Link href={`/admin/projects/${proj.id}/edit`}>
-                          <Edit2 className="w-3.5 h-3.5 text-muted hover:text-foreground" />
+                          <Edit2 className="w-3.5 h-3.5" />
                         </Link>
                       </Button>
 
@@ -182,7 +202,8 @@ export default async function AdminProjectsPage() {
                           variant="ghost"
                           size="sm"
                           type="submit"
-                          className="h-8 w-8 p-0 text-muted hover:text-destructive"
+                          title="Hapus Proyek"
+                          className="h-8 w-8 p-0 text-muted hover:text-destructive cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>

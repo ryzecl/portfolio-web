@@ -21,7 +21,7 @@ export interface Project {
   role: string | null;
   year: string | null;
   status: 'Completed' | 'In Progress' | 'Archived';
-  featured: boolean;
+  featured?: boolean;
   cover_image: string | null;
   preview_images: string[];
   demo_url: string | null;
@@ -37,6 +37,7 @@ export interface Project {
 
 export interface ProjectActionState {
   error?: string;
+  errors?: Record<string, string>;
   success?: boolean;
   message?: string;
 }

@@ -38,8 +38,43 @@ export async function upsertExperienceAction(
     .map((s) => s.trim())
     .filter(Boolean);
 
-  if (!role || !organization || !start_date) {
-    return { error: 'Posisi/Jabatan, Perusahaan/Institusi, dan tanggal mulai wajib diisi.' };
+  const errors: Record<string, string> = {};
+  if (!role) {
+    errors.role = 'Posisi / Jabatan wajib diisi.';
+  } else if (role.length < 2) {
+    errors.role = 'Posisi / Jabatan minimal 2 karakter.';
+  }
+
+  if (!organization) {
+    errors.organization = 'Perusahaan / Organisasi wajib diisi.';
+  } else if (organization.length < 2) {
+    errors.organization = 'Nama perusahaan / organisasi minimal 2 karakter.';
+  }
+
+  if (!start_date) {
+    errors.start_date = 'Bulan & tahun mulai wajib dipilih.';
+  }
+
+  if (end_date && start_date && new Date(end_date) < new Date(start_date)) {
+    errors.end_date = 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.';
+  }
+
+  if (organization_url) {
+    try {
+      const parsed = new URL(organization_url);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        errors.organization_url = 'Format URL tidak valid (harus diawali http:// atau https://).';
+      }
+    } catch {
+      errors.organization_url = 'Format URL tidak valid (harus diawali http:// atau https://).';
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      error: 'Mohon periksa kolom yang ditandai merah di bawah.',
+      errors,
+    };
   }
 
   const supabase = await createClient();

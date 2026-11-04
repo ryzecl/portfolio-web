@@ -7,6 +7,7 @@ import { createClient } from '@/lib/server';
 
 export interface ActionResponse {
   error?: string;
+  errors?: Record<string, string>;
   success?: boolean;
 }
 
@@ -17,12 +18,26 @@ export async function loginAction(
   prevState: ActionResponse | null,
   formData: FormData
 ): Promise<ActionResponse> {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  const email = ((formData.get('email') as string) || '').trim();
+  const password = (formData.get('password') as string) || '';
   const redirectTo = (formData.get('redirectTo') as string) || '/admin';
 
-  if (!email || !password) {
-    return { error: 'Email dan password wajib diisi.' };
+  const errors: Record<string, string> = {};
+  if (!email) {
+    errors.email = 'Alamat email wajib diisi.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.email = 'Format alamat email tidak valid.';
+  }
+
+  if (!password) {
+    errors.password = 'Password wajib diisi.';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      error: 'Mohon periksa kembali email dan password Anda.',
+      errors,
+    };
   }
 
   const supabase = await createClient();

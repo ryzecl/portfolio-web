@@ -22,6 +22,8 @@ export interface Technology {
 
 export interface ActionState {
   error?: string;
+  errors?: Record<string, string>;
+  values?: Record<string, any>;
   success?: boolean;
   message?: string;
 }

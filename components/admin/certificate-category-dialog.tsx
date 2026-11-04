@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CertificateCategoryDialogProps {
   open: boolean;
@@ -69,10 +70,10 @@ function CertificateCategoryFormContent({
         </DialogDescription>
       </DialogHeader>
 
-      <form action={formAction} className="space-y-4 pt-2">
+      <form action={formAction} noValidate className="space-y-4 pt-2">
         {category?.id && <input type="hidden" name="id" value={category.id} />}
 
-        {state?.error && (
+        {state?.error && !state?.errors && (
           <div className="flex items-center gap-2 p-3 text-xs rounded-lg bg-destructive/10 border border-destructive/20 text-destructive font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{state.error}</span>
@@ -80,7 +81,13 @@ function CertificateCategoryFormContent({
         )}
 
         <div className="space-y-1.5">
-          <Label htmlFor="cat-name" className="text-xs font-mono text-muted">
+          <Label
+            htmlFor="cat-name"
+            className={cn(
+              'text-xs font-mono text-muted',
+              state?.errors?.name && 'text-destructive font-semibold'
+            )}
+          >
             Nama Kategori *
           </Label>
           <Input
@@ -89,13 +96,27 @@ function CertificateCategoryFormContent({
             value={name}
             onChange={handleNameChange}
             placeholder="e.g. Web Development"
-            required
-            className="bg-surface-raised border-border text-xs"
+            className={cn(
+              'bg-surface-raised border-border text-xs',
+              state?.errors?.name && 'border-destructive focus-visible:ring-destructive'
+            )}
           />
+          {state?.errors?.name && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.name}</span>
+            </p>
+          )}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="cat-slug" className="text-xs font-mono text-muted">
+          <Label
+            htmlFor="cat-slug"
+            className={cn(
+              'text-xs font-mono text-muted',
+              state?.errors?.slug && 'text-destructive font-semibold'
+            )}
+          >
             Slug Identifier (Unik) *
           </Label>
           <Input
@@ -107,12 +128,21 @@ function CertificateCategoryFormContent({
               setIsSlugManual(true);
             }}
             placeholder="e.g. web-development"
-            required
-            className="bg-surface-raised border-border font-mono text-xs"
+            className={cn(
+              'bg-surface-raised border-border font-mono text-xs',
+              state?.errors?.slug && 'border-destructive focus-visible:ring-destructive'
+            )}
           />
-          <p className="text-[11px] text-muted">
-            Digunakan sebagai identifier unik di database.
-          </p>
+          {state?.errors?.slug ? (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.slug}</span>
+            </p>
+          ) : (
+            <p className="text-[11px] text-muted">
+              Digunakan sebagai identifier unik di database.
+            </p>
+          )}
         </div>
 
         <DialogFooter className="pt-2">

@@ -4,22 +4,19 @@
 -- ==============================================================================
 
 -- ==============================================================================
--- MIGRATION SCRIPT (ALTER TABLE)
--- Jika Anda sudah menjalankan skema sebelumnya di Supabase, jalankan blok ini:
+-- MIGRATION SCRIPT (ALTER TABLE & STORAGE CLEANUP)
+-- Jalankan blok ini di Supabase SQL Editor:
 -- ==============================================================================
 /*
--- 1. Hapus kolom priority dari project_categories & technologies (tidak diperlukan)
+-- 1. Hapus kolom featured dari projects (digantikan oleh priority 1..4):
+ALTER TABLE projects DROP COLUMN IF EXISTS featured;
+
+-- 2. Hapus kolom priority dari project_categories & technologies (tidak diperlukan):
 ALTER TABLE project_categories DROP COLUMN IF EXISTS priority;
 ALTER TABLE technologies DROP COLUMN IF EXISTS priority;
 
--- 2. Pastikan deskripsi ada di kategori tech & sertifikat
-ALTER TABLE tech_categories ADD COLUMN IF NOT EXISTS description TEXT;
-ALTER TABLE certificate_categories ADD COLUMN IF NOT EXISTS description TEXT;
-
--- 3. Pembaruan tabel EXPERIENCES (sesuai referensi UI profesional):
--- Ganti location menjadi industry (sektor industri, e.g. 'Software Developer Agency')
+-- 3. Pembaruan tabel EXPERIENCES & EDUCATIONS:
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS industry VARCHAR(150);
--- Tambahkan array technologies untuk tag tech stack di bawah kartu
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS technologies TEXT[] DEFAULT '{}';
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS organization_url TEXT;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS is_current BOOLEAN DEFAULT FALSE;
@@ -28,8 +25,32 @@ ALTER TABLE experiences ADD COLUMN IF NOT EXISTS highlights TEXT[] DEFAULT '{}';
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS priority INT DEFAULT 1;
 ALTER TABLE experiences ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
--- Migrasikan data location lama ke industry jika ada
-UPDATE experiences SET industry = location WHERE industry IS NULL AND location IS NOT NULL;
+-- 4. CLEAN & SECURE STORAGE POLICIES (Membersihkan warning 'Clients can list all files'):
+DROP POLICY IF EXISTS "Allow Delete Portfolio Assets" ON storage.objects;
+DROP POLICY IF EXISTS "Allow Update Portfolio Assets" ON storage.objects;
+DROP POLICY IF EXISTS "Allow Upload Portfolio Assets" ON storage.objects;
+DROP POLICY IF EXISTS "Public Read Portfolio Assets" ON storage.objects;
+DROP POLICY IF EXISTS "Admin Delete Portfolio Assets" ON storage.objects;
+DROP POLICY IF EXISTS "Admin Upload Portfolio Assets" ON storage.objects;
+DROP POLICY IF EXISTS "Admin Update Portfolio Assets" ON storage.objects;
+DROP POLICY IF EXISTS "Admin Read Portfolio Assets" ON storage.objects;
+
+-- Pasang policy storage yang bersih & aman (Hanya Admin yang boleh upload/update/delete/list):
+CREATE POLICY "Admin Upload Portfolio Assets"
+ON storage.objects FOR INSERT TO authenticated
+WITH CHECK (bucket_id = 'portfolio-assets');
+
+CREATE POLICY "Admin Update Portfolio Assets"
+ON storage.objects FOR UPDATE TO authenticated
+USING (bucket_id = 'portfolio-assets');
+
+CREATE POLICY "Admin Delete Portfolio Assets"
+ON storage.objects FOR DELETE TO authenticated
+USING (bucket_id = 'portfolio-assets');
+
+CREATE POLICY "Admin Read Portfolio Assets"
+ON storage.objects FOR SELECT TO authenticated
+USING (bucket_id = 'portfolio-assets');
 */
 
 -- ==============================================================================
@@ -88,7 +109,6 @@ CREATE TABLE IF NOT EXISTS projects (
     role VARCHAR(150),
     year VARCHAR(10),
     status VARCHAR(50) DEFAULT 'Completed',
-    featured BOOLEAN DEFAULT FALSE,
     cover_image TEXT,
     preview_images TEXT[] DEFAULT '{}',
     demo_url TEXT,

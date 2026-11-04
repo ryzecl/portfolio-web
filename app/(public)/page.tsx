@@ -27,6 +27,7 @@ export default async function HomePage() {
   let experiences = fallbackExperiences;
   let education = site.education;
   let certificates = featuredCertificates;
+  let dynamicProjects = featuredProjects;
   let dynamicTechnologies: { name: string; category: string; iconKey: string }[] = [];
   let dynamicSkillGroups = skillGroups;
 
@@ -152,6 +153,73 @@ export default async function HomePage() {
         dynamicSkillGroups = groups;
       }
     }
+
+    const { data: dbProjects } = await supabase
+      .from('projects')
+      .select(`
+        id,
+        title,
+        slug,
+        summary,
+        description,
+        problem,
+        solution,
+        contribution,
+        role,
+        year,
+        status,
+        cover_image,
+        demo_url,
+        repo_url,
+        highlights,
+        architecture,
+        priority,
+        category:project_categories(id, name),
+        technologies(id, name, slug)
+      `)
+      .order('priority', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (dbProjects && dbProjects.length > 0) {
+      // Urutkan berdasarkan priority (1, 2, 3, 4 untuk 4 kartu grid utama landing page)
+      const sortedProjects = [...dbProjects].sort((a, b) => {
+        const pA = a.priority && a.priority > 0 ? a.priority : 999;
+        const pB = b.priority && b.priority > 0 ? b.priority : 999;
+        return pA - pB;
+      });
+
+      dynamicProjects = sortedProjects.slice(0, 4).map((item) => ({
+        id: item.id,
+        title: item.title,
+        slug: item.slug,
+        category: (item.category as any)?.name || 'General',
+        summary: item.summary,
+        description: item.description || '',
+        coverImage: item.cover_image || '/images/project-placeholder.png',
+        previewImages: [],
+        technologies: (item.technologies as any[])?.map((t) => t.name) || [],
+        featured: (item.priority ?? 0) > 0,
+        status: item.status || 'Completed',
+        year: item.year || '2026',
+        role: item.role || 'Full-Stack Developer',
+        problem: item.problem || '',
+        solution: item.solution || '',
+        architecture: item.architecture || [],
+        highlights: item.highlights || [],
+        contribution: item.contribution || '',
+        challenges: [],
+        learnings: [],
+        links: {
+          demo: item.demo_url || undefined,
+          repository: item.repo_url || undefined,
+        },
+        visual: {
+          type: 'mockup',
+          coverImage: item.cover_image || '/images/project-placeholder.png',
+          alt: item.title,
+        },
+      }));
+    }
   } catch {
     // Fallback otomatis ke data JSON jika database belum terisi atau koneksi offline
   }
@@ -182,7 +250,7 @@ export default async function HomePage() {
           />
 
           {/* Featured Projects — Positioned directly below About Me */}
-          <FeaturedProjects projects={featuredProjects} />
+          <FeaturedProjects projects={dynamicProjects} />
 
           {/* Experiences & Education Section */}
           <ExperienceEducationSection

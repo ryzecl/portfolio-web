@@ -1,7 +1,7 @@
 // components/admin/project-form.tsx
 'use client';
 
-import React, { useState, useActionState } from 'react';
+import React, { useState, useEffect, useActionState, useRef } from 'react';
 import Link from 'next/link';
 import { Project, ProjectCategory, ProjectActionState } from '@/types/projects';
 import { Technology } from '@/types/tech-stack';
@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import {
   Select,
@@ -28,9 +27,29 @@ import {
   ArrowLeft,
   Image as ImageIcon,
   Check,
-  Plus,
+  ChevronsUpDown,
+  Trash2,
+  UploadCloud,
+  Link as LinkIcon,
+  X,
 } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command';
+import { TechIcon } from '@/components/ui/tech-icon';
 import { DynamicPointList } from '@/components/ui/dynamic-point-list';
+import { cn } from '@/lib/utils';
 
 interface ProjectFormProps {
   project?: Project | null;
@@ -51,19 +70,70 @@ export function ProjectForm({
     null
   );
 
-  // State untuk Many-to-Many Tags Teknologi
-  const initialTechIds = project?.technologies?.map((t) => t.id) || [];
-  const [selectedTechIds, setSelectedTechIds] = useState<string[]>(initialTechIds);
-
-  // State Preview Gambar Cover
-  const [previewCover, setPreviewCover] = useState<string | null>(
-    project?.cover_image || null
-  );
-
-  // Auto-Slug Real-time
+  // Controlled States untuk menjaga agar input tidak pernah hilang saat validasi / server error
   const [title, setTitle] = useState(project?.title || '');
   const [slug, setSlug] = useState(project?.slug || '');
   const [isSlugManual, setIsSlugManual] = useState(Boolean(project?.slug));
+  const [categoryId, setCategoryId] = useState<string>(project?.category_id || '');
+  const [role, setRole] = useState(project?.role || 'Full-Stack Developer');
+  const [year, setYear] = useState(project?.year || '2026');
+  const [status, setStatus] = useState<'Completed' | 'In Progress' | 'Archived'>(
+    project?.status || 'Completed'
+  );
+  const [summary, setSummary] = useState(project?.summary || '');
+  const [description, setDescription] = useState(project?.description || '');
+  const [problem, setProblem] = useState(project?.problem || '');
+  const [solution, setSolution] = useState(project?.solution || '');
+  const [contribution, setContribution] = useState(project?.contribution || '');
+  const [demoUrl, setDemoUrl] = useState(project?.demo_url || '');
+  const [repoUrl, setRepoUrl] = useState(project?.repo_url || '');
+  const [priority, setPriority] = useState<number>(project?.priority ?? 0);
+
+  // State Cover Image (Mendukung URL/Path dan upload file)
+  const [coverImageUrl, setCoverImageUrl] = useState(project?.cover_image || '');
+  const [previewCover, setPreviewCover] = useState<string | null>(
+    project?.cover_image || null
+  );
+  const [removeCover, setRemoveCover] = useState(false);
+  const [fileSizeError, setFileSizeError] = useState<string | null>(null);
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
+
+  // State Preview Images / Galeri Interaktif
+  const [existingPreviews, setExistingPreviews] = useState<string[]>(
+    project?.preview_images || []
+  );
+  const [newPreviewUrls, setNewPreviewUrls] = useState<string[]>([]);
+
+  // State untuk Many-to-Many Tags Teknologi
+  const initialTechIds = project?.technologies?.map((t) => t.id) || [];
+  const [selectedTechIds, setSelectedTechIds] = useState<string[]>(initialTechIds);
+  const [techPopoverOpen, setTechPopoverOpen] = useState(false);
+
+  // Kelompokkan teknologi berdasarkan kategori untuk tampilan CommandGroup
+  const groupedTechnologies = React.useMemo(() => {
+    const groups = new Map<string, { title: string; priority: number; items: Technology[] }>();
+    for (const tech of technologies) {
+      const catTitle = tech.category?.title || 'Lainnya';
+      const catPriority = tech.category?.priority ?? 999;
+      if (!groups.has(catTitle)) {
+        groups.set(catTitle, { title: catTitle, priority: catPriority, items: [] });
+      }
+      groups.get(catTitle)!.items.push(tech);
+    }
+    return Array.from(groups.values()).sort((a, b) => a.priority - b.priority);
+  }, [technologies]);
+
+  const selectedTechnologies = React.useMemo(
+    () => technologies.filter((t) => selectedTechIds.includes(t.id)),
+    [technologies, selectedTechIds]
+  );
+
+  // Auto-scroll ke pesan error bila submit gagal
+  useEffect(() => {
+    if (state?.error) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [state?.error]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -90,15 +160,58 @@ export function ProjectForm({
     );
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setFileSizeError(null);
     if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        setFileSizeError('Ukuran file cover maksimal 10 MB.');
+        e.target.value = '';
+        return;
+      }
+      setRemoveCover(false);
       setPreviewCover(URL.createObjectURL(file));
     }
   };
 
+  const handleCoverUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCoverImageUrl(val);
+    if (val.trim()) {
+      setRemoveCover(false);
+      setPreviewCover(val.trim());
+    } else if (!coverFileInputRef.current?.files?.length) {
+      setPreviewCover(null);
+      setRemoveCover(true);
+    }
+  };
+
+  const handleRemoveCover = () => {
+    setPreviewCover(null);
+    setCoverImageUrl('');
+    setRemoveCover(true);
+    setFileSizeError(null);
+    if (coverFileInputRef.current) {
+      coverFileInputRef.current.value = '';
+    }
+  };
+
+  const handlePreviewFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const urls = Array.from(files).map((f) => URL.createObjectURL(f));
+      setNewPreviewUrls(urls);
+    } else {
+      setNewPreviewUrls([]);
+    }
+  };
+
+  const handleRemoveExistingPreview = (indexToRemove: number) => {
+    setExistingPreviews((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
   return (
-    <form action={formAction} className="space-y-8 max-w-4xl">
+    <form action={formAction} noValidate encType="multipart/form-data" className="space-y-8 max-w-4xl">
       {project?.id && <input type="hidden" name="id" value={project.id} />}
       {project?.cover_image && (
         <input
@@ -107,6 +220,20 @@ export function ProjectForm({
           value={project.cover_image}
         />
       )}
+      <input
+        type="hidden"
+        name="remove_cover"
+        value={removeCover ? 'true' : 'false'}
+      />
+      {/* Hidden input untuk kategori dan status agar selalu terkirim */}
+      <input type="hidden" name="category_id" value={categoryId} />
+      <input type="hidden" name="status" value={status} />
+      {/* Hidden input untuk melempar preview_images yang dipertahankan */}
+      <input
+        type="hidden"
+        name="existing_preview_images"
+        value={JSON.stringify(existingPreviews)}
+      />
       {/* Hidden input untuk melempar array ID teknologi terpilih ke Server Action */}
       <input
         type="hidden"
@@ -114,10 +241,13 @@ export function ProjectForm({
         value={selectedTechIds.join(',')}
       />
 
+      {/* Banner error umum */}
       {state?.error && (
-        <div className="flex items-center gap-2.5 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium">
-          <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>{state.error}</span>
+        <div className="flex items-start gap-2.5 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <span className="font-semibold block">{state.error}</span>
+          </div>
         </div>
       )}
 
@@ -128,8 +258,15 @@ export function ProjectForm({
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
+          {/* Judul Proyek */}
           <div className="space-y-1.5">
-            <Label htmlFor="title" className="text-xs font-mono text-muted">
+            <Label
+              htmlFor="title"
+              className={cn(
+                'text-xs font-mono text-muted',
+                state?.errors?.title && 'text-destructive font-semibold'
+              )}
+            >
               Judul Proyek *
             </Label>
             <Input
@@ -137,14 +274,29 @@ export function ProjectForm({
               name="title"
               value={title}
               onChange={handleTitleChange}
-              placeholder="e.g. Brava — Luxury Living"
-              required
-              className="bg-surface-raised border-border"
+              placeholder="e.g. Brava : Corporate Company Profile"
+              className={cn(
+                'bg-surface-raised border-border text-xs',
+                state?.errors?.title && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
+            {state?.errors?.title && (
+              <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 shrink-0" />
+                <span>{state.errors.title}</span>
+              </p>
+            )}
           </div>
 
+          {/* Slug URL */}
           <div className="space-y-1.5">
-            <Label htmlFor="slug" className="text-xs font-mono text-muted">
+            <Label
+              htmlFor="slug"
+              className={cn(
+                'text-xs font-mono text-muted',
+                state?.errors?.slug && 'text-destructive font-semibold'
+              )}
+            >
               Slug URL (Otomatis dari Judul) *
             </Label>
             <Input
@@ -153,154 +305,511 @@ export function ProjectForm({
               value={slug}
               onChange={handleSlugChange}
               placeholder="brava"
-              required
-              className="bg-surface-raised border-border font-mono text-xs"
+              className={cn(
+                'bg-surface-raised border-border font-mono text-xs',
+                state?.errors?.slug && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
+            {state?.errors?.slug && (
+              <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 shrink-0" />
+                <span>{state.errors.slug}</span>
+              </p>
+            )}
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
+          {/* Kategori Proyek */}
           <div className="space-y-1.5">
-            <Label htmlFor="category_id" className="text-xs font-mono text-muted">
-              Kategori Proyek
+            <Label
+              htmlFor="category_id"
+              className={cn(
+                'text-xs font-mono text-muted',
+                state?.errors?.category_id && 'text-destructive font-semibold'
+              )}
+            >
+              Kategori Proyek *
             </Label>
             <Select
               name="category_id"
-              defaultValue={project?.category_id || categories[0]?.id || ''}
+              value={categoryId}
+              onValueChange={(val) => setCategoryId(val)}
             >
-              <SelectTrigger className="bg-surface-raised border-border">
+              <SelectTrigger
+                className={cn(
+                  'bg-surface-raised border-border text-xs w-full',
+                  state?.errors?.category_id && 'border-destructive focus-visible:ring-destructive'
+                )}
+              >
                 <SelectValue placeholder="Pilih Kategori..." />
               </SelectTrigger>
-              <SelectContent className="bg-surface border-border">
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
+              <SelectContent>
+                {categories.length === 0 ? (
+                  <SelectItem value="none" disabled className="text-xs text-muted">
+                    Belum ada kategori (tambahkan di Kelola Kategori)
                   </SelectItem>
-                ))}
+                ) : (
+                  categories.map((c) => (
+                    <SelectItem key={c.id} value={c.id} className="text-xs">
+                      {c.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
+            {state?.errors?.category_id && (
+              <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 shrink-0" />
+                <span>{state.errors.category_id}</span>
+              </p>
+            )}
           </div>
 
+          {/* Role */}
           <div className="space-y-1.5">
-            <Label htmlFor="year" className="text-xs font-mono text-muted">
-              Tahun Pengerjaan
-            </Label>
-            <Input
-              id="year"
-              name="year"
-              defaultValue={project?.year || '2025'}
-              placeholder="e.g. 2025"
-              className="bg-surface-raised border-border font-mono text-xs"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="role" className="text-xs font-mono text-muted">
-              Peran Anda (Role)
+            <Label
+              htmlFor="role"
+              className={cn(
+                'text-xs font-mono text-muted',
+                state?.errors?.role && 'text-destructive font-semibold'
+              )}
+            >
+              Peran Anda (Role) *
             </Label>
             <Input
               id="role"
               name="role"
-              defaultValue={project?.role || 'Full-Stack Developer'}
-              placeholder="e.g. Full-Stack Developer"
-              className="bg-surface-raised border-border text-xs"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              placeholder="e.g. Frontend Lead, Full-Stack"
+              className={cn(
+                'bg-surface-raised border-border text-xs',
+                state?.errors?.role && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
+            {state?.errors?.role && (
+              <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 shrink-0" />
+                <span>{state.errors.role}</span>
+              </p>
+            )}
+          </div>
+
+          {/* Tahun & Status */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="year"
+                className={cn(
+                  'text-xs font-mono text-muted',
+                  state?.errors?.year && 'text-destructive font-semibold'
+                )}
+              >
+                Tahun *
+              </Label>
+              <Input
+                id="year"
+                name="year"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                placeholder="2026"
+                className={cn(
+                  'bg-surface-raised border-border text-xs font-mono',
+                  state?.errors?.year && 'border-destructive focus-visible:ring-destructive'
+                )}
+              />
+              {state?.errors?.year && (
+                <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  <span>{state.errors.year}</span>
+                </p>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="status" className="text-xs font-mono text-muted">
+                Status
+              </Label>
+              <Select
+                name="status"
+                value={status}
+                onValueChange={(val: any) => setStatus(val)}
+              >
+                <SelectTrigger className="bg-surface-raised border-border text-xs w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Completed" className="text-xs">Completed</SelectItem>
+                  <SelectItem value="In Progress" className="text-xs">In Progress</SelectItem>
+                  <SelectItem value="Archived" className="text-xs">Archived</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
+        {/* Ringkasan Singkat (Summary) */}
         <div className="space-y-1.5">
-          <Label htmlFor="summary" className="text-xs font-mono text-muted">
+          <Label
+            htmlFor="summary"
+            className={cn(
+              'text-xs font-mono text-muted',
+              state?.errors?.summary && 'text-destructive font-semibold'
+            )}
+          >
             Ringkasan Singkat (Summary) *
           </Label>
           <Textarea
             id="summary"
             name="summary"
-            defaultValue={project?.summary || ''}
-            placeholder="Ringkasan 1-2 kalimat untuk kartu depan portofolio..."
-            required
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            placeholder="Ringkasan 1-2 kalimat untuk kartu portofolio dan metadata SEO..."
             rows={2}
-            className="bg-surface-raised border-border text-xs"
+            className={cn(
+              'bg-surface-raised border-border text-xs',
+              state?.errors?.summary && 'border-destructive focus-visible:ring-destructive'
+            )}
           />
+          {state?.errors?.summary && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.summary}</span>
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Bagian 2: Gambar Cover & Upload Storage */}
-      <div className="p-6 rounded-2xl border border-border bg-surface space-y-5">
-        <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-          2. Cover Image (Supabase Storage)
-        </h2>
+      {/* Bagian 2: Gambar Proyek (Cover & Galeri Detail Interaktif) */}
+      <div className="p-6 rounded-2xl border border-border bg-surface space-y-6">
+        <div className="space-y-1">
+          <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
+            2. Gambar Proyek (Cover & Galeri Detail Interaktif)
+          </h2>
+          <p className="text-xs text-muted">
+            Unggah file langsung atau masukkan path gambar lokal/URL.
+          </p>
+        </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 items-center">
-          <div className="space-y-3">
-            <Label htmlFor="cover_file" className="text-xs font-mono text-muted">
-              Pilih File Gambar Cover (PNG, JPG, WebP)
+        {/* 2.1 Cover Image Utama */}
+        <div className="p-4 rounded-xl border border-border bg-surface-raised space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-semibold text-foreground">
+              A. Cover Image Utama (Tampil di Landing Page & Card Grid) *
+            </span>
+            <span className="text-[11px] font-mono text-muted">Rasio 16:9 / 16:10</span>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 items-start">
+            <div className="space-y-3">
+              {/* Opsi 1: Upload File */}
+              <div className="space-y-1.5">
+                <Label htmlFor="cover_file" className="text-xs font-mono text-muted">
+                  Opsi 1: Unggah Berkas Cover (PNG, JPG, WebP)
+                </Label>
+                <Input
+                  ref={coverFileInputRef}
+                  id="cover_file"
+                  name="cover_file"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCoverFileChange}
+                  className="bg-surface border-border text-xs cursor-pointer"
+                />
+                {(fileSizeError || state?.errors?.cover_file) && (
+                  <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                    <AlertCircle className="w-3 h-3 shrink-0" />
+                    <span>{fileSizeError || state?.errors?.cover_file}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Opsi 2: Path / URL Langsung */}
+              <div className="space-y-1.5">
+                <Label htmlFor="cover_image_url" className="text-xs font-mono text-muted flex items-center gap-1">
+                  <LinkIcon className="w-3 h-3 text-accent" />
+                  <span>Opsi 2: Atau Masukkan URL / Path Gambar Langsung</span>
+                </Label>
+                <Input
+                  id="cover_image_url"
+                  name="cover_image_url"
+                  value={coverImageUrl}
+                  onChange={handleCoverUrlChange}
+                  placeholder="e.g. /images/projects/brava-compro/brava-compro.jpg"
+                  className="bg-surface border-border text-xs font-mono"
+                />
+                <p className="text-[11px] text-muted">
+                  Cocok bila Anda ingin menggunakan aset lokal di folder <code>public/</code> atau CDN eksternal.
+                </p>
+              </div>
+            </div>
+
+            {/* Box Preview Cover */}
+            <div className="relative aspect-video rounded-xl border border-dashed border-border bg-surface overflow-hidden flex items-center justify-center group">
+              {previewCover ? (
+                <>
+                  <img
+                    src={previewCover}
+                    alt="Cover Preview"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                    <button
+                      type="button"
+                      onClick={handleRemoveCover}
+                      className="px-3 py-1.5 rounded bg-destructive text-destructive-foreground text-xs font-mono flex items-center gap-1.5 shadow-sm hover:opacity-90 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Hapus Cover</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center gap-1.5 text-muted text-xs font-mono">
+                  <ImageIcon className="w-6 h-6" />
+                  <span>Belum ada cover</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 2.2 Galeri Detail Images (Opsional - Multi Images Interaktif) */}
+        <div className="p-4 rounded-xl border border-border bg-surface-raised space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="space-y-0.5">
+              <span className="text-xs font-mono font-semibold text-foreground flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-accent" />
+                B. Detail Images / Galeri Interaktif (Opsional - Bisa Banyak)
+              </span>
+              <p className="text-[11px] text-muted">
+                Gambar-gambar ini akan menjadi galeri carousel di halaman detail proyek (<code>/projects/[slug]</code>) yang bisa digeser (slide/swipe).
+              </p>
+            </div>
+            <Badge variant="outline" className="text-xs font-mono">
+              Total {existingPreviews.length + newPreviewUrls.length} Gambar Tambahan
+            </Badge>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="preview_files" className="text-xs font-mono text-muted flex items-center gap-2">
+              <UploadCloud className="w-3.5 h-3.5 text-accent" />
+              <span>Unggah Gambar Detail (Pilih satu atau sekaligus banyak via Ctrl / Shift)</span>
             </Label>
             <Input
-              id="cover_file"
-              name="cover_file"
+              id="preview_files"
+              name="preview_files"
               type="file"
+              multiple
               accept="image/*"
-              onChange={handleFileChange}
-              className="bg-surface-raised border-border text-xs cursor-pointer"
+              onChange={handlePreviewFilesChange}
+              className="bg-surface border-border text-xs cursor-pointer"
             />
-            <p className="text-[11px] text-muted">
-              Gambar akan otomatis diunggah ke bucket <code>portfolio-assets/projects/</code>.
-            </p>
           </div>
 
-          {/* Box Preview */}
-          <div className="relative aspect-video rounded-xl border border-dashed border-border bg-surface-raised overflow-hidden flex items-center justify-center">
-            {previewCover ? (
-              <img
-                src={previewCover}
-                alt="Cover Preview"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="flex flex-col items-center gap-1.5 text-muted text-xs font-mono">
-                <ImageIcon className="w-6 h-6" />
-                <span>Belum ada cover</span>
+          {/* List Existing Previews (jika sedang edit proyek) */}
+          {existingPreviews.length > 0 && (
+            <div className="space-y-2 pt-3 border-t border-border/60">
+              <span className="text-[11px] font-mono text-muted uppercase tracking-wider block">
+                Gambar Detail yang Tersimpan ({existingPreviews.length} Foto):
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {existingPreviews.map((url, idx) => (
+                  <div
+                    key={idx}
+                    className="relative aspect-video rounded-lg border border-border overflow-hidden group bg-surface"
+                  >
+                    <img
+                      src={url}
+                      alt={`Detail Image ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveExistingPreview(idx)}
+                        className="px-2.5 py-1 rounded bg-destructive text-destructive-foreground text-[10px] font-mono flex items-center gap-1.5 shadow-sm hover:opacity-90 cursor-pointer"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
+                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-background/80 text-[9px] font-mono text-muted">
+                      #{idx + 1}
+                    </span>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* List Preview Berkas Baru yang baru dipilih */}
+          {newPreviewUrls.length > 0 && (
+            <div className="space-y-2 pt-3 border-t border-border/60">
+              <span className="text-[11px] font-mono text-accent uppercase tracking-wider block font-semibold">
+                Berkas Baru yang Dipilih ({newPreviewUrls.length} File Baru):
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {newPreviewUrls.map((url, idx) => (
+                  <div
+                    key={idx}
+                    className="relative aspect-video rounded-lg border border-accent/40 overflow-hidden bg-surface"
+                  >
+                    <img
+                      src={url}
+                      alt={`New file ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-accent text-[9px] font-mono text-accent-foreground font-bold">
+                      Baru #{idx + 1}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bagian 3: Relasi Many-to-Many Tags Teknologi */}
+      {/* Bagian 3: Relasi Many-to-Many Tags Teknologi (Shadcn Multi-Select Command Combobox) */}
       <div className="p-6 rounded-2xl border border-border bg-surface space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-            3. Teknologi yang Digunakan ({selectedTechIds.length} Terpilih)
-          </h2>
-          <span className="text-[11px] text-muted font-mono">
-            Tersinkron ke tabel pivot project_technologies
-          </span>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="space-y-0.5">
+            <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
+              3. Teknologi yang Digunakan ({selectedTechIds.length} Terpilih)
+            </h2>
+            <p className="text-xs text-muted">
+              Cari dan pilih beberapa teknologi sekaligus menggunakan pencarian cepat.
+            </p>
+          </div>
+          {selectedTechIds.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setSelectedTechIds([])}
+              className="text-[11px] font-mono text-muted hover:text-destructive transition-colors cursor-pointer"
+            >
+              Reset Semua
+            </button>
+          )}
         </div>
 
-        <div className="flex flex-wrap gap-2 pt-2">
-          {technologies.map((tech) => {
-            const isSelected = selectedTechIds.includes(tech.id);
-            return (
-              <button
-                type="button"
+        {/* Shadcn Popover + Command Multi-Select */}
+        <Popover open={techPopoverOpen} onOpenChange={setTechPopoverOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              role="combobox"
+              aria-expanded={techPopoverOpen}
+              className="w-full justify-between bg-surface-raised border-border hover:bg-surface-raised/80 hover:border-foreground/30 text-xs font-mono h-10 px-3.5 cursor-pointer"
+            >
+              <span className="truncate text-muted">
+                {selectedTechIds.length > 0
+                  ? `${selectedTechIds.length} teknologi dipilih — klik untuk cari / tambah lagi...`
+                  : 'Cari dan pilih teknologi (misal: Next.js, Laravel, Tailwind)...'}
+              </span>
+              <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 text-muted opacity-70" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            className="w-(--radix-popover-trigger-width) p-0 rounded-xl border border-border bg-surface shadow-2xl"
+          >
+            <Command>
+              <CommandInput placeholder="Ketik nama teknologi atau kategori..." />
+              <CommandList className="max-h-72">
+                <CommandEmpty>Teknologi tidak ditemukan.</CommandEmpty>
+                {groupedTechnologies.map((group, groupIdx) => (
+                  <React.Fragment key={group.title}>
+                    {groupIdx > 0 && <CommandSeparator />}
+                    <CommandGroup heading={group.title}>
+                      {group.items.map((tech) => {
+                        const isSelected = selectedTechIds.includes(tech.id);
+                        return (
+                          <CommandItem
+                            key={tech.id}
+                            value={`${tech.name} ${tech.slug} ${group.title}`}
+                            onSelect={() => toggleTechnology(tech.id)}
+                            className="flex items-center justify-between gap-2 px-2.5 py-2 text-xs font-mono cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2.5 truncate">
+                              <div
+                                className={cn(
+                                  'flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors',
+                                  isSelected
+                                    ? 'bg-accent border-accent text-accent-foreground'
+                                    : 'border-border bg-surface-raised'
+                                )}
+                              >
+                                <Check
+                                  className={cn(
+                                    'h-3 w-3 transition-opacity',
+                                    isSelected ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                              </div>
+                              <TechIcon
+                                name={tech.icon_key || tech.name}
+                                className="w-3.5 h-3.5 shrink-0"
+                              />
+                              <span
+                                className={cn(
+                                  'truncate',
+                                  isSelected && 'font-semibold text-foreground'
+                                )}
+                              >
+                                {tech.name}
+                              </span>
+                            </div>
+                            {isSelected && (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] font-mono border-accent/40 text-accent bg-accent/10 px-1.5 py-0"
+                              >
+                                Terpilih
+                              </Badge>
+                            )}
+                          </CommandItem>
+                        );
+                      })}
+                    </CommandGroup>
+                  </React.Fragment>
+                ))}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        {/* Daftar Badge Teknologi yang Sudah Dipilih */}
+        {selectedTechnologies.length > 0 ? (
+          <div className="flex flex-wrap gap-2 pt-1">
+            {selectedTechnologies.map((tech) => (
+              <Badge
                 key={tech.id}
-                onClick={() => toggleTechnology(tech.id)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono border transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-accent/15 border-accent text-accent font-semibold shadow-xs'
-                    : 'bg-surface-raised border-border text-muted hover:text-foreground hover:border-foreground/30'
-                }`}
+                variant="secondary"
+                className="pl-2.5 pr-1.5 py-1 gap-1.5 rounded-lg bg-accent/15 border border-accent/40 text-foreground font-mono text-xs flex items-center"
               >
-                {isSelected ? (
-                  <Check className="w-3.5 h-3.5" />
-                ) : (
-                  <Plus className="w-3.5 h-3.5 opacity-40" />
-                )}
+                <TechIcon
+                  name={tech.icon_key || tech.name}
+                  className="w-3.5 h-3.5 shrink-0"
+                />
                 <span>{tech.name}</span>
-              </button>
-            );
-          })}
-        </div>
+                <button
+                  type="button"
+                  onClick={() => toggleTechnology(tech.id)}
+                  aria-label={`Hapus ${tech.name}`}
+                  className="ml-0.5 p-0.5 rounded hover:bg-accent/20 text-muted hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+        ) : (
+          <p className="text-[11px] font-mono text-muted">
+            Belum ada teknologi yang dipilih.
+          </p>
+        )}
       </div>
 
       {/* Bagian 4: Studi Kasus Mendalam (Problem, Solution, Highlights) */}
@@ -316,7 +825,8 @@ export function ProjectForm({
           <Textarea
             id="description"
             name="description"
-            defaultValue={project?.description || ''}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             placeholder="Latar belakang lengkap tentang proyek..."
             rows={3}
             className="bg-surface-raised border-border text-xs"
@@ -331,7 +841,8 @@ export function ProjectForm({
             <Textarea
               id="problem"
               name="problem"
-              defaultValue={project?.problem || ''}
+              value={problem}
+              onChange={(e) => setProblem(e.target.value)}
               placeholder="Masalah utama yang dihadapi klien..."
               rows={3}
               className="bg-surface-raised border-border text-xs"
@@ -345,12 +856,28 @@ export function ProjectForm({
             <Textarea
               id="solution"
               name="solution"
-              defaultValue={project?.solution || ''}
+              value={solution}
+              onChange={(e) => setSolution(e.target.value)}
               placeholder="Solusi arsitektur software yang Anda buat..."
               rows={3}
               className="bg-surface-raised border-border text-xs"
             />
           </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="contribution" className="text-xs font-mono text-muted">
+            Kontribusi Rekayasa (Role & Ownership)
+          </Label>
+          <Textarea
+            id="contribution"
+            name="contribution"
+            value={contribution}
+            onChange={(e) => setContribution(e.target.value)}
+            placeholder="Tanggung jawab spesifik Anda dalam arsitektur, frontend/backend, dsb..."
+            rows={2}
+            className="bg-surface-raised border-border text-xs"
+          />
         </div>
 
         <div className="space-y-6">
@@ -382,50 +909,98 @@ export function ProjectForm({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="demo_url" className="text-xs font-mono text-muted">
+            <Label
+              htmlFor="demo_url"
+              className={cn(
+                'text-xs font-mono text-muted',
+                state?.errors?.demo_url && 'text-destructive font-semibold'
+              )}
+            >
               Live Demo URL
             </Label>
             <Input
               id="demo_url"
               name="demo_url"
-              type="url"
-              defaultValue={project?.demo_url || ''}
-              placeholder="https://brava.example.com"
-              className="bg-surface-raised border-border font-mono text-xs"
+              type="text"
+              value={demoUrl}
+              onChange={(e) => setDemoUrl(e.target.value)}
+              placeholder="https://brava.id"
+              className={cn(
+                'bg-surface-raised border-border font-mono text-xs',
+                state?.errors?.demo_url && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
+            {state?.errors?.demo_url && (
+              <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 shrink-0" />
+                <span>{state.errors.demo_url}</span>
+              </p>
+            )}
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="repo_url" className="text-xs font-mono text-muted">
+            <Label
+              htmlFor="repo_url"
+              className={cn(
+                'text-xs font-mono text-muted',
+                state?.errors?.repo_url && 'text-destructive font-semibold'
+              )}
+            >
               Source Code Repository URL
             </Label>
             <Input
               id="repo_url"
               name="repo_url"
-              type="url"
-              defaultValue={project?.repo_url || ''}
+              type="text"
+              value={repoUrl}
+              onChange={(e) => setRepoUrl(e.target.value)}
               placeholder="https://github.com/ryzecl/brava"
-              className="bg-surface-raised border-border font-mono text-xs"
+              className={cn(
+                'bg-surface-raised border-border font-mono text-xs',
+                state?.errors?.repo_url && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
+            {state?.errors?.repo_url && (
+              <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 shrink-0" />
+                <span>{state.errors.repo_url}</span>
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-surface-raised">
+        <div className="flex items-center justify-between p-4 rounded-xl border border-accent/30 bg-accent/5">
           <div className="space-y-0.5">
-            <Label htmlFor="featured" className="text-xs font-semibold cursor-pointer">
-              Tampilkan di Featured Portfolio (Homepage Bento)
+            <Label htmlFor="priority" className="text-xs font-semibold cursor-pointer text-foreground flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-accent" />
+              Urutan Prioritas Landing Page (Priority)
             </Label>
             <p className="text-[11px] text-muted">
-              Proyek ini akan mendapatkan kartu sorotan besar pada grid halaman depan.
+              Isi 1 s/d 4 untuk menampilkan proyek ini di 4 kartu grid utama Landing Page. Isi 0 untuk urutan standar.
             </p>
           </div>
-          <Switch
-            id="featured"
-            name="featured"
-            defaultChecked={project?.featured || false}
+          <Input
+            id="priority"
+            name="priority"
+            type="number"
+            min="0"
+            value={priority}
+            onChange={(e) => setPriority(parseInt(e.target.value || '0', 10))}
+            placeholder="1, 2, 3, 4"
+            className="w-24 bg-surface-raised border-border font-mono text-xs text-center"
           />
         </div>
       </div>
+
+      {/* Banner error bawah (dekat tombol submit) */}
+      {state?.error && (
+        <div className="flex items-start gap-2.5 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <span className="font-semibold block">{state.error}</span>
+          </div>
+        </div>
+      )}
 
       {/* Tombol Aksi Form */}
       <div className="flex items-center justify-between pt-4">
@@ -437,7 +1012,7 @@ export function ProjectForm({
           <span>Batal dan kembali</span>
         </Link>
 
-        <Button type="submit" disabled={isPending} className="px-6 font-mono text-xs">
+        <Button type="submit" disabled={isPending} className="px-6 font-mono text-xs cursor-pointer">
           {isPending ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />

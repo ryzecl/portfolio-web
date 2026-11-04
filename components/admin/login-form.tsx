@@ -1,7 +1,7 @@
 // components/admin/login-form.tsx
 'use client';
 
-import React, { useActionState } from 'react';
+import React, { useActionState, useState } from 'react';
 import Link from 'next/link';
 import { loginAction, ActionResponse } from '@/app/admin/actions';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,8 @@ export function LoginForm({ className, redirectTo = '/admin', ...props }: LoginF
     loginAction,
     null
   );
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -32,12 +34,12 @@ export function LoginForm({ className, redirectTo = '/admin', ...props }: LoginF
         </p>
       </div>
 
-      <form action={formAction} className="grid gap-5">
+      <form action={formAction} noValidate className="grid gap-5">
         {/* Hidden input untuk melestarikan tujuan redirect setelah login */}
         <input type="hidden" name="redirectTo" value={redirectTo} />
 
         {/* Pesan Error Reaktif */}
-        {state?.error && (
+        {state?.error && !state?.errors && (
           <div className="flex items-center gap-2.5 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium animate-in fade-in">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{state.error}</span>
@@ -46,7 +48,13 @@ export function LoginForm({ className, redirectTo = '/admin', ...props }: LoginF
 
         {/* Input Email */}
         <div className="grid gap-2">
-          <Label htmlFor="email" className="text-xs font-mono text-muted uppercase tracking-wider">
+          <Label
+            htmlFor="email"
+            className={cn(
+              'text-xs font-mono text-muted uppercase tracking-wider',
+              state?.errors?.email && 'text-destructive font-semibold'
+            )}
+          >
             Email
           </Label>
           <div className="relative">
@@ -55,19 +63,35 @@ export function LoginForm({ className, redirectTo = '/admin', ...props }: LoginF
               id="email"
               name="email"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="ferry@example.com"
-              required
               autoComplete="email"
               disabled={isPending}
-              className="pl-9 bg-surface-raised border-border text-foreground placeholder:text-muted/60 focus-visible:ring-accent"
+              className={cn(
+                'pl-9 bg-surface-raised border-border text-foreground placeholder:text-muted/60 focus-visible:ring-accent',
+                state?.errors?.email && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
           </div>
+          {state?.errors?.email && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.email}</span>
+            </p>
+          )}
         </div>
 
         {/* Input Password */}
         <div className="grid gap-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-xs font-mono text-muted uppercase tracking-wider">
+            <Label
+              htmlFor="password"
+              className={cn(
+                'text-xs font-mono text-muted uppercase tracking-wider',
+                state?.errors?.password && 'text-destructive font-semibold'
+              )}
+            >
               Password
             </Label>
           </div>
@@ -77,13 +101,23 @@ export function LoginForm({ className, redirectTo = '/admin', ...props }: LoginF
               id="password"
               name="password"
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
-              required
               autoComplete="current-password"
               disabled={isPending}
-              className="pl-9 bg-surface-raised border-border text-foreground placeholder:text-muted/60 focus-visible:ring-accent font-mono"
+              className={cn(
+                'pl-9 bg-surface-raised border-border text-foreground placeholder:text-muted/60 focus-visible:ring-accent font-mono',
+                state?.errors?.password && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
           </div>
+          {state?.errors?.password && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.password}</span>
+            </p>
+          )}
         </div>
 
         {/* Tombol Submit dengan indikator loading */}

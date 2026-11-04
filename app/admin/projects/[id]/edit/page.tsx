@@ -17,15 +17,18 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
   const { id } = await params;
   const supabase = await createClient();
 
-  // Ambil data proyek beserta kategori dan technologies secara paralel
+  // Ambil data proyek beserta kategori (urut nama) dan technologies secara paralel
   const [projectRes, categoriesRes, technologiesRes] = await Promise.all([
     supabase
       .from('projects')
       .select('*, technologies(id, name, slug)')
       .eq('id', id)
       .single(),
-    supabase.from('project_categories').select('*').order('priority', { ascending: true }),
-    supabase.from('technologies').select('*').order('name', { ascending: true }),
+    supabase.from('project_categories').select('*').order('name', { ascending: true }),
+    supabase
+      .from('technologies')
+      .select('*, category:tech_categories(id, title, priority)')
+      .order('name', { ascending: true }),
   ]);
 
   if (projectRes.error || !projectRes.data) {
@@ -39,7 +42,7 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
           Edit Proyek: {projectRes.data.title}
         </h1>
         <p className="text-xs text-muted">
-          Perbarui teks, gambar cover, atau sinkronisasikan ulang teknologi yang digunakan.
+          Perbarui teks, gambar cover, galeri detail interaktif, atau sinkronisasikan ulang teknologi yang digunakan.
         </p>
       </div>
 

@@ -8,6 +8,8 @@ import {
   getProjectBySlug,
   getSiteData,
 } from '@/lib/data';
+import { createClient } from '@/lib/server';
+import { ProjectItem } from '@/lib/types';
 import { ProjectMediaViewer } from '@/components/projects/project-media-viewer';
 import { JsonLd } from '@/components/ui/json-ld';
 import { DotBackground } from '@/components/ui/dot-background';
@@ -32,10 +34,156 @@ import {
 import { GithubIcon } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
+export const dynamicParams = true;
+
 interface ProjectPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+async function fetchProject(slug: string): Promise<ProjectItem | null> {
+  try {
+    const supabase = await createClient();
+    const { data: item } = await supabase
+      .from('projects')
+      .select(`
+        id,
+        title,
+        slug,
+        summary,
+        description,
+        problem,
+        solution,
+        contribution,
+        role,
+        year,
+        status,
+        cover_image,
+        preview_images,
+        demo_url,
+        repo_url,
+        highlights,
+        architecture,
+        priority,
+        category:project_categories(id, name),
+        technologies(id, name, slug)
+      `)
+      .eq('slug', slug)
+      .maybeSingle();
+
+    if (item) {
+      return {
+        slug: item.slug,
+        title: item.title,
+        category: (item.category as any)?.name || 'General',
+        summary: item.summary,
+        description: item.description || item.summary,
+        coverImage: item.cover_image || '/images/project-placeholder.png',
+        previewImages: Array.isArray(item.preview_images) ? item.preview_images : [],
+        technologies: (item.technologies as any[])?.map((t) => t.name) || [],
+        featured: (item.priority ?? 0) > 0,
+        status: item.status || 'Completed',
+        year: item.year || '2026',
+        role: item.role || 'Full-Stack Developer',
+        problem: item.problem || '',
+        solution: item.solution || '',
+        architecture: item.architecture || [],
+        highlights: item.highlights || [],
+        contribution: item.contribution || '',
+        challenges: [],
+        learnings: [],
+        links: {
+          demo: item.demo_url || undefined,
+          repository: item.repo_url || undefined,
+        },
+        visual: {
+          type: 'mockup',
+          coverImage: item.cover_image || '/images/project-placeholder.png',
+          alt: item.title,
+        },
+      };
+    }
+  } catch {
+    // fallback if offline or db error
+  }
+
+  return getProjectBySlug(slug) || null;
+}
+
+async function fetchAllProjects(): Promise<ProjectItem[]> {
+  try {
+    const supabase = await createClient();
+    const { data: dbProjects } = await supabase
+      .from('projects')
+      .select(`
+        id,
+        title,
+        slug,
+        summary,
+        description,
+        problem,
+        solution,
+        contribution,
+        role,
+        year,
+        status,
+        cover_image,
+        preview_images,
+        demo_url,
+        repo_url,
+        highlights,
+        architecture,
+        priority,
+        category:project_categories(id, name),
+        technologies(id, name, slug)
+      `)
+      .order('priority', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (dbProjects && dbProjects.length > 0) {
+      const sortedProjects = [...dbProjects].sort((a, b) => {
+        const pA = a.priority && a.priority > 0 ? a.priority : 999;
+        const pB = b.priority && b.priority > 0 ? b.priority : 999;
+        return pA - pB;
+      });
+
+      return sortedProjects.map((item) => ({
+        slug: item.slug,
+        title: item.title,
+        category: (item.category as any)?.name || 'General',
+        summary: item.summary,
+        description: item.description || item.summary,
+        coverImage: item.cover_image || '/images/project-placeholder.png',
+        previewImages: Array.isArray(item.preview_images) ? item.preview_images : [],
+        technologies: (item.technologies as any[])?.map((t) => t.name) || [],
+        featured: (item.priority ?? 0) > 0,
+        status: item.status || 'Completed',
+        year: item.year || '2026',
+        role: item.role || 'Full-Stack Developer',
+        problem: item.problem || '',
+        solution: item.solution || '',
+        architecture: item.architecture || [],
+        highlights: item.highlights || [],
+        contribution: item.contribution || '',
+        challenges: [],
+        learnings: [],
+        links: {
+          demo: item.demo_url || undefined,
+          repository: item.repo_url || undefined,
+        },
+        visual: {
+          type: 'mockup',
+          coverImage: item.cover_image || '/images/project-placeholder.png',
+          alt: item.title,
+        },
+      }));
+    }
+  } catch {
+    // fallback
+  }
+
+  return getAllProjects();
 }
 
 export async function generateStaticParams() {
@@ -47,7 +195,7 @@ export async function generateMetadata({
   params,
 }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await fetchProject(slug);
   const site = getSiteData();
 
   if (!project) {
@@ -99,7 +247,7 @@ export async function generateMetadata({
 
 export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await fetchProject(slug);
 
   if (!project) {
     notFound();
@@ -107,15 +255,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   const site = getSiteData();
   const baseUrl = `https://${site.identity.domain}`;
-  const allProjects = getAllProjects();
+  const allProjects = await fetchAllProjects();
   const currentIndex = allProjects.findIndex((p) => p.slug === slug);
   const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
   const nextProject =
-    currentIndex < allProjects.length - 1
+    currentIndex >= 0 && currentIndex < allProjects.length - 1
       ? allProjects[currentIndex + 1]
       : null;
 
-  const projectNumber = String(currentIndex + 1).padStart(2, '0');
+  const projectNumber = String(currentIndex >= 0 ? currentIndex + 1 : 1).padStart(2, '0');
   const totalProjects = String(allProjects.length).padStart(2, '0');
 
   const hasDemo = Boolean(project.links?.demo && project.links.demo.trim() !== '');

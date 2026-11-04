@@ -30,8 +30,32 @@ export async function upsertEducationAction(
     .map((s) => s.trim())
     .filter(Boolean);
 
-  if (!major || !institution || !start_date) {
-    return { error: 'Jurusan / Gelar, Institusi / Universitas, dan tanggal mulai wajib diisi.' };
+  const errors: Record<string, string> = {};
+  if (!major) {
+    errors.major = 'Jurusan / Bidang studi wajib diisi.';
+  } else if (major.length < 2) {
+    errors.major = 'Jurusan / Bidang studi minimal 2 karakter.';
+  }
+
+  if (!institution) {
+    errors.institution = 'Institusi / Universitas wajib diisi.';
+  } else if (institution.length < 2) {
+    errors.institution = 'Nama institusi minimal 2 karakter.';
+  }
+
+  if (!start_date) {
+    errors.start_date = 'Bulan & tahun mulai wajib dipilih.';
+  }
+
+  if (end_date && start_date && new Date(end_date) < new Date(start_date)) {
+    errors.end_date = 'Tanggal lulus tidak boleh lebih awal dari tanggal mulai.';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      error: 'Mohon periksa kolom yang ditandai merah di bawah.',
+      errors,
+    };
   }
 
   const supabase = await createClient();

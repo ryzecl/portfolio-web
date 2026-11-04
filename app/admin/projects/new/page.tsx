@@ -11,10 +11,13 @@ export const metadata: Metadata = {
 export default async function NewProjectPage() {
   const supabase = await createClient();
 
-  // Ambil data kategori dan teknologi secara paralel
+  // Ambil data kategori (diurutkan alfabetis berdasarkan nama) dan teknologi beserta kategorinya secara paralel
   const [categoriesRes, technologiesRes] = await Promise.all([
-    supabase.from('project_categories').select('*').order('priority', { ascending: true }),
-    supabase.from('technologies').select('*').order('name', { ascending: true }),
+    supabase.from('project_categories').select('*').order('name', { ascending: true }),
+    supabase
+      .from('technologies')
+      .select('*, category:tech_categories(id, title, priority)')
+      .order('name', { ascending: true }),
   ]);
 
   return (
@@ -24,7 +27,7 @@ export default async function NewProjectPage() {
           Tambah Proyek Baru
         </h1>
         <p className="text-xs text-muted">
-          Lengkapi detail proyek, upload cover gambar, dan pilih tag teknologi yang digunakan.
+          Lengkapi detail proyek, upload cover gambar, galeri interaktif, dan pilih tag teknologi yang digunakan.
         </p>
       </div>
 

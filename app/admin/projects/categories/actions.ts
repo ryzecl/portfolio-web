@@ -10,11 +10,27 @@ export async function upsertProjectCategoryAction(
   formData: FormData
 ): Promise<ProjectActionState> {
   const id = formData.get('id') as string | null;
-  const name = (formData.get('name') as string)?.trim();
-  const slug = (formData.get('slug') as string)?.trim().toLowerCase();
+  const name = (formData.get('name') as string)?.trim() || '';
+  const slug = (formData.get('slug') as string)?.trim().toLowerCase() || '';
 
-  if (!name || !slug) {
-    return { error: 'Nama kategori dan slug wajib diisi.' };
+  const errors: Record<string, string> = {};
+  if (!name) {
+    errors.name = 'Nama kategori wajib diisi.';
+  } else if (name.length < 2) {
+    errors.name = 'Nama kategori minimal 2 karakter.';
+  }
+
+  if (!slug) {
+    errors.slug = 'Slug identifier wajib diisi.';
+  } else if (!/^[a-z0-9-]+$/.test(slug)) {
+    errors.slug = 'Slug hanya boleh berisi huruf kecil, angka, dan tanda strip (-).';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      error: 'Mohon periksa kembali kolom yang ditandai merah.',
+      errors,
+    };
   }
 
   const supabase = await createClient();

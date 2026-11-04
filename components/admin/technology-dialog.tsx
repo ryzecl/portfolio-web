@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { TechIcon } from '@/components/ui/tech-icon';
+import { cn } from '@/lib/utils';
 
 interface TechnologyDialogProps {
   open: boolean;
@@ -49,6 +50,9 @@ function TechnologyFormContent({
     null
   );
 
+  const [categoryId, setCategoryId] = useState(
+    technology?.category_id || defaultCategoryId || categories[0]?.id || ''
+  );
   const [name, setName] = useState(technology?.name || '');
   const [slug, setSlug] = useState(technology?.slug || '');
   const [iconKey, setIconKey] = useState(technology?.icon_key || '');
@@ -90,10 +94,11 @@ function TechnologyFormContent({
         </DialogDescription>
       </DialogHeader>
 
-      <form action={formAction} className="space-y-4 pt-2">
+      <form action={formAction} noValidate className="space-y-4 pt-2">
         {technology?.id && <input type="hidden" name="id" value={technology.id} />}
+        <input type="hidden" name="category_id" value={categoryId} />
 
-        {state?.error && (
+        {state?.error && !state?.errors && (
           <div className="flex items-center gap-2 p-3 text-xs rounded-lg bg-destructive/10 border border-destructive/20 text-destructive font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{state.error}</span>
@@ -102,15 +107,25 @@ function TechnologyFormContent({
 
         {/* Kategori Selector */}
         <div className="space-y-1.5">
-          <Label htmlFor="category_id" className="text-xs font-mono text-muted">
+          <Label
+            htmlFor="category_id"
+            className={cn(
+              'text-xs font-mono text-muted',
+              state?.errors?.category_id && 'text-destructive font-semibold'
+            )}
+          >
             Pilih Kategori *
           </Label>
           <Select
-            name="category_id"
-            defaultValue={technology?.category_id || defaultCategoryId || categories[0]?.id}
-            required
+            value={categoryId}
+            onValueChange={setCategoryId}
           >
-            <SelectTrigger className="bg-surface-raised border-border text-xs">
+            <SelectTrigger
+              className={cn(
+                'bg-surface-raised border-border text-xs',
+                state?.errors?.category_id && 'border-destructive focus-visible:ring-destructive'
+              )}
+            >
               <SelectValue placeholder="Pilih Kategori..." />
             </SelectTrigger>
             <SelectContent className="bg-surface border-border">
@@ -121,11 +136,23 @@ function TechnologyFormContent({
               ))}
             </SelectContent>
           </Select>
+          {state?.errors?.category_id && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.category_id}</span>
+            </p>
+          )}
         </div>
 
         {/* Nama Teknologi */}
         <div className="space-y-1.5">
-          <Label htmlFor="tech-name" className="text-xs font-mono text-muted">
+          <Label
+            htmlFor="tech-name"
+            className={cn(
+              'text-xs font-mono text-muted',
+              state?.errors?.name && 'text-destructive font-semibold'
+            )}
+          >
             Nama Teknologi *
           </Label>
           <Input
@@ -134,14 +161,28 @@ function TechnologyFormContent({
             value={name}
             onChange={handleNameChange}
             placeholder="e.g. Next.js"
-            required
-            className="bg-surface-raised border-border text-xs"
+            className={cn(
+              'bg-surface-raised border-border text-xs',
+              state?.errors?.name && 'border-destructive focus-visible:ring-destructive'
+            )}
           />
+          {state?.errors?.name && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.name}</span>
+            </p>
+          )}
         </div>
 
         {/* Slug URL */}
         <div className="space-y-1.5">
-          <Label htmlFor="tech-slug" className="text-xs font-mono text-muted">
+          <Label
+            htmlFor="tech-slug"
+            className={cn(
+              'text-xs font-mono text-muted',
+              state?.errors?.slug && 'text-destructive font-semibold'
+            )}
+          >
             Slug Identifier (Otomatis dari Nama) *
           </Label>
           <Input
@@ -153,15 +194,29 @@ function TechnologyFormContent({
               setIsSlugManual(true);
             }}
             placeholder="e.g. nextjs"
-            required
-            className="bg-surface-raised border-border font-mono text-xs"
+            className={cn(
+              'bg-surface-raised border-border font-mono text-xs',
+              state?.errors?.slug && 'border-destructive focus-visible:ring-destructive'
+            )}
           />
+          {state?.errors?.slug && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.slug}</span>
+            </p>
+          )}
         </div>
 
         {/* Icon Key SimpleIcons dengan Live Preview & Link Bantuan */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <Label htmlFor="tech-icon" className="text-xs font-mono text-muted">
+            <Label
+              htmlFor="tech-icon"
+              className={cn(
+                'text-xs font-mono text-muted',
+                state?.errors?.icon_key && 'text-destructive font-semibold'
+              )}
+            >
               Icon Key (SimpleIcons / SVG key) *
             </Label>
             <a
@@ -190,10 +245,18 @@ function TechnologyFormContent({
                 setIsIconManual(true);
               }}
               placeholder="e.g. nextdotjs, react, laravel"
-              required
-              className="bg-surface-raised border-border font-mono text-xs flex-1"
+              className={cn(
+                'bg-surface-raised border-border font-mono text-xs flex-1',
+                state?.errors?.icon_key && 'border-destructive focus-visible:ring-destructive'
+              )}
             />
           </div>
+          {state?.errors?.icon_key && (
+            <p className="text-[11px] text-destructive font-mono flex items-center gap-1 mt-1">
+              <AlertCircle className="w-3 h-3 shrink-0" />
+              <span>{state.errors.icon_key}</span>
+            </p>
+          )}
 
           {/* Preset Populer Cepat */}
           <div className="space-y-1 pt-1">
