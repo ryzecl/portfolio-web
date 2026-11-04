@@ -47,6 +47,7 @@ export async function upsertCategoryAction(
   }
 
   revalidatePath('/admin/tech-stack');
+  revalidatePath('/admin/tech-stack/categories');
   revalidatePath('/');
   return { success: true, message: 'Kategori berhasil disimpan.' };
 }
@@ -62,6 +63,7 @@ export async function deleteCategoryAction(id: string): Promise<ActionState> {
   }
 
   revalidatePath('/admin/tech-stack');
+  revalidatePath('/admin/tech-stack/categories');
   revalidatePath('/');
   return { success: true, message: 'Kategori berhasil dihapus.' };
 }
@@ -80,7 +82,6 @@ export async function upsertTechnologyAction(
   const slug = (formData.get('slug') as string)?.trim().toLowerCase();
   const icon_key = (formData.get('icon_key') as string)?.trim().toLowerCase();
   const is_featured = formData.get('is_featured') === 'on' || formData.get('is_featured') === 'true';
-  const priority = parseInt((formData.get('priority') as string) || '0', 10);
 
   if (!name || !slug || !category_id || !icon_key) {
     return { error: 'Semua kolom bertanda bintang wajib diisi.' };
@@ -98,7 +99,6 @@ export async function upsertTechnologyAction(
         slug,
         icon_key,
         is_featured,
-        priority,
       })
       .eq('id', id);
 
@@ -115,7 +115,6 @@ export async function upsertTechnologyAction(
         slug,
         icon_key,
         is_featured,
-        priority,
       });
 
     if (error) {

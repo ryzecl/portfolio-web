@@ -30,6 +30,7 @@ import {
   Check,
   Plus,
 } from 'lucide-react';
+import { DynamicPointList } from '@/components/ui/dynamic-point-list';
 
 interface ProjectFormProps {
   project?: Project | null;
@@ -326,34 +327,24 @@ export function ProjectForm({
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label htmlFor="highlights" className="text-xs font-mono text-muted">
-              Key Highlights (Tulis 1 baris per poin)
-            </Label>
-            <Textarea
-              id="highlights"
-              name="highlights"
-              defaultValue={project?.highlights?.join('\n') || ''}
-              placeholder="Next.js 16 App Router dengan Partial Prerendering&#10;Stripe Payment Gateway Integration&#10;Sub-second search response"
-              rows={4}
-              className="bg-surface-raised border-border font-mono text-xs"
-            />
-          </div>
+        <div className="space-y-6">
+          <DynamicPointList
+            label="Key Highlights Proyek"
+            name="highlights"
+            initialItems={project?.highlights}
+            placeholderKey="Tag / Metrik (opsional)"
+            placeholderValue="Poin keunggulan, fitur utama, atau metrik performa..."
+            description="Tambahkan sorotan utama keberhasilan proyek secara dinamis."
+          />
 
-          <div className="space-y-1.5">
-            <Label htmlFor="architecture" className="text-xs font-mono text-muted">
-              Architecture Highlights (Tulis 1 baris per poin)
-            </Label>
-            <Textarea
-              id="architecture"
-              name="architecture"
-              defaultValue={project?.architecture?.join('\n') || ''}
-              placeholder="Multi-tenant PostgreSQL schema&#10;Edge Network reverse proxy caching&#10;Supabase Auth dengan RLS"
-              rows={4}
-              className="bg-surface-raised border-border font-mono text-xs"
-            />
-          </div>
+          <DynamicPointList
+            label="Architecture & Engineering Highlights"
+            name="architecture"
+            initialItems={project?.architecture}
+            placeholderKey="Komponen (opsional, misal: Database, Edge, Auth)"
+            placeholderValue="Rincian rekayasa sistem, pattern arsitektur, integrasi..."
+            description="Spesifikasi teknis, desain arsitektur database, dan implementasi infrastruktur."
+          />
         </div>
       </div>
 

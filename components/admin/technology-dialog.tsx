@@ -161,20 +161,6 @@ export function TechnologyDialog({
             />
           </div>
 
-          {/* Priority */}
-          <div className="space-y-1.5">
-            <Label htmlFor="tech-prio" className="text-xs font-mono text-muted">
-              Urutan Prioritas
-            </Label>
-            <Input
-              id="tech-prio"
-              name="priority"
-              type="number"
-              defaultValue={technology?.priority ?? 0}
-              className="bg-surface-raised border-border font-mono text-xs"
-            />
-          </div>
-
           <DialogFooter className="pt-2">
             <Button
               type="button"

@@ -17,7 +17,6 @@ export interface Technology {
   slug: string;
   icon_key: string;
   is_featured: boolean;
-  priority: number;
   created_at: string;
   category?: TechCategory;
 }

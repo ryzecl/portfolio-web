@@ -22,6 +22,7 @@ import {
   Edit2,
   Sparkles,
   Trash2,
+  Tag,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -68,12 +69,21 @@ export default async function AdminProjectsPage() {
           </p>
         </div>
 
-        <Button asChild size="sm" className="font-mono text-xs">
-          <Link href="/admin/projects/new">
-            <Plus className="w-3.5 h-3.5 mr-1.5" />
-            Tambah Proyek
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline" size="sm" className="font-mono text-xs">
+            <Link href="/admin/projects/categories">
+              <Tag className="w-3.5 h-3.5 mr-1.5 text-accent" />
+              Kelola Kategori
+            </Link>
+          </Button>
+
+          <Button asChild size="sm" className="font-mono text-xs">
+            <Link href="/admin/projects/new">
+              <Plus className="w-3.5 h-3.5 mr-1.5" />
+              Tambah Proyek
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Tabel Proyek */}

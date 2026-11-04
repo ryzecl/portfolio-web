@@ -12,6 +12,7 @@ import { ProjectMediaViewer } from '@/components/projects/project-media-viewer';
 import { JsonLd } from '@/components/ui/json-ld';
 import { DotBackground } from '@/components/ui/dot-background';
 import { PageBreadcrumb } from '@/components/ui/page-breadcrumb';
+import { FormattedPoint } from '@/components/ui/dynamic-point-list';
 import { ContactCta } from '@/components/sections/contact-cta';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -354,9 +355,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                       className="p-4 rounded-2xl bg-surface border border-border flex items-start gap-3 shadow-2xs"
                     >
                       <CheckCircle2 className="w-4 h-4 text-accent mt-0.5 shrink-0" />
-                      <span className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-medium">
-                        {highlight}
-                      </span>
+                      <FormattedPoint
+                        text={highlight}
+                        className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-medium"
+                      />
                     </div>
                   ))}
                 </div>

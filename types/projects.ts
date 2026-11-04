@@ -5,7 +5,6 @@ export interface ProjectCategory {
   id: string;
   name: string;
   slug: string;
-  priority: number;
   created_at: string;
 }
 

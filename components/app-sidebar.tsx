@@ -53,11 +53,19 @@ const brandData = {
       title: 'Tech Stack',
       url: '/admin/tech-stack',
       icon: Cpu,
+      items: [
+        { title: 'All Technologies', url: '/admin/tech-stack' },
+        { title: 'Categories', url: '/admin/tech-stack/categories' },
+      ],
     },
     {
       title: 'Certificates',
       url: '/admin/certificates',
       icon: Award,
+      items: [
+        { title: 'All Certificates', url: '/admin/certificates' },
+        { title: 'Categories', url: '/admin/certificates/categories' },
+      ],
     },
     {
       title: 'Experience',

@@ -919,12 +919,10 @@ import {
   AlertCircle,
   CheckCircle2,
   Mail,
-  Github,
-  Linkedin,
   Phone,
-  Instagram,
   Music,
 } from 'lucide-react';
+import { GithubIcon, LinkedinIcon, InstagramIcon } from '@/components/ui/icons';
 
 interface SiteSettingsFormProps {
   socials: SiteSocialSettings;
@@ -975,7 +973,7 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="github" className="text-xs font-mono text-muted flex items-center gap-2">
-                <Github className="w-3.5 h-3.5 text-accent" /> GitHub URL *
+                <GithubIcon className="w-3.5 h-3.5 text-accent" /> GitHub URL *
               </Label>
               <Input
                 id="github"
@@ -989,7 +987,7 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
 
             <div className="space-y-1.5">
               <Label htmlFor="linkedin" className="text-xs font-mono text-muted flex items-center gap-2">
-                <Linkedin className="w-3.5 h-3.5 text-accent" /> LinkedIn URL *
+                <LinkedinIcon className="w-3.5 h-3.5 text-accent" /> LinkedIn URL *
               </Label>
               <Input
                 id="linkedin"
@@ -1017,14 +1015,14 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="spotify" className="text-xs font-mono text-muted flex items-center gap-2">
-                <Music className="w-3.5 h-3.5 text-accent" /> Spotify Profile
+              <Label htmlFor="instagram" className="text-xs font-mono text-muted flex items-center gap-2">
+                <InstagramIcon className="w-3.5 h-3.5 text-accent" /> Instagram URL
               </Label>
               <Input
-                id="spotify"
-                name="spotify"
-                defaultValue={socials.spotify || ''}
-                placeholder="https://open.spotify.com/user/..."
+                id="instagram"
+                name="instagram"
+                defaultValue={socials.instagram || ''}
+                placeholder="https://instagram.com/..."
                 className="bg-surface-raised border-border font-mono text-xs"
               />
             </div>

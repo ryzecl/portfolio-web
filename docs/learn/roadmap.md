@@ -99,7 +99,8 @@ erDiagram
         uuid id PK
         string role
         string organization
-        string location
+        text organization_url
+        string industry
         string start_date
         string end_date
         boolean is_current
@@ -213,14 +214,15 @@ Bagi pengembang dengan latar belakang Laravel, konsep Supabase dan Next.js App R
 - [ ] Buat halaman create di `app/admin/projects/new/page.tsx`
 - [ ] Buat halaman edit di `app/admin/projects/[id]/edit/page.tsx`
 
-### Fase 7: Modul Sertifikasi, Pengalaman, & Pengaturan Web (JSONB)
+### Fase 7: Modul Sertifikasi, Pengalaman, Pendidikan & Pengaturan Web (JSONB)
 > 📖 **Panduan Lengkap & Kode**: Lihat [Fase 7: Modul Kredensial, Pengalaman, Pendidikan & Pengaturan Web (JSONB)](file:///C:/Users/ferry/Documents/coding/web-porto-profesional/docs/learn/phase-7-credentials-experiences-settings-crud.md)
 - [ ] Buat tipe data TypeScript di `types/credentials.ts` dan `types/settings.ts`
 - [ ] Buat Server Actions CRUD sertifikat di `app/admin/certificates/actions.ts`
-- [ ] Buat Server Actions linimasa pengalaman di `app/admin/experience/actions.ts`
+- [ ] Buat Server Actions linimasa pengalaman & pendidikan di `app/admin/experience/actions.ts`
 - [ ] Buat Server Actions upsert JSONB settings di `app/admin/settings/actions.ts`
 - [ ] Buat form modal dialog & halaman index sertifikasi (`app/admin/certificates/`)
-- [ ] Buat form modal dialog & halaman index linimasa (`app/admin/experience/`)
+- [ ] Buat form modal dialog & halaman riwayat karier / pekerjaan (`app/admin/experience/`)
+- [ ] Buat halaman khusus riwayat pendidikan formal (`app/admin/education/`)
 - [ ] Buat form pengaturan website & tautan sosial media (`app/admin/settings/`)
 
 ### Fase 8: Migrasi Halaman Publik (Dari JSON ke Database)

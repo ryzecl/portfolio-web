@@ -1,6 +1,7 @@
 // app/admin/layout.tsx
 import React from 'react';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { createClient } from '@/lib/server';
 import { AppSidebar } from '@/components/app-sidebar';
 import {
@@ -25,7 +26,18 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Verifikasi User di Sisi Server
+  // Cek apakah request ditujukan untuk rute login (/admin/login)
+  const headerList = await headers();
+  const pathname = headerList.get('x-pathname') || '';
+  const isLoginPage = pathname === '/admin/login' || pathname.startsWith('/admin/login');
+
+  // Halaman login TIDAK membutuhkan verifikasi autentikasi ataupun sidebar shell
+  // Ini mencegah terjadinya infinite redirect loop (ERR_TOO_MANY_REDIRECTS)
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  // 1. Verifikasi User di Sisi Server untuk rute admin dashboard
   const supabase = await createClient();
   const {
     data: { user },

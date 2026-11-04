@@ -1,13 +1,16 @@
 // components/nav-user.tsx
 'use client';
 
+import React, { useTransition } from 'react';
 import {
   BadgeCheck,
   ChevronsUpDown,
   LogOut,
   Sparkles,
+  Loader2,
 } from 'lucide-react';
 import { logoutAction } from '@/app/admin/actions';
+import { createClient } from '@/lib/client';
 import {
   Avatar,
   AvatarFallback,
@@ -39,6 +42,19 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const [isLoggingOut, startLogoutTransition] = useTransition();
+
+  const handleLogout = () => {
+    startLogoutTransition(async () => {
+      try {
+        const supabase = createClient();
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.error('Error signing out on client:', err);
+      }
+      await logoutAction();
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -104,15 +120,27 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 
-            {/* Logout via Server Action */}
-            <form action={logoutAction}>
-              <button type="submit" className="w-full">
-                <DropdownMenuItem className="text-xs font-mono text-destructive focus:text-destructive cursor-pointer">
+            {/* Logout Trigger */}
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                handleLogout();
+              }}
+              disabled={isLoggingOut}
+              className="text-xs font-mono text-destructive focus:text-destructive cursor-pointer"
+            >
+              {isLoggingOut ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing out...
+                </>
+              ) : (
+                <>
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
-                </DropdownMenuItem>
-              </button>
-            </form>
+                </>
+              )}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
