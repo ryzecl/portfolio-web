@@ -52,11 +52,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   if (!edu) {
-    return { title: 'Detail Pendidikan · Admin CMS' };
+    return { title: 'Education Detail · Admin CMS' };
   }
 
-  const majorName = edu.major || edu.role || 'Pendidikan';
-  const instName = edu.institution || edu.organization || 'Institusi';
+  const majorName = edu.major || edu.role || 'Education';
+  const instName = edu.institution || edu.organization || 'Institution';
 
   return {
     title: `${majorName} · ${instName} · Admin CMS`,
@@ -73,7 +73,6 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
     .eq('id', id)
     .single();
 
-  // Fallback jika belum di-migrasikan dari experiences
   if (error || !rawEdu) {
     const fallback = await supabase
       .from('experiences')
@@ -88,8 +87,8 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
   }
 
   const edu = rawEdu as EducationItem;
-  const majorName = edu.major || edu.role || 'Program Studi';
-  const instName = edu.institution || edu.organization || 'Institusi';
+  const majorName = edu.major || edu.role || 'Program of Study';
+  const instName = edu.institution || edu.organization || 'Institution';
   const isCurrent = edu.is_current || !edu.end_date;
   const dateRange = `${formatExperienceDate(edu.start_date)} – ${
     isCurrent ? 'Present' : formatExperienceDate(edu.end_date)
@@ -105,7 +104,7 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
           className="inline-flex items-center text-xs font-mono text-muted hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="w-3.5 h-3.5 mr-1.5 transition-transform group-hover:-translate-x-0.5" />
-          <span>Kembali ke Daftar Pendidikan</span>
+          <span>Back to Education</span>
         </Link>
 
         <EducationDetailActions education={edu} />
@@ -116,17 +115,17 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline" className="font-mono text-xs border-accent/40 text-accent bg-accent/5">
-              Prioritas #{edu.priority ?? 1}
+              Priority #{edu.priority ?? 1}
             </Badge>
 
             {isCurrent ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Sedang Ditempuh (Present)
+                Present (Enrolled)
               </span>
             ) : (
               <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono bg-surface-raised border border-border text-muted">
-                Lulus (Completed)
+                Completed
               </span>
             )}
 
@@ -172,15 +171,14 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left Column (2 Cols): Description & Honors */}
         <div className="md:col-span-2 space-y-6">
-          {/* Ringkasan Fokus Studi (Description) */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
                 <Info className="w-4 h-4 text-accent" />
-                <span>Fokus Studi / Ringkasan Akademik</span>
+                <span>Academic Focus &amp; Summary</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted">
-                Ringkasan bidang ilmu, riset, atau fokus keahlian selama menempuh studi.
+                Academic discipline, research, and focus areas during study.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -190,13 +188,12 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
                 </p>
               ) : (
                 <p className="text-xs font-mono text-muted italic">
-                  Belum ada ringkasan deskripsi yang ditambahkan.
+                  No summary description provided.
                 </p>
               )}
             </CardContent>
           </Card>
 
-          {/* Key Distinctions & Honors (Achievements) */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
@@ -204,7 +201,7 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
                 <span>Key Distinctions &amp; Honors</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted">
-                Prestasi akademik, kejuaraan, atau penghargaan yang tampil di public accordion.
+                Academic achievements, awards, and honors displayed on the public accordion.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -219,7 +216,7 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
                 </ul>
               ) : (
                 <p className="text-xs font-mono text-muted italic">
-                  Belum ada poin prestasi atau distingsi akademik yang ditambahkan.
+                  No honors or distinctions added yet.
                 </p>
               )}
             </CardContent>
@@ -228,24 +225,23 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
 
         {/* Right Column (1 Col): Academic Summary & Metadata */}
         <div className="space-y-6">
-          {/* Ringkasan Akademik */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-accent" />
-                <span>Ringkasan Akademik</span>
+                <span>Academic Summary</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-xs font-mono">
               <div>
-                <span className="text-muted block text-[11px]">Jenjang / Program:</span>
+                <span className="text-muted block text-[11px]">Degree / Program:</span>
                 <span className="text-foreground font-semibold">
-                  {edu.program || 'Tidak dispesifikasi'}
+                  {edu.program || 'Not specified'}
                 </span>
               </div>
 
               <div>
-                <span className="text-muted block text-[11px]">Nilai Akhir / IPK:</span>
+                <span className="text-muted block text-[11px]">GPA / Grade:</span>
                 <span className="text-foreground font-semibold">
                   {edu.gpa ? (
                     <span className="text-accent">{edu.gpa}</span>
@@ -256,27 +252,26 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
               </div>
 
               <div>
-                <span className="text-muted block text-[11px]">Status Perkuliahan:</span>
+                <span className="text-muted block text-[11px]">Enrollment Status:</span>
                 <span className="text-foreground">
                   {isCurrent ? (
                     <span className="text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
                       <CheckCircle2 className="w-3 h-3" />
-                      Sedang Aktif Menempuh
+                      Currently Enrolled
                     </span>
                   ) : (
-                    'Telah Selesai / Lulus'
+                    'Completed / Graduated'
                   )}
                 </span>
               </div>
             </CardContent>
           </Card>
 
-          {/* System Metadata */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
                 <Clock className="w-4 h-4 text-accent" />
-                <span>Informasi Sistem</span>
+                <span>System Metadata</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-xs font-mono">
@@ -288,17 +283,17 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
               </div>
 
               <div>
-                <span className="text-muted block text-[11px]">Dibuat Pada:</span>
+                <span className="text-muted block text-[11px]">Created At:</span>
                 <span className="text-foreground">
-                  {edu.created_at ? new Date(edu.created_at).toLocaleString('id-ID') : '-'}
+                  {edu.created_at ? new Date(edu.created_at).toLocaleString('en-US') : '-'}
                 </span>
               </div>
 
               {edu.updated_at && (
                 <div>
-                  <span className="text-muted block text-[11px]">Terakhir Diperbarui:</span>
+                  <span className="text-muted block text-[11px]">Last Updated:</span>
                   <span className="text-foreground">
-                    {new Date(edu.updated_at).toLocaleString('id-ID')}
+                    {new Date(edu.updated_at).toLocaleString('en-US')}
                   </span>
                 </div>
               )}

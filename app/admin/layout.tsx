@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { Toaster } from '@/components/ui/sonner';
 
 export default async function AdminLayout({
   children,
@@ -99,6 +100,7 @@ export default async function AdminLayout({
         <main className="flex-1 p-6 md:p-8 space-y-6 max-w-7xl w-full mx-auto">
           {children}
         </main>
+        <Toaster />
       </SidebarInset>
     </SidebarProvider>
   );

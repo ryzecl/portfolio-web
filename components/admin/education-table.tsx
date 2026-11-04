@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { EducationItem } from '@/types/credentials';
 import { deleteEducationAction } from '@/app/admin/education/actions';
 import { EducationDialog } from '@/components/admin/education-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
+import { toast } from 'sonner';
 import { formatExperienceDate } from '@/lib/utils';
 import {
   Table,
@@ -25,12 +27,16 @@ interface EducationTableProps {
 export function EducationTable({ educations }: EducationTableProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingEdu, setEditingEdu] = useState<EducationItem | null>(null);
-  const [isPending, startTransition] = useTransition();
 
-  const handleDelete = (id: string, major: string) => {
-    if (confirm(`Hapus riwayat pendidikan "${major}"?`)) {
-      startTransition(async () => {
-        await deleteEducationAction(id);
+  const handleDelete = async (id: string, major: string) => {
+    try {
+      await deleteEducationAction(id);
+      toast.success('Education record deleted', {
+        description: `"${major}" has been removed.`,
+      });
+    } catch (err: any) {
+      toast.error('Failed to delete education record', {
+        description: err.message,
       });
     }
   };
@@ -40,7 +46,7 @@ export function EducationTable({ educations }: EducationTableProps) {
       {/* Header Actions */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted font-mono">
-          Total: {educations.length} riwayat pendidikan akademik (diurutkan berdasarkan Prioritas)
+          Total: {educations.length} academic education {educations.length === 1 ? 'record' : 'records'} (sorted by Priority)
         </p>
 
         <Button
@@ -49,10 +55,10 @@ export function EducationTable({ educations }: EducationTableProps) {
             setEditingEdu(null);
             setDialogOpen(true);
           }}
-          className="font-mono text-xs"
+          className="font-mono text-xs cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 mr-1.5" />
-          Tambah Pendidikan
+          Add Education
         </Button>
       </div>
 
@@ -153,7 +159,7 @@ export function EducationTable({ educations }: EducationTableProps) {
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 p-0"
-                          title="Lihat Detail Pendidikan"
+                          title="View Details"
                         >
                           <Link href={`/admin/education/${edu.id}`}>
                             <Eye className="w-3.5 h-3.5 text-muted hover:text-foreground" />
@@ -167,22 +173,17 @@ export function EducationTable({ educations }: EducationTableProps) {
                             setEditingEdu(edu);
                             setDialogOpen(true);
                           }}
-                          className="h-8 w-8 p-0"
-                          title="Edit Pendidikan"
+                          className="h-8 w-8 p-0 cursor-pointer"
+                          title="Edit Education"
                         >
                           <Edit2 className="w-3.5 h-3.5 text-muted hover:text-foreground" />
                         </Button>
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          disabled={isPending}
-                          onClick={() => handleDelete(edu.id, majorName)}
-                          className="h-8 w-8 p-0 text-muted hover:text-destructive"
-                          title="Hapus Pendidikan"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
+                        <DeleteConfirmDialog
+                          title="Delete Education?"
+                          description={`Do you want to permanently delete "${majorName}" at ${instName}?`}
+                          onConfirm={() => handleDelete(edu.id, majorName)}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>

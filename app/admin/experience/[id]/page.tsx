@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .single();
 
   if (!exp) {
-    return { title: 'Detail Pengalaman · Admin CMS' };
+    return { title: 'Experience Detail · Admin CMS' };
   }
 
   return {
@@ -79,7 +79,7 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
           className="inline-flex items-center text-xs font-mono text-muted hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="w-3.5 h-3.5 mr-1.5 transition-transform group-hover:-translate-x-0.5" />
-          <span>Kembali ke Daftar Pengalaman</span>
+          <span>Back to Experience</span>
         </Link>
 
         <ExperienceDetailActions experience={exp} />
@@ -90,17 +90,17 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline" className="font-mono text-xs border-accent/40 text-accent bg-accent/5">
-              Prioritas #{exp.priority ?? 1}
+              Priority #{exp.priority ?? 1}
             </Badge>
 
             {isCurrent ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Aktif (Present)
+                Present (Current)
               </span>
             ) : (
               <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono bg-surface-raised border border-border text-muted">
-                Selesai (Completed)
+                Completed
               </span>
             )}
 
@@ -149,15 +149,14 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left Column (2 Cols): Description & Highlights */}
         <div className="md:col-span-2 space-y-6">
-          {/* Ringkasan Peran (Description) */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
                 <Info className="w-4 h-4 text-accent" />
-                <span>Ringkasan Peran (Role Summary)</span>
+                <span>Role Summary</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted">
-                Deskripsi umum tanggung jawab dan kontribusi dalam peran ini.
+                Overview of responsibilities and key contributions in this position.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -167,13 +166,12 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
                 </p>
               ) : (
                 <p className="text-xs font-mono text-muted italic">
-                  Belum ada ringkasan deskripsi yang ditambahkan.
+                  No summary description provided.
                 </p>
               )}
             </CardContent>
           </Card>
 
-          {/* Key Focus & Responsibilities */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
@@ -181,7 +179,7 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
                 <span>Key Focus &amp; Responsibilities</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted">
-                Poin-poin spesifik tanggung jawab dan pencapaian kerja yang tampil di public accordion.
+                Specific milestones and responsibilities displayed on the public accordion.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -196,7 +194,7 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
                 </ul>
               ) : (
                 <p className="text-xs font-mono text-muted italic">
-                  Belum ada poin tanggung jawab yang ditambahkan.
+                  No responsibility highlights added yet.
                 </p>
               )}
             </CardContent>
@@ -205,7 +203,6 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
 
         {/* Right Column (1 Col): Tech Stack & Metadata */}
         <div className="space-y-6">
-          {/* Technologies Used */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
@@ -213,7 +210,7 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
                 <span>Technologies &amp; Tools</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted">
-                Stack teknologi yang diterapkan.
+                Applied technology stack and tooling.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -230,18 +227,17 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
                 </div>
               ) : (
                 <p className="text-xs font-mono text-muted italic">
-                  Tidak ada data teknologi.
+                  No technology tags provided.
                 </p>
               )}
             </CardContent>
           </Card>
 
-          {/* System Metadata */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-mono flex items-center gap-2">
                 <Clock className="w-4 h-4 text-accent" />
-                <span>Informasi Sistem</span>
+                <span>System Metadata</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-xs font-mono">
@@ -253,17 +249,17 @@ export default async function AdminExperienceDetailPage({ params }: PageProps) {
               </div>
 
               <div>
-                <span className="text-muted block text-[11px]">Dibuat Pada:</span>
+                <span className="text-muted block text-[11px]">Created At:</span>
                 <span className="text-foreground">
-                  {exp.created_at ? new Date(exp.created_at).toLocaleString('id-ID') : '-'}
+                  {exp.created_at ? new Date(exp.created_at).toLocaleString('en-US') : '-'}
                 </span>
               </div>
 
               {exp.updated_at && (
                 <div>
-                  <span className="text-muted block text-[11px]">Terakhir Diperbarui:</span>
+                  <span className="text-muted block text-[11px]">Last Updated:</span>
                   <span className="text-foreground">
-                    {new Date(exp.updated_at).toLocaleString('id-ID')}
+                    {new Date(exp.updated_at).toLocaleString('en-US')}
                   </span>
                 </div>
               )}

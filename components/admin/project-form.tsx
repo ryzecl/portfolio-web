@@ -3,6 +3,8 @@
 
 import React, { useState, useEffect, useActionState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { Project, ProjectCategory, ProjectActionState } from '@/types/projects';
 import { Technology } from '@/types/tech-stack';
 import {
@@ -64,6 +66,7 @@ export function ProjectForm({
 }: ProjectFormProps) {
   const isEditing = Boolean(project?.id);
   const actionToUse = isEditing ? updateProjectAction : createProjectAction;
+  const router = useRouter();
 
   const [state, formAction, isPending] = useActionState<ProjectActionState | null, FormData>(
     actionToUse,
@@ -113,7 +116,7 @@ export function ProjectForm({
   const groupedTechnologies = React.useMemo(() => {
     const groups = new Map<string, { title: string; priority: number; items: Technology[] }>();
     for (const tech of technologies) {
-      const catTitle = tech.category?.title || 'Lainnya';
+      const catTitle = tech.category?.title || 'Other';
       const catPriority = tech.category?.priority ?? 999;
       if (!groups.has(catTitle)) {
         groups.set(catTitle, { title: catTitle, priority: catPriority, items: [] });
@@ -128,12 +131,21 @@ export function ProjectForm({
     [technologies, selectedTechIds]
   );
 
-  // Auto-scroll ke pesan error bila submit gagal
+  // Handle Toast feedback on submit success or failure
   useEffect(() => {
-    if (state?.error) {
+    if (state?.success) {
+      toast.success(isEditing ? 'Project updated successfully' : 'Project created successfully', {
+        description: isEditing ? 'Your changes have been saved.' : 'New project published to your portfolio.',
+      });
+      router.push('/admin/projects');
+      router.refresh();
+    } else if (state?.error) {
+      toast.error('Failed to save project', {
+        description: state.error,
+      });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [state?.error]);
+  }, [state, isEditing, router]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -165,7 +177,7 @@ export function ProjectForm({
     setFileSizeError(null);
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        setFileSizeError('Ukuran file cover maksimal 10 MB.');
+        setFileSizeError('Cover file size must not exceed 10 MB.');
         e.target.value = '';
         return;
       }
@@ -254,11 +266,11 @@ export function ProjectForm({
       {/* Bagian 1: Informasi Dasar */}
       <div className="p-6 rounded-2xl border border-border bg-surface space-y-5">
         <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-          1. Informasi Utama
+          1. Core Information
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {/* Judul Proyek */}
+          {/* Project Title */}
           <div className="space-y-1.5">
             <Label
               htmlFor="title"
@@ -267,7 +279,7 @@ export function ProjectForm({
                 state?.errors?.title && 'text-destructive font-semibold'
               )}
             >
-              Judul Proyek *
+              Project Title *
             </Label>
             <Input
               id="title"
@@ -297,7 +309,7 @@ export function ProjectForm({
                 state?.errors?.slug && 'text-destructive font-semibold'
               )}
             >
-              Slug URL (Otomatis dari Judul) *
+              Slug URL (Auto-generated from Title) *
             </Label>
             <Input
               id="slug"
@@ -320,7 +332,7 @@ export function ProjectForm({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          {/* Kategori Proyek */}
+          {/* Project Category */}
           <div className="space-y-1.5">
             <Label
               htmlFor="category_id"
@@ -329,7 +341,7 @@ export function ProjectForm({
                 state?.errors?.category_id && 'text-destructive font-semibold'
               )}
             >
-              Kategori Proyek *
+              Project Category *
             </Label>
             <Select
               name="category_id"
@@ -342,12 +354,12 @@ export function ProjectForm({
                   state?.errors?.category_id && 'border-destructive focus-visible:ring-destructive'
                 )}
               >
-                <SelectValue placeholder="Pilih Kategori..." />
+                <SelectValue placeholder="Select Category..." />
               </SelectTrigger>
               <SelectContent>
                 {categories.length === 0 ? (
                   <SelectItem value="none" disabled className="text-xs text-muted">
-                    Belum ada kategori (tambahkan di Kelola Kategori)
+                    No categories yet (add in Manage Categories)
                   </SelectItem>
                 ) : (
                   categories.map((c) => (
@@ -375,7 +387,7 @@ export function ProjectForm({
                 state?.errors?.role && 'text-destructive font-semibold'
               )}
             >
-              Peran Anda (Role) *
+              Your Role *
             </Label>
             <Input
               id="role"
@@ -406,7 +418,7 @@ export function ProjectForm({
                   state?.errors?.year && 'text-destructive font-semibold'
                 )}
               >
-                Tahun *
+                Year *
               </Label>
               <Input
                 id="year"
@@ -448,7 +460,7 @@ export function ProjectForm({
           </div>
         </div>
 
-        {/* Ringkasan Singkat (Summary) */}
+        {/* Short Summary */}
         <div className="space-y-1.5">
           <Label
             htmlFor="summary"
@@ -457,14 +469,14 @@ export function ProjectForm({
               state?.errors?.summary && 'text-destructive font-semibold'
             )}
           >
-            Ringkasan Singkat (Summary) *
+            Short Summary *
           </Label>
           <Textarea
             id="summary"
             name="summary"
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
-            placeholder="Ringkasan 1-2 kalimat untuk kartu portofolio dan metadata SEO..."
+            placeholder="A concise 1-2 sentence overview for cards and SEO metadata..."
             rows={2}
             className={cn(
               'bg-surface-raised border-border text-xs',
@@ -484,7 +496,7 @@ export function ProjectForm({
       <div className="p-6 rounded-2xl border border-border bg-surface space-y-6">
         <div className="space-y-1">
           <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-            2. Gambar Proyek (Cover & Galeri Detail Interaktif)
+            2. Visual Assets (Cover & Interactive Gallery)
           </h2>
           <p className="text-xs text-muted">
             Unggah file langsung atau masukkan path gambar lokal/URL.
@@ -528,7 +540,7 @@ export function ProjectForm({
               <div className="space-y-1.5">
                 <Label htmlFor="cover_image_url" className="text-xs font-mono text-muted flex items-center gap-1">
                   <LinkIcon className="w-3 h-3 text-accent" />
-                  <span>Opsi 2: Atau Masukkan URL / Path Gambar Langsung</span>
+                  <span>Option 2: Or Enter Direct Image URL / Local Path</span>
                 </Label>
                 <Input
                   id="cover_image_url"
@@ -539,7 +551,7 @@ export function ProjectForm({
                   className="bg-surface border-border text-xs font-mono"
                 />
                 <p className="text-[11px] text-muted">
-                  Cocok bila Anda ingin menggunakan aset lokal di folder <code>public/</code> atau CDN eksternal.
+                  Ideal for local assets in the public/ directory <code>public/</code> atau CDN eksternal.
                 </p>
               </div>
             </div>
@@ -560,14 +572,14 @@ export function ProjectForm({
                       className="px-3 py-1.5 rounded bg-destructive text-destructive-foreground text-xs font-mono flex items-center gap-1.5 shadow-sm hover:opacity-90 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Hapus Cover</span>
+                      <span>Remove Cover</span>
                     </button>
                   </div>
                 </>
               ) : (
                 <div className="flex flex-col items-center gap-1.5 text-muted text-xs font-mono">
                   <ImageIcon className="w-6 h-6" />
-                  <span>Belum ada cover</span>
+                  <span>No cover selected</span>
                 </div>
               )}
             </div>
@@ -580,10 +592,10 @@ export function ProjectForm({
             <div className="space-y-0.5">
               <span className="text-xs font-mono font-semibold text-foreground flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-accent" />
-                B. Detail Images / Galeri Interaktif (Opsional - Bisa Banyak)
+                B. Interactive Detail Gallery (Optional)
               </span>
               <p className="text-[11px] text-muted">
-                Gambar-gambar ini akan menjadi galeri carousel di halaman detail proyek (<code>/projects/[slug]</code>) yang bisa digeser (slide/swipe).
+                These images form the interactive carousel gallery on the project case study page (<code>/projects/[slug]</code>) yang bisa digeser (slide/swipe).
               </p>
             </div>
             <Badge variant="outline" className="text-xs font-mono">
@@ -594,7 +606,7 @@ export function ProjectForm({
           <div className="space-y-2">
             <Label htmlFor="preview_files" className="text-xs font-mono text-muted flex items-center gap-2">
               <UploadCloud className="w-3.5 h-3.5 text-accent" />
-              <span>Unggah Gambar Detail (Pilih satu atau sekaligus banyak via Ctrl / Shift)</span>
+              <span>Upload Gallery Images (Select one or multiple via Ctrl/Shift)</span>
             </Label>
             <Input
               id="preview_files"
@@ -611,7 +623,7 @@ export function ProjectForm({
           {existingPreviews.length > 0 && (
             <div className="space-y-2 pt-3 border-t border-border/60">
               <span className="text-[11px] font-mono text-muted uppercase tracking-wider block">
-                Gambar Detail yang Tersimpan ({existingPreviews.length} Foto):
+                Saved Gallery Images ({existingPreviews.length} Photos):
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {existingPreviews.map((url, idx) => (
@@ -631,7 +643,7 @@ export function ProjectForm({
                         className="px-2.5 py-1 rounded bg-destructive text-destructive-foreground text-[10px] font-mono flex items-center gap-1.5 shadow-sm hover:opacity-90 cursor-pointer"
                       >
                         <Trash2 className="w-3 h-3" />
-                        <span>Hapus</span>
+                        <span>Remove</span>
                       </button>
                     </div>
                     <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-background/80 text-[9px] font-mono text-muted">
@@ -643,11 +655,11 @@ export function ProjectForm({
             </div>
           )}
 
-          {/* List Preview Berkas Baru yang baru dipilih */}
+          {/* List Preview Berkas New yang baru dipilih */}
           {newPreviewUrls.length > 0 && (
             <div className="space-y-2 pt-3 border-t border-border/60">
               <span className="text-[11px] font-mono text-accent uppercase tracking-wider block font-semibold">
-                Berkas Baru yang Dipilih ({newPreviewUrls.length} File Baru):
+                Newly Selected Files ({newPreviewUrls.length} New Files):
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {newPreviewUrls.map((url, idx) => (
@@ -661,7 +673,7 @@ export function ProjectForm({
                       className="w-full h-full object-cover"
                     />
                     <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-accent text-[9px] font-mono text-accent-foreground font-bold">
-                      Baru #{idx + 1}
+                      New #{idx + 1}
                     </span>
                   </div>
                 ))}
@@ -676,7 +688,7 @@ export function ProjectForm({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="space-y-0.5">
             <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-              3. Teknologi yang Digunakan ({selectedTechIds.length} Terpilih)
+              3. Technologies Applied ({selectedTechIds.length} Terpilih)
             </h2>
             <p className="text-xs text-muted">
               Cari dan pilih beberapa teknologi sekaligus menggunakan pencarian cepat.
@@ -718,7 +730,7 @@ export function ProjectForm({
             <Command>
               <CommandInput placeholder="Ketik nama teknologi atau kategori..." />
               <CommandList className="max-h-72">
-                <CommandEmpty>Teknologi tidak ditemukan.</CommandEmpty>
+                <CommandEmpty>No technology found.</CommandEmpty>
                 {groupedTechnologies.map((group, groupIdx) => (
                   <React.Fragment key={group.title}>
                     {groupIdx > 0 && <CommandSeparator />}
@@ -797,7 +809,7 @@ export function ProjectForm({
                 <button
                   type="button"
                   onClick={() => toggleTechnology(tech.id)}
-                  aria-label={`Hapus ${tech.name}`}
+                  aria-label={`Remove ${tech.name}`}
                   className="ml-0.5 p-0.5 rounded hover:bg-accent/20 text-muted hover:text-foreground transition-colors cursor-pointer"
                 >
                   <X className="w-3 h-3" />
@@ -815,19 +827,19 @@ export function ProjectForm({
       {/* Bagian 4: Studi Kasus Mendalam (Problem, Solution, Highlights) */}
       <div className="p-6 rounded-2xl border border-border bg-surface space-y-5">
         <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-          4. Studi Kasus & Arsitektur
+          4. Case Study & Architecture
         </h2>
 
         <div className="space-y-1.5">
           <Label htmlFor="description" className="text-xs font-mono text-muted">
-            Deskripsi Naratif Panjang
+            Comprehensive Narrative Description
           </Label>
           <Textarea
             id="description"
             name="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Latar belakang lengkap tentang proyek..."
+            placeholder="Full background and architectural context of the project..."
             rows={3}
             className="bg-surface-raised border-border text-xs"
           />
@@ -836,14 +848,14 @@ export function ProjectForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="problem" className="text-xs font-mono text-muted">
-              Tantangan Masalah (Problem Statement)
+              Problem Statement & Challenges
             </Label>
             <Textarea
               id="problem"
               name="problem"
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
-              placeholder="Masalah utama yang dihadapi klien..."
+              placeholder="Key problems and business bottlenecks that needed solving..."
               rows={3}
               className="bg-surface-raised border-border text-xs"
             />
@@ -851,14 +863,14 @@ export function ProjectForm({
 
           <div className="space-y-1.5">
             <Label htmlFor="solution" className="text-xs font-mono text-muted">
-              Solusi Rekayasa (Engineered Solution)
+              Engineered Solution
             </Label>
             <Textarea
               id="solution"
               name="solution"
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
-              placeholder="Solusi arsitektur software yang Anda buat..."
+              placeholder="Architectural design, system patterns, and technical execution..."
               rows={3}
               className="bg-surface-raised border-border text-xs"
             />
@@ -867,14 +879,14 @@ export function ProjectForm({
 
         <div className="space-y-1.5">
           <Label htmlFor="contribution" className="text-xs font-mono text-muted">
-            Kontribusi Rekayasa (Role & Ownership)
+            Engineering Role & Ownership
           </Label>
           <Textarea
             id="contribution"
             name="contribution"
             value={contribution}
             onChange={(e) => setContribution(e.target.value)}
-            placeholder="Tanggung jawab spesifik Anda dalam arsitektur, frontend/backend, dsb..."
+            placeholder="Your direct responsibilities across architecture, frontend, backend, etc..."
             rows={2}
             className="bg-surface-raised border-border text-xs"
           />
@@ -882,21 +894,21 @@ export function ProjectForm({
 
         <div className="space-y-6">
           <DynamicPointList
-            label="Key Highlights Proyek"
+            label="Key Project Highlights"
             name="highlights"
             initialItems={project?.highlights}
-            placeholderKey="Tag / Metrik (opsional)"
-            placeholderValue="Poin keunggulan, fitur utama, atau metrik performa..."
-            description="Tambahkan sorotan utama keberhasilan proyek secara dinamis."
+            placeholderKey="Tag / Metric (optional)"
+            placeholderValue="Key achievement, feature highlight, or performance metric..."
+            description="Add dynamic bullet points highlighting key wins, metrics, or core capabilities."
           />
 
           <DynamicPointList
             label="Architecture & Engineering Highlights"
             name="architecture"
             initialItems={project?.architecture}
-            placeholderKey="Komponen (opsional, misal: Database, Edge, Auth)"
-            placeholderValue="Rincian rekayasa sistem, pattern arsitektur, integrasi..."
-            description="Spesifikasi teknis, desain arsitektur database, dan implementasi infrastruktur."
+            placeholderKey="Component (optional, e.g. Edge, Database, Auth)"
+            placeholderValue="System design details, design patterns, integration flows..."
+            description="Technical specs, database architecture, and infrastructure implementation."
           />
         </div>
       </div>
@@ -904,7 +916,7 @@ export function ProjectForm({
       {/* Bagian 5: Tautan Eksternal & Visibilitas */}
       <div className="p-6 rounded-2xl border border-border bg-surface space-y-5">
         <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-          5. Tautan & Pengaturan
+          5. Links & Visibility
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -973,10 +985,10 @@ export function ProjectForm({
           <div className="space-y-0.5">
             <Label htmlFor="priority" className="text-xs font-semibold cursor-pointer text-foreground flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-accent" />
-              Urutan Prioritas Landing Page (Priority)
+              Landing Page Grid Priority
             </Label>
             <p className="text-[11px] text-muted">
-              Isi 1 s/d 4 untuk menampilkan proyek ini di 4 kartu grid utama Landing Page. Isi 0 untuk urutan standar.
+              Set 1 to 4 to feature this project on the Landing Page grid. Use 0 for standard ordering.
             </p>
           </div>
           <Input
@@ -1009,19 +1021,19 @@ export function ProjectForm({
           className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-foreground font-mono transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Batal dan kembali</span>
+          <span>Cancel and return</span>
         </Link>
 
         <Button type="submit" disabled={isPending} className="px-6 font-mono text-xs cursor-pointer">
           {isPending ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              <span>Menyimpan Proyek...</span>
+              <span>Saving Project...</span>
             </>
           ) : isEditing ? (
-            <span>Perbarui Proyek</span>
+            <span>Update Project</span>
           ) : (
-            <span>Terbitkan Proyek</span>
+            <span>Publish Project</span>
           )}
         </Button>
       </div>

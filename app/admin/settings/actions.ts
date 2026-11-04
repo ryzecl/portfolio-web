@@ -27,38 +27,38 @@ export async function updateSocialSettingsAction(
 
   const errors: Record<string, string> = {};
   if (!email) {
-    errors.email = 'Email kontak wajib diisi.';
+    errors.email = 'Contact email is required.';
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = 'Format alamat email tidak valid.';
+    errors.email = 'Invalid email address format.';
   }
 
   if (!github) {
-    errors.github = 'GitHub URL wajib diisi.';
+    errors.github = 'GitHub URL is required.';
   } else if (!isValidHttpUrl(github)) {
-    errors.github = 'Format GitHub URL tidak valid (harus diawali http:// atau https://).';
+    errors.github = 'Invalid GitHub URL format (must start with http:// or https://).';
   }
 
   if (!linkedin) {
-    errors.linkedin = 'LinkedIn URL wajib diisi.';
+    errors.linkedin = 'LinkedIn URL is required.';
   } else if (!isValidHttpUrl(linkedin)) {
-    errors.linkedin = 'Format LinkedIn URL tidak valid (harus diawali http:// atau https://).';
+    errors.linkedin = 'Invalid LinkedIn URL format (must start with http:// or https://).';
   }
 
   if (whatsapp && !isValidHttpUrl(whatsapp) && !/^\+?[0-9\s-]{8,20}$/.test(whatsapp)) {
-    errors.whatsapp = 'Masukkan link https://wa.me/... atau nomor telepon yang valid.';
+    errors.whatsapp = 'Enter a valid https://wa.me/... link or phone number.';
   }
 
   if (instagram && !isValidHttpUrl(instagram)) {
-    errors.instagram = 'Format Instagram URL tidak valid (harus diawali http:// atau https://).';
+    errors.instagram = 'Invalid Instagram URL format (must start with http:// or https://).';
   }
 
   if (spotify && !isValidHttpUrl(spotify)) {
-    errors.spotify = 'Format Spotify URL tidak valid (harus diawali http:// atau https://).';
+    errors.spotify = 'Invalid Spotify URL format (must start with http:// or https://).';
   }
 
   if (Object.keys(errors).length > 0) {
     return {
-      error: 'Mohon periksa kembali kolom yang ditandai merah.',
+      error: 'Please review and fix the highlighted fields.',
       errors,
     };
   }
@@ -87,6 +87,6 @@ export async function updateSocialSettingsAction(
   }
 
   revalidatePath('/admin/settings');
-  revalidatePath('/', 'layout'); // Bersihkan seluruh layout publik (Navbar & Footer yang memakai link sosmed)
-  return { success: true, message: 'Tautan sosial media berhasil diperbarui.' };
+  revalidatePath('/', 'layout');
+  return { success: true, message: 'Site settings and social links updated successfully.' };
 }

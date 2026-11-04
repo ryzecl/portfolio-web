@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { ExperienceItem } from '@/types/credentials';
 import { deleteExperienceAction } from '@/app/admin/experience/actions';
 import { ExperienceDialog } from '@/components/admin/experience-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
+import { toast } from 'sonner';
 import { formatExperienceDate } from '@/lib/utils';
 import {
   Table,
@@ -28,25 +30,29 @@ export function ExperienceClientWrapper({
 }: ExperienceClientWrapperProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingExp, setEditingExp] = useState<ExperienceItem | null>(null);
-  const [isPending, startTransition] = useTransition();
 
-  // Semua data di tabel experiences adalah pengalaman kerja
+  // All entries in experiences table are work history
   const workExperiences = experiences;
 
-  const handleDelete = (id: string, role: string) => {
-    if (confirm(`Hapus pengalaman kerja "${role}"?`)) {
-      startTransition(async () => {
-        await deleteExperienceAction(id);
+  const handleDelete = async (id: string, role: string) => {
+    try {
+      await deleteExperienceAction(id);
+      toast.success('Experience deleted', {
+        description: `"${role}" has been removed.`,
+      });
+    } catch (err: any) {
+      toast.error('Failed to delete experience', {
+        description: err.message,
       });
     }
   };
 
   return (
     <div className="space-y-4">
-      {/* Top Bar: Total Count & Tambah Button */}
+      {/* Top Bar: Total Count & Add Button */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted font-mono">
-          Total: {workExperiences.length} pengalaman kerja terdaftar (diurutkan berdasarkan Prioritas)
+          Total: {workExperiences.length} work {workExperiences.length === 1 ? 'experience' : 'experiences'} registered (sorted by Priority)
         </p>
 
         <Button
@@ -55,10 +61,10 @@ export function ExperienceClientWrapper({
             setEditingExp(null);
             setDialogOpen(true);
           }}
-          className="font-mono text-xs"
+          className="font-mono text-xs cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 mr-1.5" />
-          Tambah Pengalaman
+          Add Experience
         </Button>
       </div>
 
@@ -154,7 +160,7 @@ export function ExperienceClientWrapper({
                         variant="ghost"
                         size="sm"
                         className="h-8 w-8 p-0"
-                        title="Lihat Detail Pengalaman"
+                        title="View Details"
                       >
                         <Link href={`/admin/experience/${exp.id}`}>
                           <Eye className="w-3.5 h-3.5 text-muted hover:text-foreground" />
@@ -168,22 +174,17 @@ export function ExperienceClientWrapper({
                           setEditingExp(exp);
                           setDialogOpen(true);
                         }}
-                        className="h-8 w-8 p-0"
-                        title="Edit Pengalaman"
+                        className="h-8 w-8 p-0 cursor-pointer"
+                        title="Edit Experience"
                       >
                         <Edit2 className="w-3.5 h-3.5 text-muted hover:text-foreground" />
                       </Button>
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        disabled={isPending}
-                        onClick={() => handleDelete(exp.id, exp.role)}
-                        className="h-8 w-8 p-0 text-muted hover:text-destructive"
-                        title="Hapus Pengalaman"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+                      <DeleteConfirmDialog
+                        title="Delete Experience?"
+                        description={`Do you want to permanently delete "${exp.role}" at ${exp.organization || 'this company'}?`}
+                        onConfirm={() => handleDelete(exp.id, exp.role)}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

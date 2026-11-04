@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { ExperienceItem, GenericActionState } from '@/types/credentials';
 import { upsertExperienceAction } from '@/app/admin/experience/actions';
 import {
@@ -40,7 +41,6 @@ function ExperienceFormContent({
     null
   );
 
-  // Controlled states agar input tidak hilang saat form submission gagal
   const [role, setRole] = useState(experience?.role || '');
   const [organization, setOrganization] = useState(experience?.organization || '');
   const [industry, setIndustry] = useState(experience?.industry || experience?.location || '');
@@ -57,18 +57,27 @@ function ExperienceFormContent({
 
   useEffect(() => {
     if (state?.success) {
+      toast.success(experience ? 'Experience updated' : 'Experience created', {
+        description: experience
+          ? `Changes saved for "${role}".`
+          : `Work experience "${role}" created successfully.`,
+      });
       onClose();
+    } else if (state?.error && !state?.errors) {
+      toast.error('Failed to save experience', {
+        description: state.error,
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, experience, role]);
 
   return (
     <>
       <DialogHeader>
         <DialogTitle className="font-mono text-foreground text-lg">
-          {experience ? 'Edit Pengalaman Kerja' : 'Tambah Pengalaman Kerja'}
+          {experience ? 'Edit Work Experience' : 'Add Work Experience'}
         </DialogTitle>
         <DialogDescription className="text-muted text-xs">
-          Form data karir profesional sesuai tata letak kartu linimasa portofolio.
+          Professional career history displayed on the portfolio timeline.
         </DialogDescription>
       </DialogHeader>
 
@@ -82,7 +91,7 @@ function ExperienceFormContent({
           </div>
         )}
 
-        {/* 1. Posisi / Jabatan (Role) */}
+        {/* 1. Position / Role */}
         <div className="space-y-1.5">
           <Label
             htmlFor="exp-role"
@@ -91,7 +100,7 @@ function ExperienceFormContent({
               state?.errors?.role && 'text-destructive font-semibold'
             )}
           >
-            Posisi / Jabatan (Position) *
+            Position / Title *
           </Label>
           <Input
             id="exp-role"
@@ -112,7 +121,7 @@ function ExperienceFormContent({
           )}
         </div>
 
-        {/* 2. Perusahaan & Sektor Industri */}
+        {/* 2. Organization & Industry */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label
@@ -122,7 +131,7 @@ function ExperienceFormContent({
                 state?.errors?.organization && 'text-destructive font-semibold'
               )}
             >
-              Perusahaan / Agensi (Organization) *
+              Organization / Company *
             </Label>
             <Input
               id="exp-org"
@@ -145,20 +154,20 @@ function ExperienceFormContent({
 
           <div className="space-y-1.5">
             <Label htmlFor="exp-industry" className="text-xs font-mono text-muted">
-              Sektor Industri (Industry / Sector)
+              Industry / Sector
             </Label>
             <Input
               id="exp-industry"
               name="industry"
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
-              placeholder="e.g. Software Developer Agency"
+              placeholder="e.g. Software Development Agency"
               className="bg-surface-raised border-border text-xs"
             />
           </div>
         </div>
 
-        {/* 3. Website Perusahaan & Prioritas */}
+        {/* 3. Company Website & Priority */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label
@@ -168,7 +177,7 @@ function ExperienceFormContent({
                 state?.errors?.organization_url && 'text-destructive font-semibold'
               )}
             >
-              Website Perusahaan (Opsional)
+              Company Website (Optional)
             </Label>
             <Input
               id="exp-url"
@@ -176,7 +185,7 @@ function ExperienceFormContent({
               type="text"
               value={organizationUrl}
               onChange={(e) => setOrganizationUrl(e.target.value)}
-              placeholder="https://nirwana.biz.id"
+              placeholder="https://example.com"
               className={cn(
                 'bg-surface-raised border-border font-mono text-xs',
                 state?.errors?.organization_url && 'border-destructive focus-visible:ring-destructive'
@@ -192,7 +201,7 @@ function ExperienceFormContent({
 
           <div className="space-y-1.5">
             <Label htmlFor="exp-priority" className="text-xs font-mono text-muted">
-              Urutan Prioritas (Priority)
+              Priority Order
             </Label>
             <Input
               id="exp-priority"
@@ -204,12 +213,12 @@ function ExperienceFormContent({
               className="bg-surface-raised border-border font-mono text-xs"
             />
             <p className="text-[10px] text-muted/70">
-              Nomor 1 akan tampil teratas dan terbuka (expanded) di landing page.
+              #1 appears at the top and starts expanded on the landing page.
             </p>
           </div>
         </div>
 
-        {/* 4. Periode Kerja: Start Date, End Date (DatePicker Shadcn), & Present Toggle */}
+        {/* 4. Period */}
         <div className="p-4 rounded-xl border border-border bg-surface-raised/40 space-y-3">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
@@ -220,13 +229,13 @@ function ExperienceFormContent({
                   state?.errors?.start_date && 'text-destructive font-semibold'
                 )}
               >
-                Bulan & Tahun Mulai (Start Date) *
+                Start Date *
               </Label>
               <DatePicker
                 name="start_date"
                 value={startDate}
                 onChange={setStartDate}
-                placeholder="Pilih tanggal mulai"
+                placeholder="Select start date"
                 displayFormat="MMM yyyy"
                 className={cn(state?.errors?.start_date && 'border-destructive')}
               />
@@ -246,15 +255,15 @@ function ExperienceFormContent({
                   state?.errors?.end_date && 'text-destructive font-semibold'
                 )}
               >
-                Bulan & Tahun Selesai (End Date)
+                End Date
               </Label>
               <DatePicker
                 name="end_date"
                 value={endDate}
                 onChange={setEndDate}
                 disabled={isCurrent}
-                disabledPlaceholder="Present (Saat ini)"
-                placeholder="Pilih tanggal selesai"
+                disabledPlaceholder="Present (Currently Active)"
+                placeholder="Select end date"
                 displayFormat="MMM yyyy"
                 allowClear
                 className={cn(state?.errors?.end_date && 'border-destructive')}
@@ -271,10 +280,10 @@ function ExperienceFormContent({
           <div className="flex items-center justify-between pt-1">
             <div className="space-y-0.5">
               <Label htmlFor="exp-current" className="text-xs font-medium cursor-pointer">
-                Masih Aktif Bekerja (Present / Current)
+                Currently Working Here (Present)
               </Label>
               <p className="text-[11px] text-muted">
-                Jika aktif atau tanggal selesai kosong (null), status otomatis ditampilkan sebagai &quot;Present&quot;.
+                If active or end date is empty, status will display as &quot;Present&quot;.
               </p>
             </div>
             <Switch
@@ -291,10 +300,10 @@ function ExperienceFormContent({
           </div>
         </div>
 
-        {/* 5. Ringkasan Peran (Description) */}
+        {/* 5. Role Summary */}
         <div className="space-y-1.5">
           <Label htmlFor="exp-desc" className="text-xs font-mono text-muted">
-            Ringkasan Peran (Description / Summary)
+            Role Summary / Description
           </Label>
           <Textarea
             id="exp-desc"
@@ -307,24 +316,24 @@ function ExperienceFormContent({
           />
         </div>
 
-        {/* 6. Key Focus & Responsibilities (Highlights - Dynamic Point List Tanpa Key) */}
+        {/* 6. Key Focus & Responsibilities */}
         <DynamicPointList
           allowKey={false}
-          label="Key Focus & Responsibilities"
+          label="Key Focus &amp; Responsibilities"
           name="highlights"
           initialItems={experience?.highlights}
           placeholderValue="e.g. Architect and engineer end-to-end fullstack web applications using Next.js, TypeScript, and Laravel."
-          description="Tambahkan poin tanggung jawab dan capaian dengan tombol + Tambah Poin. Baris dapat dihapus dengan ikon tong sampah."
+          description="Add key responsibilities and achievements."
         />
 
-        {/* 7. Technologies Used (Tags Tech Stack) */}
+        {/* 7. Technologies Used */}
         <DynamicPointList
           allowKey={false}
-          label="Technologies Used (Tags Tech Stack)"
+          label="Technologies Used"
           name="technologies"
           initialItems={experience?.technologies}
           placeholderValue="e.g. Next.js / TypeScript / Laravel / MySQL / REST API"
-          description="Daftar teknologi/alat yang digunakan (ditampilkan sebagai deretan badge di bagian bawah kartu)."
+          description="Technologies used, displayed as badges at the bottom of the card."
         />
 
         <DialogFooter className="pt-2">
@@ -333,17 +342,18 @@ function ExperienceFormContent({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
+            className="cursor-pointer font-mono text-xs"
           >
-            Batal
+            Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="cursor-pointer font-mono text-xs">
             {isPending ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                Menyimpan...
+                Saving...
               </>
             ) : (
-              'Simpan Pengalaman'
+              'Save Experience'
             )}
           </Button>
         </DialogFooter>

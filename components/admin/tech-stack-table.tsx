@@ -1,13 +1,13 @@
 // components/admin/tech-stack-table.tsx
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { TechCategory, Technology } from '@/types/tech-stack';
-import {
-  deleteTechnologyAction,
-} from '@/app/admin/tech-stack/actions';
+import { deleteTechnologyAction } from '@/app/admin/tech-stack/actions';
 import { TechnologyDialog } from '@/components/admin/technology-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
 import { TechIcon } from '@/components/ui/tech-icon';
+import { toast } from 'sonner';
 import {
   Table,
   TableBody,
@@ -19,13 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {
-  Plus,
-  Search,
-  Edit2,
-  Trash2,
-  Loader2,
-} from 'lucide-react';
+import { Plus, Search, Edit2 } from 'lucide-react';
 
 interface TechStackTableProps {
   categories: (TechCategory & { technologies: Technology[] })[];
@@ -34,9 +28,8 @@ interface TechStackTableProps {
 export function TechStackTable({ categories }: TechStackTableProps) {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [isPending, startTransition] = useTransition();
 
-  // State Dialog Teknologi
+  // State Dialog Technology
   const [techDialogOpen, setTechDialogOpen] = useState(false);
   const [editingTech, setEditingTech] = useState<Technology | null>(null);
 
@@ -55,10 +48,15 @@ export function TechStackTable({ categories }: TechStackTableProps) {
     return matchCategory && matchSearch;
   });
 
-  const handleDeleteTech = (id: string, name: string) => {
-    if (confirm(`Yakin ingin menghapus teknologi "${name}"?`)) {
-      startTransition(async () => {
-        await deleteTechnologyAction(id);
+  const handleDeleteTech = async (id: string, name: string) => {
+    const res = await deleteTechnologyAction(id);
+    if (res?.error) {
+      toast.error('Failed to delete technology', {
+        description: res.error,
+      });
+    } else {
+      toast.success('Technology deleted', {
+        description: `"${name}" was deleted successfully.`,
       });
     }
   };
@@ -81,9 +79,9 @@ export function TechStackTable({ categories }: TechStackTableProps) {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 text-xs rounded-lg bg-surface-raised border border-border text-foreground font-mono"
+            className="px-3 py-2 text-xs rounded-lg bg-surface-raised border border-border text-foreground font-mono cursor-pointer"
           >
-            <option value="all">Semua Kategori ({allTechnologies.length})</option>
+            <option value="all">All Categories ({allTechnologies.length})</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.title} ({cat.technologies?.length || 0})
@@ -93,37 +91,36 @@ export function TechStackTable({ categories }: TechStackTableProps) {
         </div>
 
         <div className="flex items-center gap-2">
-
           <Button
             size="sm"
             onClick={() => {
               setEditingTech(null);
               setTechDialogOpen(true);
             }}
-            className="text-xs font-mono"
+            className="text-xs font-mono cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5 mr-1.5" />
-            Teknologi Baru
+            New Technology
           </Button>
         </div>
       </div>
 
-      {/* Tabel Master Teknologi */}
+      {/* Technology Table */}
       <div className="rounded-xl border border-border bg-surface overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="font-mono text-xs uppercase text-muted">Teknologi</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Kategori</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Technology</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Category</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted">Icon Key</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredTechnologies.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center py-10 text-muted text-xs font-mono">
-                  Tidak ada teknologi yang cocok dengan kriteria pencarian.
+                  No technologies match your search criteria.
                 </TableCell>
               </TableRow>
             ) : (
@@ -159,19 +156,17 @@ export function TechStackTable({ categories }: TechStackTableProps) {
                           setEditingTech(tech);
                           setTechDialogOpen(true);
                         }}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 cursor-pointer"
+                        title="Edit technology"
                       >
                         <Edit2 className="w-3.5 h-3.5 text-muted hover:text-foreground" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        disabled={isPending}
-                        onClick={() => handleDeleteTech(tech.id, tech.name)}
-                        className="h-8 w-8 p-0 text-muted hover:text-destructive"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+
+                      <DeleteConfirmDialog
+                        title="Delete Technology?"
+                        description={`Do you want to permanently delete "${tech.name}" from your tech stack?`}
+                        onConfirm={() => handleDeleteTech(tech.id, tech.name)}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -182,7 +177,6 @@ export function TechStackTable({ categories }: TechStackTableProps) {
       </div>
 
       {/* Dialog Modals */}
-
       <TechnologyDialog
         open={techDialogOpen}
         onOpenChange={setTechDialogOpen}

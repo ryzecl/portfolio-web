@@ -3,6 +3,7 @@
 
 import React, { useActionState, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { Certificate, GenericActionState } from '@/types/credentials';
 import { upsertCertificateAction } from '@/app/admin/certificates/actions';
 import { DatePicker } from '@/components/ui/date-picker';
@@ -37,7 +38,6 @@ function parseInitialDate(val?: string) {
   return isNaN(d.getTime()) ? undefined : d;
 }
 
-// Inner Component agar Action State & Error selalu bersih setiap kali modal dibuka ulang
 function CertificateFormContent({
   certificate,
   availableCategories,
@@ -47,7 +47,6 @@ function CertificateFormContent({
   availableCategories: string[];
   onClose: () => void;
 }) {
-  // State terkontrol agar input tidak hilang saat form submission gagal / error
   const [title, setTitle] = useState(certificate?.title || '');
   const [issuer, setIssuer] = useState(certificate?.issuer || '');
   const [issueDate, setIssueDate] = useState<Date | undefined>(() =>
@@ -69,9 +68,18 @@ function CertificateFormContent({
 
   useEffect(() => {
     if (state?.success) {
+      toast.success(certificate ? 'Certificate updated' : 'Certificate created', {
+        description: certificate
+          ? `Changes saved for "${title}".`
+          : `Certificate "${title}" added successfully.`,
+      });
       onClose();
+    } else if (state?.error && !state?.errors) {
+      toast.error('Failed to save certificate', {
+        description: state.error,
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, certificate, title]);
 
   const categoryOptions = React.useMemo(() => {
     const list = [...availableCategories];
@@ -88,17 +96,16 @@ function CertificateFormContent({
     <>
       <DialogHeader>
         <DialogTitle className="font-mono text-foreground">
-          {certificate ? 'Edit Sertifikat' : 'Tambah Sertifikat Baru'}
+          {certificate ? 'Edit Certificate' : 'Add New Certificate'}
         </DialogTitle>
         <DialogDescription className="text-muted text-xs">
-          Masukkan bukti kredensial, issuer, tautan verifikasi, dan keahlian yang diuji.
+          Provide credential details, issuing organization, verification URL, and verified skills.
         </DialogDescription>
       </DialogHeader>
 
       <form action={formAction} className="space-y-4 pt-2">
         {certificate?.id && <input type="hidden" name="id" value={certificate.id} />}
 
-        {/* Banner error umum jika ada error database / sistem */}
         {state?.error && !state?.errors && (
           <div className="flex items-center gap-2 p-3 text-xs rounded-lg bg-destructive/10 border border-destructive/20 text-destructive font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
@@ -106,7 +113,7 @@ function CertificateFormContent({
           </div>
         )}
 
-        {/* 1. Nama Sertifikat */}
+        {/* 1. Title */}
         <div className="space-y-1.5">
           <Label
             htmlFor="title"
@@ -115,7 +122,7 @@ function CertificateFormContent({
               state?.errors?.title && 'text-destructive font-semibold'
             )}
           >
-            Nama Sertifikat / Lisensi *
+            Certificate / License Title *
           </Label>
           <Input
             id="title"
@@ -136,7 +143,7 @@ function CertificateFormContent({
           )}
         </div>
 
-        {/* 2. Issuer & Tanggal Terbit (Grid 2 Kolom) */}
+        {/* 2. Issuer & Issue Date */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label
@@ -146,7 +153,7 @@ function CertificateFormContent({
                 state?.errors?.issuer && 'text-destructive font-semibold'
               )}
             >
-              Penerbit (Issuer) *
+              Issuer / Organization *
             </Label>
             <Input
               id="issuer"
@@ -175,13 +182,13 @@ function CertificateFormContent({
                 state?.errors?.issue_date && 'text-destructive font-semibold'
               )}
             >
-              Tanggal Terbit *
+              Issue Date *
             </Label>
             <DatePicker
               name="issue_date"
               value={issueDate}
               onChange={setIssueDate}
-              placeholder="Pilih tanggal terbit"
+              placeholder="Select issue date"
               displayFormat="MMM yyyy"
               className={cn(state?.errors?.issue_date && 'border-destructive')}
             />
@@ -194,7 +201,7 @@ function CertificateFormContent({
           </div>
         </div>
 
-        {/* 3. Kategori & Credential ID (Grid 2 Kolom) */}
+        {/* 3. Category & Credential ID */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
@@ -204,7 +211,7 @@ function CertificateFormContent({
                   state?.errors?.category && 'text-destructive font-semibold'
                 )}
               >
-                Kategori Sertifikat *
+                Category *
               </Label>
               {availableCategories.length === 0 && (
                 <Link
@@ -212,7 +219,7 @@ function CertificateFormContent({
                   className="text-[10px] font-mono text-accent hover:underline"
                   target="_blank"
                 >
-                  + Buat Kategori
+                  + Create Category
                 </Link>
               )}
             </div>
@@ -223,14 +230,14 @@ function CertificateFormContent({
               onChange={setCategory}
               placeholder={
                 availableCategories.length === 0
-                  ? 'Belum ada kategori terdaftar...'
-                  : 'Pilih kategori...'
+                  ? 'No categories available...'
+                  : 'Select category...'
               }
-              searchPlaceholder="Cari kategori..."
+              searchPlaceholder="Search category..."
               emptyText={
                 availableCategories.length === 0
-                  ? 'Belum ada kategori di Supabase. Silakan buat kategori terlebih dahulu.'
-                  : 'Kategori tidak ditemukan.'
+                  ? 'No categories found. Please create one first.'
+                  : 'Category not found.'
               }
               className="w-full"
               triggerClassName={cn(
@@ -245,9 +252,9 @@ function CertificateFormContent({
               </p>
             ) : availableCategories.length === 0 ? (
               <p className="text-[11px] text-amber-400 font-mono mt-1">
-                Tabel kategori masih kosong.{' '}
+                Category table is currently empty.{' '}
                 <Link href="/admin/certificates/categories" className="underline font-semibold" target="_blank">
-                  Buat kategori di sini
+                  Create a category here
                 </Link>.
               </p>
             ) : null}
@@ -277,7 +284,7 @@ function CertificateFormContent({
               state?.errors?.credential_url && 'text-destructive font-semibold'
             )}
           >
-            Verification URL (Link GDrive atau Link Resmi Dicoding / BNSP)
+            Verification URL
           </Label>
           <Input
             id="credential_url"
@@ -285,7 +292,7 @@ function CertificateFormContent({
             type="text"
             value={credentialUrl}
             onChange={(e) => setCredentialUrl(e.target.value)}
-            placeholder="https://drive.google.com/file/d/... atau https://www.dicoding.com/certificates/..."
+            placeholder="https://drive.google.com/file/d/... or official verification URL"
             className={cn(
               'bg-surface-raised border-border font-mono text-xs transition-colors',
               state?.errors?.credential_url && 'border-destructive focus-visible:ring-destructive'
@@ -298,15 +305,15 @@ function CertificateFormContent({
             </p>
           ) : (
             <p className="text-[11px] text-muted">
-              Tautan ini akan dibuka saat tombol &ldquo;Verify Official Credential ↗&rdquo; diklik di modal sertifikat.
+              This URL will open when clicking &ldquo;Verify Official Credential ↗&rdquo; in the credential modal.
             </p>
           )}
         </div>
 
-        {/* 5. Summary / Deskripsi */}
+        {/* 5. Summary */}
         <div className="space-y-1.5">
           <Label htmlFor="summary" className="text-xs font-mono text-muted">
-            Ringkasan / Deskripsi Kredensial (Summary)
+            Summary / Credential Description
           </Label>
           <Textarea
             id="summary"
@@ -319,21 +326,21 @@ function CertificateFormContent({
           />
         </div>
 
-        {/* 6. Verified Competencies (Skills) */}
+        {/* 6. Skills */}
         <DynamicPointList
-          label="Verified Competencies (Keahlian & Kompetensi yang Diuji)"
+          label="Verified Competencies &amp; Skills"
           name="skills"
           initialItems={skills}
           placeholderValue="e.g. Web Development, Clean Code Architecture..."
-          description="Daftar kompetensi terverifikasi yang ditampilkan sebagai badge tag pada modal kredensial."
+          description="List of verified competencies displayed as badges on the credential modal."
           allowKey={false}
         />
 
-        {/* 7. Prioritas Bento */}
+        {/* 7. Priority */}
         <div className="space-y-1.5 p-3 rounded-xl border border-border bg-surface-raised">
           <div className="flex items-center justify-between">
             <Label htmlFor="priority" className="text-xs font-mono text-muted">
-              Prioritas Urutan (No. 1 = Card Besar Landing Page)
+              Priority Order (#1 = Spotlight Card on Landing Page)
             </Label>
             <Input
               id="priority"
@@ -347,7 +354,7 @@ function CertificateFormContent({
             />
           </div>
           <p className="text-[11px] text-muted">
-            Isi <strong className="text-foreground">1</strong> untuk sertifikat utama (e.g. BNSP) agar menjadi Card Besar di landing page. Isi 2, 3, 4 untuk 3 card di sampingnya.
+            Set to <strong className="text-foreground">1</strong> for your premier credential (e.g. BNSP) to showcase as the large spotlight card.
           </p>
         </div>
 
@@ -357,17 +364,18 @@ function CertificateFormContent({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
+            className="cursor-pointer font-mono text-xs"
           >
-            Batal
+            Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="cursor-pointer font-mono text-xs">
             {isPending ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                Menyimpan...
+                Saving...
               </>
             ) : (
-              'Simpan Sertifikat'
+              'Save Certificate'
             )}
           </Button>
         </DialogFooter>

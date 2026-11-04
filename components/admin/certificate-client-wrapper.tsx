@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { Certificate } from '@/types/credentials';
 import { deleteCertificateAction } from '@/app/admin/certificates/actions';
 import { CertificateDialog } from '@/components/admin/certificate-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
+import { toast } from 'sonner';
 import {
   Table,
   TableBody,
@@ -61,10 +63,15 @@ export function CertificateClientWrapper({
       c.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleDelete = (id: string, title: string) => {
-    if (confirm(`Hapus sertifikat "${title}"?`)) {
-      startTransition(async () => {
-        await deleteCertificateAction(id);
+  const handleDelete = async (id: string, title: string) => {
+    try {
+      await deleteCertificateAction(id);
+      toast.success('Certificate deleted', {
+        description: `"${title}" has been removed.`,
+      });
+    } catch (err: any) {
+      toast.error('Failed to delete certificate', {
+        description: err.message,
       });
     }
   };
@@ -193,16 +200,11 @@ export function CertificateClientWrapper({
                       </Button>
 
                       {/* Delete */}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        title="Hapus Sertifikat"
-                        disabled={isPending}
-                        onClick={() => handleDelete(cert.id, cert.title)}
-                        className="h-8 w-8 p-0 text-muted hover:text-destructive"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+                      <DeleteConfirmDialog
+                        title="Delete Certificate?"
+                        description={`Do you want to permanently delete "${cert.title}"?`}
+                        onConfirm={() => handleDelete(cert.id, cert.title)}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

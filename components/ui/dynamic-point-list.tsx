@@ -53,8 +53,8 @@ export function DynamicPointList({
   label,
   name,
   initialItems = [],
-  placeholderKey = 'Key / Topik (opsional)',
-  placeholderValue = 'Deskripsi poin / tanggung jawab...',
+  placeholderKey = 'Key / Topic (optional)',
+  placeholderValue = 'Point description, metric, or specification...',
   description,
   allowKey = true,
 }: DynamicPointListProps) {
@@ -104,14 +104,14 @@ export function DynamicPointList({
           {label}
         </Label>
         <span className="text-[11px] font-mono text-muted/70">
-          {items.filter((i) => i.value.trim() || i.key.trim()).length} poin
+          {items.filter((i) => i.value.trim() || i.key.trim()).length} points
         </span>
       </div>
       {description && (
         <p className="text-[11px] text-muted/80">{description}</p>
       )}
 
-      {/* Hidden input yang akan dibaca oleh Server Action via FormData */}
+      {/* Hidden input to be read by Server Action via FormData */}
       <input type="hidden" name={name} value={serializedValue} />
 
       {/* Rows Container */}
@@ -147,8 +147,8 @@ export function DynamicPointList({
               size="sm"
               onClick={() => removeItem(idx)}
               disabled={items.length === 1 && !item.key && !item.value}
-              className="h-8 w-8 p-0 text-muted hover:text-destructive hover:bg-destructive/10 shrink-0"
-              title="Hapus baris"
+              className="h-8 w-8 p-0 text-muted hover:text-destructive hover:bg-destructive/10 shrink-0 cursor-pointer"
+              title="Remove row"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </Button>
@@ -161,10 +161,10 @@ export function DynamicPointList({
           variant="outline"
           size="sm"
           onClick={addItem}
-          className="w-full h-8 text-xs font-mono text-muted hover:text-foreground border-dashed border-border hover:border-accent/50 bg-transparent mt-1"
+          className="w-full h-8 text-xs font-mono text-muted hover:text-foreground border-dashed border-border hover:border-accent/50 bg-transparent mt-1 cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 mr-1.5 text-accent" />
-          Tambah Poin
+          Add Point
         </Button>
       </div>
     </div>

@@ -24,10 +24,10 @@ export default async function NewProjectPage() {
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
-          Tambah Proyek Baru
+          Create New Project
         </h1>
         <p className="text-xs text-muted">
-          Lengkapi detail proyek, upload cover gambar, galeri interaktif, dan pilih tag teknologi yang digunakan.
+          Fill in the case study details, upload visual assets, configure interactive previews, and select tech stack tags.
         </p>
       </div>
 

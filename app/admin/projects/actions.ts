@@ -42,7 +42,7 @@ async function syncProjectTechnologies(
       .insert(pivotRows);
 
     if (insertPivotError) {
-      throw new Error(`Gagal menyinkronkan teknologi: ${insertPivotError.message}`);
+      throw new Error(`Failed to sync technologies: ${insertPivotError.message}`);
     }
   }
 }
@@ -75,52 +75,52 @@ export async function createProjectAction(
   // Validasi field-field spesifik
   const errors: Record<string, string> = {};
   if (!title) {
-    errors.title = 'Judul proyek wajib diisi.';
+    errors.title = 'Project title is required.';
   } else if (title.length < 3) {
-    errors.title = 'Judul proyek minimal 3 karakter.';
+    errors.title = 'Project title must be at least 3 characters.';
   }
 
   if (!slug) {
-    errors.slug = 'Slug URL wajib diisi.';
+    errors.slug = 'Slug URL is required.';
   } else if (!/^[a-z0-9-]+$/.test(slug)) {
-    errors.slug = 'Slug hanya boleh berisi huruf kecil, angka, dan tanda strip (-).';
+    errors.slug = 'Slug may only contain lowercase letters, numbers, and hyphens (-).';
   }
 
   if (!category_id || category_id === 'none') {
-    errors.category_id = 'Kategori proyek wajib dipilih.';
+    errors.category_id = 'Project category is required.';
   }
 
   if (!role) {
-    errors.role = 'Peran Anda (Role) wajib diisi.';
+    errors.role = 'Your role is required.';
   }
 
   if (!year) {
-    errors.year = 'Tahun proyek wajib diisi.';
+    errors.year = 'Year is required.';
   } else if (!/^\d{4}$/.test(year)) {
-    errors.year = 'Format tahun harus 4 digit angka (contoh: 2026).';
+    errors.year = 'Year must be a 4-digit number (e.g. 2026).';
   }
 
   if (!summary) {
-    errors.summary = 'Ringkasan singkat (summary) proyek wajib diisi.';
+    errors.summary = 'Summary is required.';
   } else if (summary.length < 10) {
-    errors.summary = 'Ringkasan singkat minimal 10 karakter.';
+    errors.summary = 'Summary must be at least 10 characters.';
   }
 
   if (demo_url && !isValidHttpUrl(demo_url)) {
-    errors.demo_url = 'Format Live Demo URL tidak valid (harus diawali http:// atau https://).';
+    errors.demo_url = 'Live Demo URL must start with http:// or https://.';
   }
 
   if (repo_url && !isValidHttpUrl(repo_url)) {
-    errors.repo_url = 'Format Repository URL tidak valid (harus diawali http:// atau https://).';
+    errors.repo_url = 'Repository URL must start with http:// or https://.';
   }
 
   if (isNaN(priority) || priority < 0) {
-    errors.priority = 'Prioritas harus berupa angka 0 atau lebih.';
+    errors.priority = 'Priority must be 0 or a positive number.';
   }
 
   if (Object.keys(errors).length > 0) {
     return {
-      error: 'Terdapat beberapa isian yang belum valid. Mohon periksa kembali kolom bertanda merah.',
+      error: 'Please fix the highlighted fields before submitting.',
       errors,
     };
   }
@@ -155,7 +155,7 @@ export async function createProjectAction(
       cover_image = uploadedCoverUrl;
     } catch (uploadErr: any) {
       return {
-        error: `Gagal upload cover ke Supabase Storage: ${uploadErr.message}. Anda dapat menggunakan opsi 'URL / Path Gambar' di bawah bila RLS Storage belum dikonfigurasi.`,
+        error: `Failed to upload cover image to Supabase Storage: ${uploadErr.message}. Anda dapat menggunakan opsi 'URL / Path Gambar' di bawah bila RLS Storage belum dikonfigurasi.`,
         errors: { cover_file: uploadErr.message },
       };
     }
@@ -182,7 +182,7 @@ export async function createProjectAction(
       } catch (uploadErr: any) {
         await deleteImagesFromStorage([uploadedCoverUrl, ...uploadedPreviews]);
         return {
-          error: `Gagal upload gambar detail: ${uploadErr.message}`,
+          error: `Failed to upload detail gallery image: ${uploadErr.message}`,
           errors: { preview_files: uploadErr.message },
         };
       }
@@ -221,7 +221,7 @@ export async function createProjectAction(
       // Rollback gambar yang baru ter-upload ke storage jika insert database gagal
       await deleteImagesFromStorage([uploadedCoverUrl, ...uploadedPreviews]);
       return {
-        error: `Gagal menyimpan proyek ke database: ${insertError?.message || 'Data proyek gagal disimpan.'}`,
+        error: `Failed to save project to database: ${insertError?.message || 'Failed to save project.'}`,
       };
     }
 
@@ -238,7 +238,10 @@ export async function createProjectAction(
     revalidatePath(`/projects/${newProject.slug}`);
     revalidatePath('/');
 
-    redirect('/admin/projects');
+    return {
+      success: true,
+      message: 'Project created successfully.',
+    };
   } catch (err: any) {
     if (err?.message === 'NEXT_REDIRECT' || err?.digest?.startsWith('NEXT_REDIRECT')) {
       throw err;
@@ -282,52 +285,52 @@ export async function updateProjectAction(
   const errors: Record<string, string> = {};
   if (!id) errors.id = 'ID proyek tidak ditemukan.';
   if (!title) {
-    errors.title = 'Judul proyek wajib diisi.';
+    errors.title = 'Project title is required.';
   } else if (title.length < 3) {
-    errors.title = 'Judul proyek minimal 3 karakter.';
+    errors.title = 'Project title must be at least 3 characters.';
   }
 
   if (!slug) {
-    errors.slug = 'Slug URL wajib diisi.';
+    errors.slug = 'Slug URL is required.';
   } else if (!/^[a-z0-9-]+$/.test(slug)) {
-    errors.slug = 'Slug hanya boleh berisi huruf kecil, angka, dan strip (-).';
+    errors.slug = 'Slug may only contain lowercase letters, numbers, and hyphens (-).';
   }
 
   if (!category_id || category_id === 'none') {
-    errors.category_id = 'Kategori proyek wajib dipilih.';
+    errors.category_id = 'Project category is required.';
   }
 
   if (!role) {
-    errors.role = 'Peran Anda (Role) wajib diisi.';
+    errors.role = 'Your role is required.';
   }
 
   if (!year) {
-    errors.year = 'Tahun proyek wajib diisi.';
+    errors.year = 'Year is required.';
   } else if (!/^\d{4}$/.test(year)) {
-    errors.year = 'Format tahun harus 4 digit angka (contoh: 2026).';
+    errors.year = 'Year must be a 4-digit number (e.g. 2026).';
   }
 
   if (!summary) {
-    errors.summary = 'Ringkasan singkat (summary) proyek wajib diisi.';
+    errors.summary = 'Summary is required.';
   } else if (summary.length < 10) {
-    errors.summary = 'Ringkasan singkat minimal 10 karakter.';
+    errors.summary = 'Summary must be at least 10 characters.';
   }
 
   if (demo_url && !isValidHttpUrl(demo_url)) {
-    errors.demo_url = 'Format Live Demo URL tidak valid (harus diawali http:// atau https://).';
+    errors.demo_url = 'Live Demo URL must start with http:// or https://.';
   }
 
   if (repo_url && !isValidHttpUrl(repo_url)) {
-    errors.repo_url = 'Format Repository URL tidak valid (harus diawali http:// atau https://).';
+    errors.repo_url = 'Repository URL must start with http:// or https://.';
   }
 
   if (isNaN(priority) || priority < 0) {
-    errors.priority = 'Prioritas harus berupa angka 0 atau lebih.';
+    errors.priority = 'Priority must be 0 or a positive number.';
   }
 
   if (Object.keys(errors).length > 0) {
     return {
-      error: 'Terdapat beberapa isian yang belum valid. Mohon periksa kembali kolom bertanda merah.',
+      error: 'Please fix the highlighted fields before submitting.',
       errors,
     };
   }
@@ -368,7 +371,7 @@ export async function updateProjectAction(
       cover_image = uploadedCoverUrl;
     } catch (uploadErr: any) {
       return {
-        error: `Gagal upload cover ke Supabase Storage: ${uploadErr.message}`,
+        error: `Failed to upload cover image to Supabase Storage: ${uploadErr.message}`,
         errors: { cover_file: uploadErr.message },
       };
     }
@@ -395,7 +398,7 @@ export async function updateProjectAction(
       } catch (uploadErr: any) {
         await deleteImagesFromStorage([uploadedCoverUrl, ...newUploadedPreviews]);
         return {
-          error: `Gagal upload gambar detail: ${uploadErr.message}`,
+          error: `Failed to upload detail gallery image: ${uploadErr.message}`,
           errors: { preview_files: uploadErr.message },
         };
       }
@@ -431,7 +434,7 @@ export async function updateProjectAction(
 
   if (updateError) {
     await deleteImagesFromStorage([uploadedCoverUrl, ...newUploadedPreviews]);
-    return { error: `Gagal memperbarui proyek: ${updateError.message}` };
+    return { error: `Failed to update project: ${updateError.message}` };
   }
 
   // Hapus file cover lama dan preview_images lama yang sudah dihapus/diganti dari Supabase Storage
@@ -457,14 +460,17 @@ export async function updateProjectAction(
     return { error: syncErr.message };
   }
 
-  // 3. Bersihkan cache
+    // 3. Bersihkan cache
     revalidatePath('/admin/projects');
     revalidatePath(`/admin/projects/${id}`);
     revalidatePath('/projects');
     revalidatePath(`/projects/${slug}`);
     revalidatePath('/');
 
-    redirect('/admin/projects');
+    return {
+      success: true,
+      message: 'Project updated successfully.',
+    };
   } catch (err: any) {
     if (err?.message === 'NEXT_REDIRECT' || err?.digest?.startsWith('NEXT_REDIRECT')) {
       throw err;
@@ -480,7 +486,7 @@ export async function updateProjectAction(
  * Server Action: Hapus Proyek
  */
 export async function deleteProjectAction(id: string): Promise<ProjectActionState> {
-  if (!id) return { error: 'ID proyek tidak valid.' };
+  if (!id) return { error: 'Invalid project ID.' };
 
   const supabase = await createClient();
 
@@ -511,5 +517,5 @@ export async function deleteProjectAction(id: string): Promise<ProjectActionStat
   revalidatePath('/admin/projects');
   revalidatePath('/projects');
   revalidatePath('/');
-  return { success: true, message: 'Proyek berhasil dihapus.' };
+  return { success: true, message: 'Project deleted successfully.' };
 }

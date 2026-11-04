@@ -15,20 +15,20 @@ export async function upsertProjectCategoryAction(
 
   const errors: Record<string, string> = {};
   if (!name) {
-    errors.name = 'Nama kategori wajib diisi.';
+    errors.name = 'Category name is required.';
   } else if (name.length < 2) {
-    errors.name = 'Nama kategori minimal 2 karakter.';
+    errors.name = 'Category name must be at least 2 characters.';
   }
 
   if (!slug) {
-    errors.slug = 'Slug identifier wajib diisi.';
+    errors.slug = 'Slug identifier is required.';
   } else if (!/^[a-z0-9-]+$/.test(slug)) {
-    errors.slug = 'Slug hanya boleh berisi huruf kecil, angka, dan tanda strip (-).';
+    errors.slug = 'Slug may only contain lowercase letters, numbers, and hyphens (-).';
   }
 
   if (Object.keys(errors).length > 0) {
     return {
-      error: 'Mohon periksa kembali kolom yang ditandai merah.',
+      error: 'Please fix the highlighted fields before submitting.',
       errors,
     };
   }
@@ -54,17 +54,24 @@ export async function upsertProjectCategoryAction(
   revalidatePath('/admin/projects');
   revalidatePath('/projects');
   revalidatePath('/');
-  return { success: true, message: 'Kategori proyek berhasil disimpan.' };
+  return { success: true, message: 'Project category saved successfully.' };
 }
 
-export async function deleteProjectCategoryAction(id: string): Promise<void> {
-  if (!id) return;
+export async function deleteProjectCategoryAction(
+  id: string
+): Promise<{ error?: string; success?: boolean }> {
+  if (!id) return { error: 'Invalid category ID.' };
 
   const supabase = await createClient();
-  await supabase.from('project_categories').delete().eq('id', id);
+  const { error } = await supabase.from('project_categories').delete().eq('id', id);
+
+  if (error) {
+    return { error: error.message };
+  }
 
   revalidatePath('/admin/projects/categories');
   revalidatePath('/admin/projects');
   revalidatePath('/projects');
   revalidatePath('/');
+  return { success: true };
 }

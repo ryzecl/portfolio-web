@@ -39,7 +39,7 @@ export default async function ProjectCategoriesPage() {
             </h1>
           </div>
           <p className="text-xs text-muted pl-10">
-            Kelola taksonomi kategori proyek (Web Application, Mobile App, Company Profile, dll.).
+            Manage project taxonomy and domain classifications (Web Application, Mobile App, Corporate Platform, etc.).
           </p>
         </div>
       </div>

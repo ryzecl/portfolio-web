@@ -39,10 +39,10 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
-          Edit Proyek: {projectRes.data.title}
+          Edit Project: {projectRes.data.title}
         </h1>
         <p className="text-xs text-muted">
-          Perbarui teks, gambar cover, galeri detail interaktif, atau sinkronisasikan ulang teknologi yang digunakan.
+          Update case study copy, cover asset, interactive gallery images, and synced technology tags.
         </p>
       </div>
 

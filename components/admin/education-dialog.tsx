@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { EducationItem, GenericActionState } from '@/types/credentials';
 import { upsertEducationAction } from '@/app/admin/education/actions';
 import {
@@ -40,7 +41,6 @@ function EducationFormContent({
     null
   );
 
-  // Controlled states agar input tidak pernah hilang saat validasi / server error
   const [major, setMajor] = useState(education?.major || education?.role || '');
   const [program, setProgram] = useState(education?.program || '');
   const [institution, setInstitution] = useState(
@@ -61,18 +61,27 @@ function EducationFormContent({
 
   useEffect(() => {
     if (state?.success) {
+      toast.success(education ? 'Education updated' : 'Education created', {
+        description: education
+          ? `Changes saved for "${major}".`
+          : `Education record for "${major}" created successfully.`,
+      });
       onClose();
+    } else if (state?.error && !state?.errors) {
+      toast.error('Failed to save education', {
+        description: state.error,
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, education, major]);
 
   return (
     <>
       <DialogHeader>
         <DialogTitle className="font-mono text-foreground">
-          {education ? 'Edit Riwayat Pendidikan' : 'Tambah Riwayat Pendidikan'}
+          {education ? 'Edit Education Record' : 'Add Education Record'}
         </DialogTitle>
         <DialogDescription className="text-muted text-xs">
-          Kelola data institusi, jurusan/program, IPK, dan prestasi akademik (Honors &amp; Distinctions).
+          Manage academic institution, degree/program, GPA, and honors or distinctions.
         </DialogDescription>
       </DialogHeader>
 
@@ -86,7 +95,7 @@ function EducationFormContent({
           </div>
         )}
 
-        {/* 1. Jurusan (Major), Program / Jenjang */}
+        {/* 1. Major, Degree / Program */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label
@@ -96,7 +105,7 @@ function EducationFormContent({
                 state?.errors?.major && 'text-destructive font-semibold'
               )}
             >
-              Jurusan / Bidang Studi (Major) *
+              Major / Field of Study *
             </Label>
             <Input
               id="edu-major"
@@ -119,7 +128,7 @@ function EducationFormContent({
 
           <div className="space-y-1.5">
             <Label htmlFor="edu-program" className="text-xs font-mono text-muted">
-              Jenjang / Program (Degree / Program)
+              Degree / Program
             </Label>
             <Input
               id="edu-program"
@@ -127,7 +136,7 @@ function EducationFormContent({
               list="program-options"
               value={program}
               onChange={(e) => setProgram(e.target.value)}
-              placeholder="e.g. Bachelor's Degree, Senior High School, S1"
+              placeholder="e.g. Bachelor's Degree"
               className="bg-surface-raised border-border text-xs"
             />
             <datalist id="program-options">
@@ -140,6 +149,7 @@ function EducationFormContent({
           </div>
         </div>
 
+        {/* 2. Institution, GPA, Priority */}
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="sm:col-span-1 space-y-1.5">
             <Label
@@ -149,7 +159,7 @@ function EducationFormContent({
                 state?.errors?.institution && 'text-destructive font-semibold'
               )}
             >
-              Institusi / Sekolah *
+              Institution / School *
             </Label>
             <Input
               id="edu-inst"
@@ -172,7 +182,7 @@ function EducationFormContent({
 
           <div className="space-y-1.5">
             <Label htmlFor="edu-gpa" className="text-xs font-mono text-muted">
-              Nilai / IPK (GPA)
+              GPA / Grade
             </Label>
             <Input
               id="edu-gpa"
@@ -186,7 +196,7 @@ function EducationFormContent({
 
           <div className="space-y-1.5">
             <Label htmlFor="edu-priority" className="text-xs font-mono text-muted">
-              Urutan (Priority)
+              Priority Order
             </Label>
             <Input
               id="edu-priority"
@@ -200,7 +210,7 @@ function EducationFormContent({
           </div>
         </div>
 
-        {/* 3. Periode Studi (Start Date & End Date DatePicker) */}
+        {/* 3. Study Period */}
         <div className="p-3.5 rounded-xl border border-border bg-surface-raised/40 space-y-3">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
@@ -210,13 +220,13 @@ function EducationFormContent({
                   state?.errors?.start_date && 'text-destructive font-semibold'
                 )}
               >
-                Bulan &amp; Tahun Masuk (Start Date) *
+                Start Date *
               </Label>
               <DatePicker
                 name="start_date"
                 value={startDate}
                 onChange={setStartDate}
-                placeholder="Pilih tanggal mulai"
+                placeholder="Select start date"
                 displayFormat="MMM yyyy"
                 className={cn(state?.errors?.start_date && 'border-destructive')}
               />
@@ -235,15 +245,15 @@ function EducationFormContent({
                   state?.errors?.end_date && 'text-destructive font-semibold'
                 )}
               >
-                Bulan &amp; Tahun Lulus (End Date)
+                End Date (Graduation)
               </Label>
               <DatePicker
                 name="end_date"
                 value={endDate}
                 onChange={setEndDate}
                 disabled={isCurrent}
-                disabledPlaceholder="Present (Sedang Kuliah)"
-                placeholder="Pilih tanggal lulus"
+                disabledPlaceholder="Present (Currently Enrolled)"
+                placeholder="Select end date"
                 displayFormat="MMM yyyy"
                 allowClear
                 className={cn(state?.errors?.end_date && 'border-destructive')}
@@ -260,10 +270,10 @@ function EducationFormContent({
           <div className="flex items-center justify-between pt-1">
             <div className="space-y-0.5">
               <Label htmlFor="edu-current" className="text-xs font-medium cursor-pointer">
-                Sedang Ditempuh Saat Ini (Present)
+                Currently Enrolled (Present)
               </Label>
               <p className="text-[11px] text-muted">
-                Jika aktif atau tanggal lulus kosong (null), status otomatis ditampilkan sebagai &quot;Present&quot;.
+                If active or end date is empty, status will display as &quot;Present&quot;.
               </p>
             </div>
             <Switch
@@ -280,10 +290,10 @@ function EducationFormContent({
           </div>
         </div>
 
-        {/* 4. Deskripsi Ringkasan Program Studi */}
+        {/* 4. Academic Description */}
         <div className="space-y-1.5">
           <Label htmlFor="edu-desc" className="text-xs font-mono text-muted">
-            Fokus Studi / Ringkasan Akademik (Description)
+            Academic Focus &amp; Summary
           </Label>
           <Textarea
             id="edu-desc"
@@ -296,14 +306,14 @@ function EducationFormContent({
           />
         </div>
 
-        {/* 5. Key Distinctions & Honors (Achievements) */}
+        {/* 5. Key Distinctions & Honors */}
         <DynamicPointList
-          label="Key Distinctions & Honors (Prestasi & Penghargaan)"
+          label="Key Distinctions &amp; Honors (Achievements)"
           name="achievements"
           allowKey={false}
           initialItems={education?.achievements || education?.highlights}
           placeholderValue="e.g. Best Student GPA for Information Systems (2025 & 2026)"
-          description="Tambahkan poin pencapaian atau distingsi akademik secara dinamis (opsional tambah/kurang nilai satuan)."
+          description="Add key achievements or academic honors dynamically."
         />
 
         <DialogFooter className="pt-2">
@@ -312,17 +322,18 @@ function EducationFormContent({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
+            className="cursor-pointer font-mono text-xs"
           >
-            Batal
+            Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="cursor-pointer font-mono text-xs">
             {isPending ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                Menyimpan...
+                Saving...
               </>
             ) : (
-              'Simpan Pendidikan'
+              'Save Education'
             )}
           </Button>
         </DialogFooter>

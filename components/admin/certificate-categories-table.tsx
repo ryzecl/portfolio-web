@@ -1,10 +1,12 @@
 // components/admin/certificate-categories-table.tsx
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { CertificateCategory } from '@/types/credentials';
 import { deleteCertificateCategoryAction } from '@/app/admin/certificates/categories/actions';
 import { CertificateCategoryDialog } from '@/components/admin/certificate-category-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
+import { toast } from 'sonner';
 import {
   Table,
   TableBody,
@@ -14,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit2, Trash2, Award, Terminal, Copy, Check } from 'lucide-react';
+import { Plus, Edit2, Award, Terminal, Copy, Check } from 'lucide-react';
 
 interface CertificateCategoriesTableProps {
   categories: CertificateCategory[];
@@ -27,7 +29,6 @@ export function CertificateCategoriesTable({
 }: CertificateCategoriesTableProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CertificateCategory | null>(null);
-  const [isPending, startTransition] = useTransition();
   const [copied, setCopied] = useState(false);
 
   const sqlCommand = `CREATE TABLE IF NOT EXISTS certificate_categories (
@@ -46,44 +47,49 @@ CREATE POLICY "Admin All certificate_categories" ON certificate_categories FOR A
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDelete = (id: string, name: string) => {
-    if (confirm(`Hapus kategori sertifikat "${name}"?`)) {
-      startTransition(async () => {
-        await deleteCertificateCategoryAction(id);
+  const handleDelete = async (id: string, name: string) => {
+    try {
+      await deleteCertificateCategoryAction(id);
+      toast.success('Category deleted', {
+        description: `Certificate category "${name}" was deleted successfully.`,
+      });
+    } catch (err: any) {
+      toast.error('Failed to delete category', {
+        description: err.message,
       });
     }
   };
 
   return (
     <div className="space-y-4">
-      {/* Jika tabel belum dimigrasikan di database Supabase */}
+      {/* If table is not yet created in Supabase */}
       {tableMissing && (
         <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-semibold">
               <Terminal className="w-4 h-4" />
-              <span>Tabel "certificate_categories" belum dibuat di Supabase</span>
+              <span>Table "certificate_categories" not yet created in Supabase</span>
             </div>
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleCopySql}
-              className="h-7 text-[11px] font-mono border-amber-500/40 text-amber-300 hover:bg-amber-500/20"
+              className="h-7 text-[11px] font-mono border-amber-500/40 text-amber-300 hover:bg-amber-500/20 cursor-pointer"
             >
               {copied ? (
                 <>
-                  <Check className="w-3 h-3 mr-1 text-emerald-400" /> Tersalin!
+                  <Check className="w-3 h-3 mr-1 text-emerald-400" /> Copied!
                 </>
               ) : (
                 <>
-                  <Copy className="w-3 h-3 mr-1" /> Salin SQL Script
+                  <Copy className="w-3 h-3 mr-1" /> Copy SQL Script
                 </>
               )}
             </Button>
           </div>
           <p className="text-xs text-muted leading-relaxed">
-            Jalankan script SQL berikut di <strong className="text-foreground">Supabase SQL Editor</strong> untuk mengaktifkan tabel kategori sertifikat:
+            Run the following SQL snippet in the <strong className="text-foreground">Supabase SQL Editor</strong> to enable certificate categories:
           </p>
           <pre className="p-3 rounded-lg bg-surface border border-border text-[11px] font-mono text-foreground/90 overflow-x-auto">
             {sqlCommand}
@@ -94,7 +100,7 @@ CREATE POLICY "Admin All certificate_categories" ON certificate_categories FOR A
       {/* Top Bar */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted font-mono">
-          Total: {categories.length} kategori sertifikat terdaftar
+          Total: {categories.length} certificate {categories.length === 1 ? 'category' : 'categories'} registered
         </p>
 
         <Button
@@ -104,28 +110,28 @@ CREATE POLICY "Admin All certificate_categories" ON certificate_categories FOR A
             setDialogOpen(true);
           }}
           disabled={tableMissing}
-          className="font-mono text-xs"
+          className="font-mono text-xs cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 mr-1.5" />
-          Tambah Kategori
+          Add Category
         </Button>
       </div>
 
-      {/* Table Sesuai Skema Supabase (Hanya Nama & Slug) */}
+      {/* Table */}
       <div className="rounded-xl border border-border bg-surface overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="font-mono text-xs uppercase text-muted">Nama Kategori</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Category Name</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted">Slug Identifier</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {categories.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="text-center py-10 text-muted text-xs font-mono">
-                  Belum ada kategori sertifikat. Klik tombol &ldquo;Tambah Kategori&rdquo; di atas.
+                  No certificate categories found. Click &ldquo;Add Category&rdquo; to create one.
                 </TableCell>
               </TableRow>
             ) : (
@@ -155,22 +161,17 @@ CREATE POLICY "Admin All certificate_categories" ON certificate_categories FOR A
                           setEditingCategory(cat);
                           setDialogOpen(true);
                         }}
-                        className="h-8 w-8 p-0"
-                        title="Edit kategori"
+                        className="h-8 w-8 p-0 cursor-pointer"
+                        title="Edit category"
                       >
                         <Edit2 className="w-3.5 h-3.5 text-muted hover:text-foreground" />
                       </Button>
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        disabled={isPending}
-                        onClick={() => handleDelete(cat.id, cat.name)}
-                        className="h-8 w-8 p-0 text-muted hover:text-destructive"
-                        title="Hapus kategori"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+                      <DeleteConfirmDialog
+                        title="Delete Category?"
+                        description={`Do you want to permanently delete category "${cat.name}"?`}
+                        onConfirm={() => handleDelete(cat.id, cat.name)}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

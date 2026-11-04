@@ -1,13 +1,15 @@
 // components/admin/experience-detail-actions.tsx
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { ExperienceItem } from '@/types/credentials';
 import { deleteExperienceAction } from '@/app/admin/experience/actions';
 import { ExperienceDialog } from '@/components/admin/experience-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
 import { Button } from '@/components/ui/button';
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2 } from 'lucide-react';
 
 interface ExperienceDetailActionsProps {
   experience: ExperienceItem;
@@ -15,14 +17,18 @@ interface ExperienceDetailActionsProps {
 
 export function ExperienceDetailActions({ experience }: ExperienceDetailActionsProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleDelete = () => {
-    if (confirm(`Hapus pengalaman kerja "${experience.role}" di ${experience.organization}?`)) {
-      startTransition(async () => {
-        await deleteExperienceAction(experience.id);
-        router.push('/admin/experience');
+  const handleDelete = async () => {
+    try {
+      await deleteExperienceAction(experience.id);
+      toast.success('Experience deleted', {
+        description: `"${experience.role}" at ${experience.organization} has been removed.`,
+      });
+      router.push('/admin/experience');
+    } catch (err: any) {
+      toast.error('Failed to delete experience', {
+        description: err.message,
       });
     }
   };
@@ -34,22 +40,20 @@ export function ExperienceDetailActions({ experience }: ExperienceDetailActionsP
           variant="outline"
           size="sm"
           onClick={() => setDialogOpen(true)}
-          className="font-mono text-xs"
+          className="font-mono text-xs cursor-pointer"
         >
           <Edit2 className="w-3.5 h-3.5 mr-1.5" />
-          Edit Data
+          Edit Entry
         </Button>
 
-        <Button
+        <DeleteConfirmDialog
+          title="Delete Experience?"
+          description={`Do you want to permanently delete "${experience.role}" at ${experience.organization}?`}
+          onConfirm={handleDelete}
           variant="outline"
-          size="sm"
-          disabled={isPending}
-          onClick={handleDelete}
-          className="font-mono text-xs text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30"
-        >
-          <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-          Hapus
-        </Button>
+          showLabel
+          label="Delete"
+        />
       </div>
 
       <ExperienceDialog

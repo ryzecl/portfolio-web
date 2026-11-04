@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { TechCategory, ActionState } from '@/types/tech-stack';
 import { upsertCategoryAction } from '@/app/admin/tech-stack/actions';
 import {
@@ -57,18 +58,27 @@ function TechCategoryFormContent({
 
   useEffect(() => {
     if (state?.success) {
+      toast.success(category ? 'Category updated' : 'Category created', {
+        description: category
+          ? `Changes saved for "${title}".`
+          : `Category "${title}" created successfully.`,
+      });
       onClose();
+    } else if (state?.error && !state?.errors) {
+      toast.error('Failed to save category', {
+        description: state.error,
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, category, title]);
 
   return (
     <>
       <DialogHeader>
         <DialogTitle className="font-mono text-foreground">
-          {category ? 'Edit Kategori Tech' : 'Tambah Kategori Baru'}
+          {category ? 'Edit Tech Category' : 'Add New Category'}
         </DialogTitle>
         <DialogDescription className="text-muted text-xs">
-          Kelompokkan teknologi ke dalam cluster (misal: Frontend, Backend, Database).
+          Group technologies into clusters (e.g. Frontend, Backend, Database).
         </DialogDescription>
       </DialogHeader>
 
@@ -90,7 +100,7 @@ function TechCategoryFormContent({
               state?.errors?.title && 'text-destructive font-semibold'
             )}
           >
-            Judul Kategori *
+            Category Title *
           </Label>
           <Input
             id="cat-title"
@@ -119,7 +129,7 @@ function TechCategoryFormContent({
               state?.errors?.slug && 'text-destructive font-semibold'
             )}
           >
-            Slug URL (Otomatis dari Judul) *
+            Slug Identifier (Auto-generated from Title) *
           </Label>
           <Input
             id="cat-slug"
@@ -142,14 +152,14 @@ function TechCategoryFormContent({
             </p>
           ) : (
             <p className="text-[11px] text-muted">
-              Dibuat otomatis dari judul kategori dan tetap bisa Anda ubah manual.
+              Auto-generated from title, can be manually edited.
             </p>
           )}
         </div>
 
         <div className="space-y-1.5">
           <Label htmlFor="cat-desc" className="text-xs font-mono text-muted">
-            Deskripsi Singkat (Opsional)
+            Brief Description (Optional)
           </Label>
           <Input
             id="cat-desc"
@@ -163,7 +173,7 @@ function TechCategoryFormContent({
 
         <div className="space-y-1.5">
           <Label htmlFor="cat-prio" className="text-xs font-mono text-muted">
-            Urutan Prioritas (Angka kecil tampil lebih awal)
+            Priority Order (Lower numbers appear earlier)
           </Label>
           <Input
             id="cat-prio"
@@ -181,17 +191,18 @@ function TechCategoryFormContent({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
+            className="cursor-pointer font-mono text-xs"
           >
-            Batal
+            Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="cursor-pointer font-mono text-xs">
             {isPending ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                Menyimpan...
+                Saving...
               </>
             ) : (
-              'Simpan Kategori'
+              'Save Category'
             )}
           </Button>
         </DialogFooter>

@@ -1,7 +1,8 @@
 // components/admin/site-settings-form.tsx
 'use client';
 
-import React, { useActionState, useState } from 'react';
+import React, { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { GenericActionState } from '@/types/credentials';
 import { SiteSocialSettings } from '@/types/settings';
 import { updateSocialSettingsAction } from '@/app/admin/settings/actions';
@@ -29,7 +30,6 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
     null
   );
 
-  // Controlled states agar isian tidak pernah hilang saat validasi gagal
   const [email, setEmail] = useState(socials.email || '');
   const [github, setGithub] = useState(socials.github || '');
   const [linkedin, setLinkedin] = useState(socials.linkedin || '');
@@ -37,25 +37,30 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
   const [instagram, setInstagram] = useState(socials.instagram || '');
   const [spotify, setSpotify] = useState(socials.spotify || '');
 
+  useEffect(() => {
+    if (state?.success) {
+      toast.success('Settings updated', {
+        description: state.message || 'Site settings and social links saved successfully.',
+      });
+    } else if (state?.error && !state?.errors) {
+      toast.error('Failed to update settings', {
+        description: state.error,
+      });
+    }
+  }, [state]);
+
   return (
     <form action={formAction} noValidate className="space-y-6 max-w-2xl">
-      {state?.error && (
+      {state?.error && !state?.errors && (
         <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{state.error}</span>
         </div>
       )}
 
-      {state?.success && (
-        <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
-          <CheckCircle2 className="w-4 h-4 shrink-0" />
-          <span>{state.message}</span>
-        </div>
-      )}
-
       <div className="p-6 rounded-2xl border border-border bg-surface space-y-5">
         <h2 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
-          Social Links & Kontak Publik
+          Social Links &amp; Public Contact
         </h2>
 
         <div className="space-y-4">
@@ -67,7 +72,7 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
                 state?.errors?.email && 'text-destructive font-semibold'
               )}
             >
-              <Mail className="w-3.5 h-3.5 text-accent" /> Email Kontak *
+              <Mail className="w-3.5 h-3.5 text-accent" /> Contact Email *
             </Label>
             <Input
               id="email"
@@ -157,7 +162,7 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
                   state?.errors?.whatsapp && 'text-destructive font-semibold'
                 )}
               >
-                <Phone className="w-3.5 h-3.5 text-accent" /> WhatsApp Link / No.
+                <Phone className="w-3.5 h-3.5 text-accent" /> WhatsApp Link / Number
               </Label>
               <Input
                 id="whatsapp"
@@ -240,14 +245,14 @@ export function SiteSettingsForm({ socials }: SiteSettingsFormProps) {
       </div>
 
       <div className="flex justify-end">
-        <Button type="submit" disabled={isPending} className="font-mono text-xs">
+        <Button type="submit" disabled={isPending} className="font-mono text-xs cursor-pointer">
           {isPending ? (
             <>
               <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-              <span>Menyimpan Pengaturan...</span>
+              <span>Saving Settings...</span>
             </>
           ) : (
-            <span>Simpan Perubahan</span>
+            <span>Save Changes</span>
           )}
         </Button>
       </div>

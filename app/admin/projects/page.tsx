@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createClient } from '@/lib/server';
 import { Project } from '@/types/projects';
-import { deleteProjectAction } from '@/app/admin/projects/actions';
+import { ProjectDeleteDialog } from '@/components/admin/project-delete-dialog';
 import {
   Table,
   TableBody,
@@ -64,7 +64,7 @@ export default async function AdminProjectsPage() {
             </h1>
           </div>
           <p className="text-xs text-muted">
-            Kelola karya unggulan, studi kasus arsitektur, dan tautan demo langsung.
+            Manage featured case studies, architecture blueprints, and live deployment links.
           </p>
         </div>
 
@@ -72,35 +72,35 @@ export default async function AdminProjectsPage() {
           <Button asChild variant="outline" size="sm" className="font-mono text-xs">
             <Link href="/admin/projects/categories">
               <Tag className="w-3.5 h-3.5 mr-1.5 text-accent" />
-              Kelola Kategori
+              Manage Categories
             </Link>
           </Button>
 
           <Button asChild size="sm" className="font-mono text-xs">
             <Link href="/admin/projects/new">
               <Plus className="w-3.5 h-3.5 mr-1.5" />
-              Tambah Proyek
+              New Project
             </Link>
           </Button>
         </div>
       </div>
 
-      {/* Tabel Proyek Ringkas */}
+      {/* Projects Table */}
       <div className="rounded-xl border border-border bg-surface overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="font-mono text-xs uppercase text-muted">Proyek</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Kategori</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Posisi &amp; Status</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Project</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Category</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Position &amp; Status</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {!projects || projects.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="text-center py-10 text-muted text-xs font-mono">
-                  Belum ada proyek yang dibuat. Klik tombol &ldquo;Tambah Proyek&rdquo; di atas.
+                  No projects created yet. Click &ldquo;New Project&rdquo; above to publish your first work.
                 </TableCell>
               </TableRow>
             ) : (
@@ -157,7 +157,7 @@ export default async function AdminProjectsPage() {
                           #{proj.priority} {proj.priority <= 4 ? '★ Featured' : ''}
                         </span>
                       ) : (
-                        <span className="text-muted text-[11px] font-mono">Standar</span>
+                        <span className="text-muted text-[11px] font-mono">Standard</span>
                       )}
                       <span className="text-border">·</span>
                       <span className="text-xs font-mono text-emerald-400">
@@ -172,7 +172,7 @@ export default async function AdminProjectsPage() {
                         asChild
                         variant="ghost"
                         size="sm"
-                        title="Lihat Detail Proyek"
+                        title="View Details"
                         className="h-8 w-8 p-0 text-muted hover:text-foreground"
                       >
                         <Link href={`/admin/projects/${proj.id}`}>
@@ -184,7 +184,7 @@ export default async function AdminProjectsPage() {
                         asChild
                         variant="ghost"
                         size="sm"
-                        title="Edit Proyek"
+                        title="Edit Project"
                         className="h-8 w-8 p-0 text-muted hover:text-foreground"
                       >
                         <Link href={`/admin/projects/${proj.id}/edit`}>
@@ -192,22 +192,10 @@ export default async function AdminProjectsPage() {
                         </Link>
                       </Button>
 
-                      <form
-                        action={async () => {
-                          'use server';
-                          await deleteProjectAction(proj.id);
-                        }}
-                      >
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          type="submit"
-                          title="Hapus Proyek"
-                          className="h-8 w-8 p-0 text-muted hover:text-destructive cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
-                      </form>
+                      <ProjectDeleteDialog
+                        projectId={proj.id}
+                        projectTitle={proj.title}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { ProjectCategory, ProjectActionState } from '@/types/projects';
 import { upsertProjectCategoryAction } from '@/app/admin/projects/categories/actions';
 import {
@@ -61,18 +62,27 @@ function ProjectCategoryFormContent({
 
   useEffect(() => {
     if (state?.success) {
+      toast.success(category ? 'Category updated' : 'Category created', {
+        description: category
+          ? `Changes saved to "${name}".`
+          : `Category "${name}" created successfully.`,
+      });
       onClose();
+    } else if (state?.error) {
+      toast.error('Failed to save category', {
+        description: state.error,
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, category, name]);
 
   return (
     <>
       <DialogHeader>
         <DialogTitle className="font-mono text-foreground">
-          {category ? 'Edit Kategori Proyek' : 'Tambah Kategori Proyek'}
+          {category ? 'Edit Project Category' : 'New Project Category'}
         </DialogTitle>
         <DialogDescription className="text-muted text-xs">
-          Kelompokkan proyek berdasarkan domain (e.g. Web Application, Mobile App, Company Profile).
+          Organize projects by architectural or product domain (e.g., Web Application, Mobile App, Company Profile).
         </DialogDescription>
       </DialogHeader>
 
@@ -94,7 +104,7 @@ function ProjectCategoryFormContent({
               state?.errors?.name && 'text-destructive font-semibold'
             )}
           >
-            Nama Kategori *
+            Category Name *
           </Label>
           <Input
             id="cat-name"
@@ -123,7 +133,7 @@ function ProjectCategoryFormContent({
               state?.errors?.slug && 'text-destructive font-semibold'
             )}
           >
-            Slug Identifier (Otomatis dari Nama) *
+            Slug Identifier (Auto-generated from Name) *
           </Label>
           <Input
             id="cat-slug"
@@ -150,17 +160,18 @@ function ProjectCategoryFormContent({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
+            className="cursor-pointer font-mono text-xs"
           >
-            Batal
+            Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="cursor-pointer font-mono text-xs">
             {isPending ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                Menyimpan...
+                Saving...
               </>
             ) : (
-              'Simpan Kategori'
+              'Save Category'
             )}
           </Button>
         </DialogFooter>

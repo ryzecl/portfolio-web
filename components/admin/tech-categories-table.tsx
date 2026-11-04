@@ -1,10 +1,12 @@
 // components/admin/tech-categories-table.tsx
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { TechCategory } from '@/types/tech-stack';
 import { deleteCategoryAction } from '@/app/admin/tech-stack/actions';
 import { TechCategoryDialog } from '@/components/admin/tech-category-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
+import { toast } from 'sonner';
 import {
   Table,
   TableBody,
@@ -15,7 +17,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit2, Trash2, Cpu } from 'lucide-react';
+import { Plus, Edit2, Cpu } from 'lucide-react';
 
 interface TechCategoryWithCount extends Omit<TechCategory, 'technologies'> {
   technologies?: { id?: string; count?: number }[] | any[];
@@ -28,12 +30,16 @@ interface TechCategoriesTableProps {
 export function TechCategoriesTable({ categories }: TechCategoriesTableProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<TechCategory | null>(null);
-  const [isPending, startTransition] = useTransition();
 
-  const handleDelete = (id: string, title: string) => {
-    if (confirm(`Hapus kategori teknologi "${title}"? Semua teknologi di dalamnya akan ikut terhapus.`)) {
-      startTransition(async () => {
-        await deleteCategoryAction(id);
+  const handleDelete = async (id: string, title: string) => {
+    const res = await deleteCategoryAction(id);
+    if (res?.error) {
+      toast.error('Failed to delete category', {
+        description: res.error,
+      });
+    } else {
+      toast.success('Category deleted', {
+        description: `"${title}" and its technologies were removed.`,
       });
     }
   };
@@ -43,7 +49,7 @@ export function TechCategoriesTable({ categories }: TechCategoriesTableProps) {
       {/* Top Bar */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted font-mono">
-          Total: {categories.length} klaster teknologi terdaftar
+          Total: {categories.length} technology {categories.length === 1 ? 'cluster' : 'clusters'} registered
         </p>
 
         <Button
@@ -52,10 +58,10 @@ export function TechCategoriesTable({ categories }: TechCategoriesTableProps) {
             setEditingCategory(null);
             setDialogOpen(true);
           }}
-          className="font-mono text-xs"
+          className="font-mono text-xs cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 mr-1.5" />
-          Tambah Kategori
+          Add Category
         </Button>
       </div>
 
@@ -64,19 +70,19 @@ export function TechCategoriesTable({ categories }: TechCategoriesTableProps) {
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="font-mono text-xs uppercase text-muted">Nama Klaster / Kategori</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Cluster / Category</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted">Slug</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Deskripsi</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Prioritas</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Teknologi</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Description</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Priority</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Technologies</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {categories.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-10 text-muted text-xs font-mono">
-                  Belum ada kategori teknologi. Klik tombol "Tambah Kategori" di atas.
+                  No technology categories found. Click &ldquo;Add Category&rdquo; to create one.
                 </TableCell>
               </TableRow>
             ) : (
@@ -116,7 +122,7 @@ export function TechCategoriesTable({ categories }: TechCategoriesTableProps) {
 
                     <TableCell>
                       <span className="text-xs font-mono text-foreground font-medium">
-                        {count} item
+                        {count} {count === 1 ? 'item' : 'items'}
                       </span>
                     </TableCell>
 
@@ -129,22 +135,17 @@ export function TechCategoriesTable({ categories }: TechCategoriesTableProps) {
                             setEditingCategory(cat as unknown as TechCategory);
                             setDialogOpen(true);
                           }}
-                          className="h-8 w-8 p-0"
-                          title="Edit kategori"
+                          className="h-8 w-8 p-0 cursor-pointer"
+                          title="Edit category"
                         >
                           <Edit2 className="w-3.5 h-3.5 text-muted hover:text-foreground" />
                         </Button>
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          disabled={isPending}
-                          onClick={() => handleDelete(cat.id, cat.title)}
-                          className="h-8 w-8 p-0 text-muted hover:text-destructive"
-                          title="Hapus kategori"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
+                        <DeleteConfirmDialog
+                          title="Delete Category?"
+                          description={`Do you want to permanently delete "${cat.title}"? All associated technologies will be affected.`}
+                          onConfirm={() => handleDelete(cat.id, cat.title)}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>

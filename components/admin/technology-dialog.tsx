@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { Technology, TechCategory, ActionState } from '@/types/tech-stack';
 import { upsertTechnologyAction } from '@/app/admin/tech-stack/actions';
 import {
@@ -79,18 +80,27 @@ function TechnologyFormContent({
 
   useEffect(() => {
     if (state?.success) {
+      toast.success(technology ? 'Technology updated' : 'Technology created', {
+        description: technology
+          ? `Changes saved for "${name}".`
+          : `Technology "${name}" added successfully.`,
+      });
       onClose();
+    } else if (state?.error && !state?.errors) {
+      toast.error('Failed to save technology', {
+        description: state.error,
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, technology, name]);
 
   return (
     <>
       <DialogHeader>
         <DialogTitle className="font-mono text-foreground">
-          {technology ? 'Edit Teknologi' : 'Tambah Teknologi Baru'}
+          {technology ? 'Edit Technology' : 'Add New Technology'}
         </DialogTitle>
         <DialogDescription className="text-muted text-xs">
-          Tambahkan bahasa, framework, pustaka, atau tool ke master data.
+          Add languages, frameworks, libraries, or tools to your portfolio tech stack.
         </DialogDescription>
       </DialogHeader>
 
@@ -105,7 +115,7 @@ function TechnologyFormContent({
           </div>
         )}
 
-        {/* Kategori Selector */}
+        {/* Category Selector */}
         <div className="space-y-1.5">
           <Label
             htmlFor="category_id"
@@ -114,7 +124,7 @@ function TechnologyFormContent({
               state?.errors?.category_id && 'text-destructive font-semibold'
             )}
           >
-            Pilih Kategori *
+            Select Category *
           </Label>
           <Select
             value={categoryId}
@@ -126,7 +136,7 @@ function TechnologyFormContent({
                 state?.errors?.category_id && 'border-destructive focus-visible:ring-destructive'
               )}
             >
-              <SelectValue placeholder="Pilih Kategori..." />
+              <SelectValue placeholder="Select Category..." />
             </SelectTrigger>
             <SelectContent className="bg-surface border-border">
               {categories.map((cat) => (
@@ -144,7 +154,7 @@ function TechnologyFormContent({
           )}
         </div>
 
-        {/* Nama Teknologi */}
+        {/* Technology Name */}
         <div className="space-y-1.5">
           <Label
             htmlFor="tech-name"
@@ -153,7 +163,7 @@ function TechnologyFormContent({
               state?.errors?.name && 'text-destructive font-semibold'
             )}
           >
-            Nama Teknologi *
+            Technology Name *
           </Label>
           <Input
             id="tech-name"
@@ -174,7 +184,7 @@ function TechnologyFormContent({
           )}
         </div>
 
-        {/* Slug URL */}
+        {/* Slug Identifier */}
         <div className="space-y-1.5">
           <Label
             htmlFor="tech-slug"
@@ -183,7 +193,7 @@ function TechnologyFormContent({
               state?.errors?.slug && 'text-destructive font-semibold'
             )}
           >
-            Slug Identifier (Otomatis dari Nama) *
+            Slug Identifier (Auto-generated from Name) *
           </Label>
           <Input
             id="tech-slug"
@@ -207,7 +217,7 @@ function TechnologyFormContent({
           )}
         </div>
 
-        {/* Icon Key SimpleIcons dengan Live Preview & Link Bantuan */}
+        {/* Icon Key SimpleIcons */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label
@@ -225,14 +235,14 @@ function TechnologyFormContent({
               rel="noopener noreferrer"
               className="text-[11px] font-mono text-accent hover:underline flex items-center gap-0.5"
             >
-              Cari di simpleicons.org ↗
+              Search simpleicons.org ↗
             </a>
           </div>
 
           <div className="flex items-center gap-2">
             <div
               className="w-9 h-9 rounded-xl bg-surface-raised border border-border flex items-center justify-center shrink-0"
-              title={`Preview Ikon: ${iconKey || name || '-'}`}
+              title={`Icon Preview: ${iconKey || name || '-'}`}
             >
               <TechIcon name={iconKey || name || 'terminal'} className="w-5 h-5" />
             </div>
@@ -258,9 +268,9 @@ function TechnologyFormContent({
             </p>
           )}
 
-          {/* Preset Populer Cepat */}
+          {/* Preset Buttons */}
           <div className="space-y-1 pt-1">
-            <span className="text-[10px] font-mono text-muted block">Klik Cepat (Preset Otomatis):</span>
+            <span className="text-[10px] font-mono text-muted block">Quick Presets:</span>
             <div className="flex flex-wrap gap-1">
               {[
                 { label: 'Next.js', key: 'nextdotjs', slug: 'nextjs' },
@@ -310,17 +320,18 @@ function TechnologyFormContent({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
+            className="cursor-pointer font-mono text-xs"
           >
-            Batal
+            Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="cursor-pointer font-mono text-xs">
             {isPending ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                Menyimpan...
+                Saving...
               </>
             ) : (
-              'Simpan Teknologi'
+              'Save Technology'
             )}
           </Button>
         </DialogFooter>

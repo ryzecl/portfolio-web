@@ -51,11 +51,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .single();
 
   if (!project) {
-    return { title: 'Detail Proyek · Admin CMS' };
+    return { title: 'Project Details · Admin CMS' };
   }
 
   return {
-    title: `${project.title} · Detail Proyek · Admin CMS`,
+    title: `${project.title} · Project Details · Admin CMS`,
   };
 }
 
@@ -100,7 +100,7 @@ export default async function AdminProjectDetailPage({ params }: PageProps) {
           className="inline-flex items-center gap-1.5 text-xs font-mono text-muted hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-          <span>Kembali ke Daftar Proyek</span>
+          <span>Back to Projects</span>
         </Link>
 
         <ProjectDetailActions project={project} />
@@ -125,11 +125,11 @@ export default async function AdminProjectDetailPage({ params }: PageProps) {
               </Badge>
             ) : project.priority > 4 ? (
               <Badge variant="secondary" className="font-mono text-xs">
-                Prioritas #{project.priority}
+                Priority #{project.priority}
               </Badge>
             ) : (
               <Badge variant="outline" className="font-mono text-xs text-muted">
-                Urutan Standar (0)
+                Standard Priority (0)
               </Badge>
             )}
 
@@ -180,17 +180,17 @@ export default async function AdminProjectDetailPage({ params }: PageProps) {
             <CardHeader className="pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-muted flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-accent" />
-                Media &amp; Visual Proyek ({(project.cover_image ? 1 : 0) + previewImages.length} Gambar)
+                Visual Assets &amp; Media ({(project.cover_image ? 1 : 0) + previewImages.length} Gambar)
               </CardTitle>
               <CardDescription className="text-xs text-muted">
-                Cover utama kartu portofolio dan galeri slide di halaman studi kasus.
+                Primary portfolio card cover and interactive case study gallery.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {project.cover_image ? (
                 <div className="space-y-1.5">
                   <span className="text-[11px] font-mono text-muted uppercase tracking-wider block">
-                    Cover Image Utama:
+                    Primary Cover Image:
                   </span>
                   <div className="relative aspect-video rounded-xl border border-border overflow-hidden bg-surface-raised">
                     <img
@@ -202,14 +202,14 @@ export default async function AdminProjectDetailPage({ params }: PageProps) {
                 </div>
               ) : (
                 <div className="p-6 rounded-xl border border-dashed border-border bg-surface-raised/40 text-center text-xs font-mono text-muted">
-                  Belum ada cover image yang diunggah.
+                  No cover image uploaded yet.
                 </div>
               )}
 
               {previewImages.length > 0 && (
                 <div className="space-y-2 pt-2 border-t border-border/60">
                   <span className="text-[11px] font-mono text-muted uppercase tracking-wider block">
-                    Galeri Detail Interaktif ({previewImages.length} Gambar):
+                    Interactive Detail Gallery ({previewImages.length} Gambar):
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {previewImages.map((url, idx) => (
@@ -238,13 +238,13 @@ export default async function AdminProjectDetailPage({ params }: PageProps) {
             <CardHeader className="pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-muted flex items-center gap-2">
                 <FileText className="w-4 h-4 text-accent" />
-                Narasi Studi Kasus (Problem, Solution &amp; Contribution)
+                Case Study Narrative (Problem, Solution &amp; Contribution)
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5 text-sm">
               <div className="space-y-1.5">
                 <span className="text-xs font-mono font-semibold text-muted uppercase tracking-wider block">
-                  Deskripsi Lengkap
+                  Full Description
                 </span>
                 {project.description ? (
                   <p className="text-foreground/90 leading-relaxed whitespace-pre-line">
@@ -252,7 +252,7 @@ export default async function AdminProjectDetailPage({ params }: PageProps) {
                   </p>
                 ) : (
                   <p className="text-xs font-mono text-muted italic">
-                    Belum ada deskripsi naratif panjang.
+                    No narrative description provided.
                   </p>
                 )}
               </div>
@@ -361,7 +361,7 @@ export default async function AdminProjectDetailPage({ params }: PageProps) {
                   </ul>
                 ) : (
                   <p className="text-xs font-mono text-muted italic">
-                    Belum ada rincian arsitektur.
+                    No architecture specifications added.
                   </p>
                 )}
               </div>

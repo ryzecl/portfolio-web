@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { CertificateCategory, GenericActionState } from '@/types/credentials';
 import { upsertCertificateCategoryAction } from '@/app/admin/certificates/categories/actions';
 import {
@@ -55,18 +56,27 @@ function CertificateCategoryFormContent({
 
   useEffect(() => {
     if (state?.success) {
+      toast.success(category ? 'Category updated' : 'Category created', {
+        description: category
+          ? `Changes saved for "${name}".`
+          : `Certificate category "${name}" created successfully.`,
+      });
       onClose();
+    } else if (state?.error && !state?.errors) {
+      toast.error('Failed to save category', {
+        description: state.error,
+      });
     }
-  }, [state, onClose]);
+  }, [state, onClose, category, name]);
 
   return (
     <>
       <DialogHeader>
         <DialogTitle className="font-mono text-foreground">
-          {category ? 'Edit Kategori Sertifikat' : 'Tambah Kategori Sertifikat'}
+          {category ? 'Edit Certificate Category' : 'Add Certificate Category'}
         </DialogTitle>
         <DialogDescription className="text-muted text-xs">
-          Kelompokkan sertifikat berdasarkan taksonomi (e.g. Web Development, Artificial Intelligence).
+          Group certificates by domain or taxonomy (e.g. Web Development, Cloud Computing).
         </DialogDescription>
       </DialogHeader>
 
@@ -88,7 +98,7 @@ function CertificateCategoryFormContent({
               state?.errors?.name && 'text-destructive font-semibold'
             )}
           >
-            Nama Kategori *
+            Category Name *
           </Label>
           <Input
             id="cat-name"
@@ -117,7 +127,7 @@ function CertificateCategoryFormContent({
               state?.errors?.slug && 'text-destructive font-semibold'
             )}
           >
-            Slug Identifier (Unik) *
+            Slug Identifier (Unique) *
           </Label>
           <Input
             id="cat-slug"
@@ -140,7 +150,7 @@ function CertificateCategoryFormContent({
             </p>
           ) : (
             <p className="text-[11px] text-muted">
-              Digunakan sebagai identifier unik di database.
+              Used as a unique slug identifier across the system.
             </p>
           )}
         </div>
@@ -151,17 +161,18 @@ function CertificateCategoryFormContent({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
+            className="cursor-pointer font-mono text-xs"
           >
-            Batal
+            Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} className="cursor-pointer font-mono text-xs">
             {isPending ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                Menyimpan...
+                Saving...
               </>
             ) : (
-              'Simpan Kategori'
+              'Save Category'
             )}
           </Button>
         </DialogFooter>

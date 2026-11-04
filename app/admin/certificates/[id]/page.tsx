@@ -10,13 +10,11 @@ import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import {
   ArrowLeft,
-  Award,
   Calendar,
   ExternalLink,
   ShieldCheck,
@@ -42,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .single();
 
   if (!cert) {
-    return { title: 'Detail Sertifikat · Admin CMS' };
+    return { title: 'Certificate Detail · Admin CMS' };
   }
 
   return {
@@ -56,9 +54,8 @@ function formatDate(dateStr?: string) {
   try {
     const d = new Date(dateStr);
     if (!isNaN(d.getTime())) {
-      return d.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
         year: 'numeric',
       });
     }
@@ -82,7 +79,6 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
 
   const certificate = cert as Certificate;
 
-  // Ambil daftar nama kategori untuk modal edit
   const { data: certCategories } = await supabase
     .from('certificate_categories')
     .select('name')
@@ -99,7 +95,7 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
           className="inline-flex items-center gap-1.5 text-xs font-mono text-muted hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-          <span>Kembali ke Daftar Sertifikat</span>
+          <span>Back to Certificates</span>
         </Link>
 
         <CertificateDetailActions
@@ -121,15 +117,15 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
               {certificate.priority === 1 ? (
                 <Badge className="font-mono text-xs bg-accent text-white border-accent flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />
-                  #1 Spotlight (Card Besar Landing Page)
+                  #1 Spotlight (Large Landing Card)
                 </Badge>
               ) : certificate.priority && certificate.priority > 1 ? (
                 <Badge variant="secondary" className="font-mono text-xs">
-                  Prioritas #{certificate.priority} (Landing Page)
+                  Priority #{certificate.priority} (Landing Page)
                 </Badge>
               ) : (
                 <Badge variant="outline" className="font-mono text-xs text-muted">
-                  Arsip Kredensial Saja
+                  Archive Only
                 </Badge>
               )}
             </div>
@@ -139,7 +135,7 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
             </h1>
 
             <p className="text-sm font-mono text-muted flex items-center gap-2">
-              <span>Diterbitkan oleh:</span>
+              <span>Issued by:</span>
               <strong className="text-foreground">{certificate.issuer}</strong>
             </p>
           </div>
@@ -147,7 +143,7 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
           <div className="flex items-center gap-2 shrink-0 p-3 rounded-xl bg-surface-raised border border-border/80 font-mono text-xs">
             <Calendar className="w-4 h-4 text-accent" />
             <div>
-              <span className="text-[10px] text-muted block uppercase tracking-wider">Tanggal Terbit</span>
+              <span className="text-[10px] text-muted block uppercase tracking-wider">Issue Date</span>
               <span className="font-semibold text-foreground">{formatDate(certificate.issue_date)}</span>
             </div>
           </div>
@@ -156,14 +152,13 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
 
       {/* Details Grid */}
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Left Column: Metadata & Links (1 col) */}
+        {/* Left Column: Metadata & Links */}
         <div className="space-y-6 md:col-span-1">
-          {/* Identitas Kredensial */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-muted flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-accent" />
-                Verifikasi Dokumen
+                Document Verification
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-xs font-mono">
@@ -178,7 +173,7 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
 
               <div className="pt-3 border-t border-border/70 space-y-2">
                 <span className="text-[10px] text-muted block uppercase tracking-wider">
-                  Tautan Asli (GDrive / Dicoding)
+                  Official Verification Link
                 </span>
                 {certificate.credential_url ? (
                   <a
@@ -187,46 +182,44 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-between w-full p-2.5 rounded-lg bg-surface-raised hover:bg-accent hover:text-white border border-border text-foreground transition-all group font-sans text-xs font-medium"
                   >
-                    <span className="truncate pr-2">Buka Bukti Kredensial</span>
+                    <span className="truncate pr-2">Open Official Proof</span>
                     <ExternalLink className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </a>
                 ) : (
-                  <span className="text-muted italic">Tidak ada tautan eksternal</span>
+                  <span className="text-muted italic">No external verification URL</span>
                 )}
               </div>
             </CardContent>
           </Card>
 
-          {/* Pengaturan Posisi Bento */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-muted flex items-center gap-2">
                 <Layers className="w-4 h-4 text-accent" />
-                Status Tampilan
+                Display Status
               </CardTitle>
             </CardHeader>
             <CardContent className="text-xs space-y-2 leading-relaxed">
               <p className="text-muted">
                 {certificate.priority === 1 ? (
-                  <>Sertifikat ini diatur sebagai <strong className="text-accent">Nomor 1 (Spotlight Utama)</strong> dan ditampilkan dalam Card Besar berukuran 2x3 di landing page portofolio.</>
+                  <>This certificate is set to <strong className="text-accent">#1 (Spotlight)</strong> and rendered as the primary large card on the portfolio landing page.</>
                 ) : certificate.priority && certificate.priority > 1 ? (
-                  <>Sertifikat ini diatur pada slot <strong className="text-foreground">#{certificate.priority}</strong> dan ditampilkan pada kartu pendamping samping di landing page.</>
+                  <>This certificate is assigned to slot <strong className="text-foreground">#{certificate.priority}</strong> on the landing page credentials grid.</>
                 ) : (
-                  <>Sertifikat ini disimpan sebagai arsip katalog umum di halaman <code className="text-accent">/credentials</code>.</>
+                  <>This certificate is cataloged in the full credentials archive at <code className="text-accent">/credentials</code>.</>
                 )}
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Right Column: Ringkasan & Verified Competencies (2 cols) */}
+        {/* Right Column: Summary & Verified Competencies */}
         <div className="space-y-6 md:col-span-2">
-          {/* Ringkasan Sertifikasi */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-muted flex items-center gap-2">
                 <FileText className="w-4 h-4 text-accent" />
-                Deskripsi &amp; Standar Kompetensi
+                Description &amp; Standards
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -235,12 +228,11 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
                   {certificate.summary}
                 </p>
               ) : (
-                <p className="text-xs text-muted italic">Belum ada ringkasan deskripsi sertifikasi.</p>
+                <p className="text-xs text-muted italic">No summary description provided.</p>
               )}
             </CardContent>
           </Card>
 
-          {/* Verified Competencies */}
           <Card className="bg-surface border-border">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -248,7 +240,7 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
                   <CheckCircle2 className="w-4 h-4 text-accent" />
                   Verified Competencies ({certificate.skills?.length || 0})
                 </CardTitle>
-                <span className="text-[11px] font-mono text-muted">Tag Keahlian Resmi</span>
+                <span className="text-[11px] font-mono text-muted">Official Skill Tags</span>
               </div>
             </CardHeader>
             <CardContent>
@@ -264,7 +256,7 @@ export default async function AdminCertificateDetailPage({ params }: PageProps) 
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-muted italic">Belum ada daftar kompetensi yang ditambahkan.</p>
+                <p className="text-xs text-muted italic">No verified competencies added yet.</p>
               )}
             </CardContent>
           </Card>

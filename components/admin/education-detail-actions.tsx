@@ -1,13 +1,15 @@
 // components/admin/education-detail-actions.tsx
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { EducationItem } from '@/types/credentials';
 import { deleteEducationAction } from '@/app/admin/education/actions';
 import { EducationDialog } from '@/components/admin/education-dialog';
+import { DeleteConfirmDialog } from '@/components/admin/delete-confirm-dialog';
 import { Button } from '@/components/ui/button';
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2 } from 'lucide-react';
 
 interface EducationDetailActionsProps {
   education: EducationItem;
@@ -15,17 +17,21 @@ interface EducationDetailActionsProps {
 
 export function EducationDetailActions({ education }: EducationDetailActionsProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const majorName = education.major || education.role || 'Pendidikan';
+  const majorName = education.major || education.role || 'Education';
   const instName = education.institution || education.organization || '';
 
-  const handleDelete = () => {
-    if (confirm(`Hapus riwayat pendidikan "${majorName}" di ${instName}?`)) {
-      startTransition(async () => {
-        await deleteEducationAction(education.id);
-        router.push('/admin/education');
+  const handleDelete = async () => {
+    try {
+      await deleteEducationAction(education.id);
+      toast.success('Education record deleted', {
+        description: `"${majorName}" at ${instName} has been removed.`,
+      });
+      router.push('/admin/education');
+    } catch (err: any) {
+      toast.error('Failed to delete education record', {
+        description: err.message,
       });
     }
   };
@@ -37,22 +43,20 @@ export function EducationDetailActions({ education }: EducationDetailActionsProp
           variant="outline"
           size="sm"
           onClick={() => setDialogOpen(true)}
-          className="font-mono text-xs"
+          className="font-mono text-xs cursor-pointer"
         >
           <Edit2 className="w-3.5 h-3.5 mr-1.5" />
-          Edit Data
+          Edit Entry
         </Button>
 
-        <Button
+        <DeleteConfirmDialog
+          title="Delete Education?"
+          description={`Do you want to permanently delete "${majorName}" at ${instName}?`}
+          onConfirm={handleDelete}
           variant="outline"
-          size="sm"
-          disabled={isPending}
-          onClick={handleDelete}
-          className="font-mono text-xs text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/30"
-        >
-          <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-          Hapus
-        </Button>
+          showLabel
+          label="Delete"
+        />
       </div>
 
       <EducationDialog
