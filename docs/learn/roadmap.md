@@ -203,21 +203,25 @@ Bagi pengembang dengan latar belakang Laravel, konsep Supabase dan Next.js App R
 - [ ] Buat tabel interaktif dengan search & filter (`components/admin/tech-stack-table.tsx`)
 - [ ] Buat halaman Server Component index: `app/admin/tech-stack/page.tsx`
 
-### Fase 6: Modul Proyek & Kategori Proyek (Many-to-Many Tags)
-- [ ] Buat CRUD `project_categories`: Mengelola kategori proyek (Company Profile, Web App, Mobile App, dll.) beserta prioritas urutan tampil pada tab filter.
-- [ ] Buat halaman index proyek: `app/admin/projects/page.tsx`.
-- [ ] Buat form proyek: `app/admin/projects/new/page.tsx` & `[id]/page.tsx`:
-  - Dropdown Select untuk memilih `category_id` dari tabel `project_categories`.
-  - Multi-Select Combobox / Tag Selector untuk memilih teknologi dari tabel `technologies`.
-- [ ] Implementasikan upload gambar cover ke bucket `portfolio-assets`.
-- [ ] Simpan proyek dan masukkan data relasi ke tabel `project_technologies`.
-- [ ] Implementasikan sinkronisasi tags saat proyek diedit (*sync pivot table*).
+### Fase 6: Modul Proyek & Kategori Proyek (Many-to-Many Tags & Storage)
+> 📖 **Panduan Lengkap & Kode**: Lihat [Fase 6: Modul Proyek, Relasi Many-to-Many Tags & Upload Storage](file:///C:/Users/ferry/Documents/coding/web-porto-profesional/docs/learn/phase-6-projects-and-relations-crud.md)
+- [ ] Buat tipe data TypeScript di `types/projects.ts`
+- [ ] Buat helper upload file ke bucket `portfolio-assets` di `lib/storage.ts`
+- [ ] Buat Server Actions CRUD dan sinkronisasi pivot di `app/admin/projects/actions.ts`
+- [ ] Buat form interaktif proyek di `components/admin/project-form.tsx` (multi-select tag teknologi, upload cover, dynamic array text)
+- [ ] Buat halaman index tabel proyek di `app/admin/projects/page.tsx`
+- [ ] Buat halaman create di `app/admin/projects/new/page.tsx`
+- [ ] Buat halaman edit di `app/admin/projects/[id]/edit/page.tsx`
 
-### Fase 7: Modul Sertifikasi, Pengalaman, & Pendidikan
-- [ ] CRUD `certificates`: input judul, penerbit, tanggal, kategori, credential ID, credential URL (link verifikasi eksternal), ringkasan deskripsi, dan tag skills.
-- [ ] CRUD `experiences`: input jabatan, organisasi, periode, jenis (pekerjaan/magang), dan deskripsi.
-- [ ] CRUD `educations`: input institusi, gelar, jurusan, periode, dan catatan aktivitas.
-- [ ] CRUD `site_settings`: kelola tautan sosial media (GitHub, LinkedIn, Instagram, Spotify) dan bio profil.
+### Fase 7: Modul Sertifikasi, Pengalaman, & Pengaturan Web (JSONB)
+> 📖 **Panduan Lengkap & Kode**: Lihat [Fase 7: Modul Kredensial, Pengalaman, Pendidikan & Pengaturan Web (JSONB)](file:///C:/Users/ferry/Documents/coding/web-porto-profesional/docs/learn/phase-7-credentials-experiences-settings-crud.md)
+- [ ] Buat tipe data TypeScript di `types/credentials.ts` dan `types/settings.ts`
+- [ ] Buat Server Actions CRUD sertifikat di `app/admin/certificates/actions.ts`
+- [ ] Buat Server Actions linimasa pengalaman di `app/admin/experience/actions.ts`
+- [ ] Buat Server Actions upsert JSONB settings di `app/admin/settings/actions.ts`
+- [ ] Buat form modal dialog & halaman index sertifikasi (`app/admin/certificates/`)
+- [ ] Buat form modal dialog & halaman index linimasa (`app/admin/experience/`)
+- [ ] Buat form pengaturan website & tautan sosial media (`app/admin/settings/`)
 
 ### Fase 8: Migrasi Halaman Publik (Dari JSON ke Database)
 - [ ] Ubah `lib/data.ts` atau buat `lib/queries/*.ts` untuk mengambil data langsung dari Supabase di Server Components:
