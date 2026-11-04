@@ -44,12 +44,19 @@ import {
   SiCpanel,
   SiGreensock,
 } from 'react-icons/si';
-import { RiverpodLogo, MazerLogo } from '@/components/ui/tech-icon';
+import { RiverpodLogo, MazerLogo, TechIcon } from '@/components/ui/tech-icon';
+
+export interface DynamicTechItem {
+  name: string;
+  category: string;
+  iconKey?: string;
+}
 
 interface TechStackProps {
   groups?: SkillGroup[];
   contact?: ContactData;
   spotify?: SpotifyData;
+  technologies?: DynamicTechItem[];
 }
 
 interface TechPill {
@@ -128,9 +135,14 @@ const row2Techs: TechPill[] = [
   { name: 'Midtrans Payment', category: 'Payment Gateway', icon: <MidtransIcon /> },
 ];
 
-export function TechStack({ contact, spotify }: TechStackProps) {
+export function TechStack({ contact, spotify, technologies = [] }: TechStackProps) {
   const username = 'ryzecl';
   const githubUrl = contact?.github || 'https://github.com/ryzecl';
+
+  const isDynamic = Boolean(technologies && technologies.length >= 4);
+  const half = Math.ceil((technologies?.length || 0) / 2);
+  const dynamicRow1 = isDynamic ? (technologies || []).slice(0, half) : [];
+  const dynamicRow2 = isDynamic ? (technologies || []).slice(half) : [];
 
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -227,39 +239,73 @@ export function TechStack({ contact, spotify }: TechStackProps) {
       {/* Infinite Marquee Rows (Magic UI Pattern with Edge Fade Masks) - Full width edge-to-edge */}
       <div className="relative w-full overflow-hidden space-y-4 py-2 mask-[linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] sm:mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
         {/* Row 1: Forward Movement */}
-        <Marquee pauseOnHover repeat={4} className="[--duration:40s]">
-          {row1Techs.map((tech) => (
-            <div
-              key={tech.name}
-              className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
-            >
-              <span className="shrink-0" aria-hidden="true">{tech.icon}</span>
-              <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
-                {tech.name}
-              </span>
-              <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
-                {tech.category}
-              </span>
-            </div>
-          ))}
+        <Marquee pauseOnHover repeat={isDynamic ? 6 : 4} className="[--duration:40s]">
+          {isDynamic ? (
+            dynamicRow1.map((tech) => (
+              <div
+                key={tech.name}
+                className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
+              >
+                <TechIcon name={tech.iconKey || tech.name} className="w-4 h-4 shrink-0" colored={true} />
+                <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
+                  {tech.name}
+                </span>
+                <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
+                  {tech.category}
+                </span>
+              </div>
+            ))
+          ) : (
+            row1Techs.map((tech) => (
+              <div
+                key={tech.name}
+                className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
+              >
+                <span className="shrink-0" aria-hidden="true">{tech.icon}</span>
+                <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
+                  {tech.name}
+                </span>
+                <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
+                  {tech.category}
+                </span>
+              </div>
+            ))
+          )}
         </Marquee>
 
         {/* Row 2: Reverse Movement */}
-        <Marquee reverse pauseOnHover repeat={4} className="[--duration:42s]">
-          {row2Techs.map((tech) => (
-            <div
-              key={tech.name}
-              className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
-            >
-              <span className="shrink-0" aria-hidden="true">{tech.icon}</span>
-              <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
-                {tech.name}
-              </span>
-              <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
-                {tech.category}
-              </span>
-            </div>
-          ))}
+        <Marquee reverse pauseOnHover repeat={isDynamic ? 6 : 4} className="[--duration:42s]">
+          {isDynamic ? (
+            dynamicRow2.map((tech) => (
+              <div
+                key={tech.name}
+                className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
+              >
+                <TechIcon name={tech.iconKey || tech.name} className="w-4 h-4 shrink-0" colored={true} />
+                <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
+                  {tech.name}
+                </span>
+                <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
+                  {tech.category}
+                </span>
+              </div>
+            ))
+          ) : (
+            row2Techs.map((tech) => (
+              <div
+                key={tech.name}
+                className="flex items-center gap-2.5 px-4 py-2 sm:py-2.5 rounded-full bg-surface border border-border hover:border-accent/50 hover:bg-surface-raised transition-all cursor-default shadow-2xs"
+              >
+                <span className="shrink-0" aria-hidden="true">{tech.icon}</span>
+                <span className="text-xs sm:text-sm font-semibold tracking-tight text-foreground">
+                  {tech.name}
+                </span>
+                <span className="text-[10px] font-mono text-muted/80 bg-surface-raised px-1.5 py-0.5 rounded-sm border border-border/60">
+                  {tech.category}
+                </span>
+              </div>
+            ))
+          )}
         </Marquee>
       </div>
 

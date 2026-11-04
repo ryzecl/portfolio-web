@@ -81,7 +81,6 @@ export async function upsertTechnologyAction(
   const name = (formData.get('name') as string)?.trim();
   const slug = (formData.get('slug') as string)?.trim().toLowerCase();
   const icon_key = (formData.get('icon_key') as string)?.trim().toLowerCase();
-  const is_featured = formData.get('is_featured') === 'on' || formData.get('is_featured') === 'true';
 
   if (!name || !slug || !category_id || !icon_key) {
     return { error: 'Semua kolom bertanda bintang wajib diisi.' };
@@ -98,7 +97,6 @@ export async function upsertTechnologyAction(
         name,
         slug,
         icon_key,
-        is_featured,
       })
       .eq('id', id);
 
@@ -114,7 +112,6 @@ export async function upsertTechnologyAction(
         name,
         slug,
         icon_key,
-        is_featured,
       });
 
     if (error) {

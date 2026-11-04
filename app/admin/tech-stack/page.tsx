@@ -30,7 +30,6 @@ export default async function TechStackAdminPage() {
         name,
         slug,
         icon_key,
-        is_featured,
         created_at
       )
     `)
@@ -58,7 +57,7 @@ export default async function TechStackAdminPage() {
             </h1>
           </div>
           <p className="text-xs text-muted">
-            Kelola klaster keahlian teknologi, icon SimpleIcons, dan status featured untuk portofolio.
+            Kelola daftar keahlian teknologi dan icon SimpleIcons untuk portofolio.
           </p>
         </div>
 

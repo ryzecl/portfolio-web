@@ -27,6 +27,8 @@ export default async function HomePage() {
   let experiences = fallbackExperiences;
   let education = site.education;
   let certificates = featuredCertificates;
+  let dynamicTechnologies: { name: string; category: string; iconKey: string }[] = [];
+  let dynamicSkillGroups = skillGroups;
 
   try {
     const supabase = await createClient();
@@ -113,6 +115,43 @@ export default async function HomePage() {
         };
       });
     }
+
+    const { data: dbTechCategories } = await supabase
+      .from('tech_categories')
+      .select('id, title, slug, priority, description, technologies(id, name, slug, icon_key)')
+      .order('priority', { ascending: true });
+
+    if (dbTechCategories && dbTechCategories.length > 0) {
+      const allTechs: { name: string; category: string; iconKey: string }[] = [];
+      const groups: typeof skillGroups = [];
+
+      for (const cat of dbTechCategories) {
+        const techList = cat.technologies || [];
+        if (techList.length > 0) {
+          groups.push({
+            title: cat.title,
+            priority: cat.priority,
+            description: cat.description || undefined,
+            technologies: techList.map((t: any) => t.name),
+          });
+
+          for (const t of techList) {
+            allTechs.push({
+              name: t.name,
+              category: cat.title,
+              iconKey: t.icon_key,
+            });
+          }
+        }
+      }
+
+      if (allTechs.length > 0) {
+        dynamicTechnologies = allTechs;
+      }
+      if (groups.length > 0) {
+        dynamicSkillGroups = groups;
+      }
+    }
   } catch {
     // Fallback otomatis ke data JSON jika database belum terisi atau koneksi offline
   }
@@ -156,7 +195,12 @@ export default async function HomePage() {
             certificates={certificates}
           />
 
-          <TechStack groups={skillGroups} contact={site.contact} spotify={site.spotify} />
+          <TechStack
+            groups={dynamicSkillGroups}
+            technologies={dynamicTechnologies}
+            contact={site.contact}
+            spotify={site.spotify}
+          />
           <ContactCta contact={site.contact} identity={site.identity} />
         </div>
       </div>

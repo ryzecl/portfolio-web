@@ -60,6 +60,30 @@ export function ProjectForm({
     project?.cover_image || null
   );
 
+  // Auto-Slug Real-time
+  const [title, setTitle] = useState(project?.title || '');
+  const [slug, setSlug] = useState(project?.slug || '');
+  const [isSlugManual, setIsSlugManual] = useState(Boolean(project?.slug));
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setTitle(val);
+    if (!isSlugManual) {
+      setSlug(
+        val
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '')
+      );
+    }
+  };
+
+  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSlug(val);
+    setIsSlugManual(val.trim().length > 0);
+  };
+
   const toggleTechnology = (techId: string) => {
     setSelectedTechIds((prev) =>
       prev.includes(techId) ? prev.filter((id) => id !== techId) : [...prev, techId]
@@ -111,7 +135,8 @@ export function ProjectForm({
             <Input
               id="title"
               name="title"
-              defaultValue={project?.title || ''}
+              value={title}
+              onChange={handleTitleChange}
               placeholder="e.g. Brava — Luxury Living"
               required
               className="bg-surface-raised border-border"
@@ -120,12 +145,13 @@ export function ProjectForm({
 
           <div className="space-y-1.5">
             <Label htmlFor="slug" className="text-xs font-mono text-muted">
-              Slug URL * (e.g. brava-luxury-living)
+              Slug URL (Otomatis dari Judul) *
             </Label>
             <Input
               id="slug"
               name="slug"
-              defaultValue={project?.slug || ''}
+              value={slug}
+              onChange={handleSlugChange}
               placeholder="brava"
               required
               className="bg-surface-raised border-border font-mono text-xs"

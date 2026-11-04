@@ -67,7 +67,6 @@ CREATE TABLE IF NOT EXISTS technologies (
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL,
     icon_key VARCHAR(100) NOT NULL,
-    is_featured BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
