@@ -26,6 +26,7 @@ export default async function HomePage() {
 
   let experiences = fallbackExperiences;
   let education = site.education;
+  let certificates = featuredCertificates;
 
   try {
     const supabase = await createClient();
@@ -71,6 +72,47 @@ export default async function HomePage() {
         description: item.description || '',
       }));
     }
+
+    const { data: dbCertificates } = await supabase
+      .from('certificates')
+      .select('*')
+      .order('priority', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (dbCertificates && dbCertificates.length > 0) {
+      // Prioritaskan yang punya priority > 0 (No 1 = Spotlight Card Utama)
+      const sorted = [...dbCertificates].sort((a, b) => {
+        const pA = a.priority && a.priority > 0 ? a.priority : 999;
+        const pB = b.priority && b.priority > 0 ? b.priority : 999;
+        return pA - pB;
+      });
+
+      const chosen = sorted.slice(0, 4);
+      certificates = chosen.map((item) => {
+        // Format tahun untuk tampilan bento header (e.g. 2026)
+        let displayYear = item.issue_date || '';
+        if (displayYear.includes('-') && displayYear.length >= 4) {
+          try {
+            const d = new Date(displayYear);
+            if (!isNaN(d.getTime())) displayYear = d.getFullYear().toString();
+          } catch {}
+        }
+
+        return {
+          id: item.id,
+          title: item.title,
+          issuer: item.issuer,
+          issueDate: displayYear,
+          category: item.category,
+          credentialId: item.credential_id || '',
+          credentialUrl: item.credential_url || '',
+          imageUrl: '/images/certificates/placeholder-cert.png',
+          skills: item.skills || [],
+          featured: (item.priority ?? 0) > 0,
+          summary: item.summary || '',
+        };
+      });
+    }
   } catch {
     // Fallback otomatis ke data JSON jika database belum terisi atau koneksi offline
   }
@@ -111,7 +153,7 @@ export default async function HomePage() {
 
           {/* Credentials Teaser (Certificates Only) */}
           <CredentialsTeaser
-            certificates={featuredCertificates}
+            certificates={certificates}
           />
 
           <TechStack groups={skillGroups} contact={site.contact} spotify={site.spotify} />

@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { Certificate } from '@/types/credentials';
 import { deleteCertificateAction } from '@/app/admin/certificates/actions';
 import { CertificateDialog } from '@/components/admin/certificate-dialog';
@@ -21,13 +22,25 @@ import {
   Search,
   Edit2,
   Trash2,
-  Sparkles,
-  ExternalLink,
+  Eye,
+  Award,
 } from 'lucide-react';
 
 interface CertificateClientWrapperProps {
   certificates: Certificate[];
   availableCategories?: string[];
+}
+
+function formatDateDisplay(dateStr?: string) {
+  if (!dateStr) return '';
+  if (/^\d{4}$/.test(dateStr)) return dateStr;
+  try {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+    }
+  } catch {}
+  return dateStr;
 }
 
 export function CertificateClientWrapper({
@@ -39,19 +52,7 @@ export function CertificateClientWrapper({
   const [editingCert, setEditingCert] = useState<Certificate | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const categoriesList = availableCategories?.length
-    ? availableCategories
-    : Array.from(
-        new Set(
-          [
-            ...certificates.map((c) => c.category),
-            'Frontend Development',
-            'Backend Architecture',
-            'Cloud & DevOps',
-            'Mobile Development',
-          ].filter(Boolean)
-        )
-      );
+  const categoriesList = availableCategories || [];
 
   const filteredCerts = certificates.filter(
     (c) =>
@@ -77,7 +78,7 @@ export function CertificateClientWrapper({
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search certificates..."
+            placeholder="Cari sertifikat atau penerbit..."
             className="pl-9 bg-surface-raised border-border text-xs"
           />
         </div>
@@ -95,39 +96,50 @@ export function CertificateClientWrapper({
         </Button>
       </div>
 
-      {/* Table */}
+      {/* Simplified Concise Table */}
       <div className="rounded-xl border border-border bg-surface overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="font-mono text-xs uppercase text-muted">Sertifikat</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Sertifikat &amp; Penerbit</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted">Kategori</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Verifikasi</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Featured</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Posisi Bento</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredCerts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-10 text-muted text-xs font-mono">
-                  Belum ada sertifikat yang ditemukan.
+                <TableCell colSpan={4} className="text-center py-10 text-muted text-xs font-mono">
+                  Belum ada sertifikat di database Supabase. Klik tombol &ldquo;Tambah Sertifikat&rdquo; di atas.
                 </TableCell>
               </TableRow>
             ) : (
               filteredCerts.map((cert) => (
                 <TableRow key={cert.id} className="border-border hover:bg-surface-raised/50">
                   <TableCell>
-                    <div>
-                      <div className="font-semibold text-foreground text-sm flex items-center gap-1.5">
-                        <span>{cert.title}</span>
-                        {cert.featured && (
-                          <Sparkles className="w-3.5 h-3.5 text-accent" />
-                        )}
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-accent shrink-0">
+                        <Award className="w-4 h-4" />
                       </div>
-                      <span className="text-[11px] font-mono text-muted">
-                        {cert.issuer} · {cert.issue_date}
-                      </span>
+                      <div className="space-y-0.5">
+                        <div className="font-semibold text-foreground text-sm flex items-center gap-2">
+                          <Link
+                            href={`/admin/certificates/${cert.id}`}
+                            className="hover:text-accent hover:underline transition-colors"
+                          >
+                            {cert.title}
+                          </Link>
+                          {cert.priority === 1 && (
+                            <Badge className="bg-accent/15 border-accent/30 text-accent font-mono text-[10px] py-0 px-1.5 h-4">
+                              #1 Spotlight
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-[11px] font-mono text-muted">
+                          {cert.issuer} · {formatDateDisplay(cert.issue_date)}
+                        </p>
+                      </div>
                     </div>
                   </TableCell>
 
@@ -138,50 +150,53 @@ export function CertificateClientWrapper({
                   </TableCell>
 
                   <TableCell>
-                    {cert.credential_url ? (
-                      <a
-                        href={cert.credential_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-mono text-accent hover:underline"
-                      >
-                        <span>{cert.credential_id || 'Verify URL'}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    ) : (
-                      <span className="text-[11px] font-mono text-muted">
-                        {cert.credential_id || '-'}
+                    {cert.priority === 1 ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-accent font-semibold">
+                        #1 Spotlight (Besar)
                       </span>
-                    )}
-                  </TableCell>
-
-                  <TableCell>
-                    {cert.featured ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400">
-                        <Sparkles className="w-3 h-3" /> Featured
+                    ) : cert.priority && cert.priority > 1 ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-foreground/80">
+                        Slot #{cert.priority} Landing Page
                       </span>
                     ) : (
-                      <span className="text-[11px] font-mono text-muted">Standard</span>
+                      <span className="text-[11px] font-mono text-muted">Arsip Saja</span>
                     )}
                   </TableCell>
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
+                      {/* View Detail Page */}
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        title="Lihat Detail Lengkap"
+                        className="h-8 w-8 p-0 text-muted hover:text-foreground"
+                      >
+                        <Link href={`/admin/certificates/${cert.id}`}>
+                          <Eye className="w-3.5 h-3.5" />
+                        </Link>
+                      </Button>
+
+                      {/* Edit Modal */}
                       <Button
                         variant="ghost"
                         size="sm"
+                        title="Edit Sertifikat"
                         onClick={() => {
                           setEditingCert(cert);
                           setDialogOpen(true);
                         }}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 text-muted hover:text-foreground"
                       >
-                        <Edit2 className="w-3.5 h-3.5 text-muted hover:text-foreground" />
+                        <Edit2 className="w-3.5 h-3.5" />
                       </Button>
 
+                      {/* Delete */}
                       <Button
                         variant="ghost"
                         size="sm"
+                        title="Hapus Sertifikat"
                         disabled={isPending}
                         onClick={() => handleDelete(cert.id, cert.title)}
                         className="h-8 w-8 p-0 text-muted hover:text-destructive"
@@ -197,6 +212,7 @@ export function CertificateClientWrapper({
         </Table>
       </div>
 
+      {/* Edit/Create Form Dialog */}
       <CertificateDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}

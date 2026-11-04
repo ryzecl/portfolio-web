@@ -4,8 +4,6 @@ export interface CertificateCategory {
   id: string;
   name: string;
   slug: string;
-  description?: string | null;
-  priority: number;
   created_at: string;
 }
 
@@ -19,7 +17,7 @@ export interface Certificate {
   credential_url: string | null;
   summary: string | null;
   skills: string[];
-  featured: boolean;
+  priority: number;
   created_at: string;
 }
 
@@ -65,6 +63,8 @@ export interface EducationItem {
 
 export interface GenericActionState {
   error?: string;
+  errors?: Record<string, string>;
+  values?: Record<string, any>;
   success?: boolean;
   message?: string;
 }

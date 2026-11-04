@@ -11,12 +11,18 @@ export async function upsertCertificateCategoryAction(
 ): Promise<GenericActionState> {
   const id = formData.get('id') as string | null;
   const name = (formData.get('name') as string)?.trim();
-  const slug = (formData.get('slug') as string)?.trim().toLowerCase();
-  const description = (formData.get('description') as string)?.trim() || null;
-  const priority = parseInt((formData.get('priority') as string) || '0', 10);
+  let slug = (formData.get('slug') as string)?.trim().toLowerCase();
 
-  if (!name || !slug) {
-    return { error: 'Nama kategori dan slug wajib diisi.' };
+  if (!name) {
+    return { error: 'Nama kategori wajib diisi.' };
+  }
+
+  // Jika slug tidak diisi, generate otomatis dari nama
+  if (!slug) {
+    slug = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
   }
 
   const supabase = await createClient();
@@ -24,11 +30,15 @@ export async function upsertCertificateCategoryAction(
   if (id) {
     const { error } = await supabase
       .from('certificate_categories')
-      .update({ name, slug, description, priority })
+      .update({ name, slug })
       .eq('id', id);
 
     if (error) {
-      if (error.code === 'PGRST205' || error.message.includes('certificate_categories')) {
+      if (
+        error.code === 'PGRST205' ||
+        error.code === '42P01' ||
+        error.message.includes('relation "certificate_categories" does not exist')
+      ) {
         return {
           error:
             'Tabel certificate_categories belum dibuat di Supabase. Silakan jalankan script SQL migrasi yang disediakan di panduan.',
@@ -39,10 +49,14 @@ export async function upsertCertificateCategoryAction(
   } else {
     const { error } = await supabase
       .from('certificate_categories')
-      .insert({ name, slug, description, priority });
+      .insert({ name, slug });
 
     if (error) {
-      if (error.code === 'PGRST205' || error.message.includes('certificate_categories')) {
+      if (
+        error.code === 'PGRST205' ||
+        error.code === '42P01' ||
+        error.message.includes('relation "certificate_categories" does not exist')
+      ) {
         return {
           error:
             'Tabel certificate_categories belum dibuat di Supabase. Silakan jalankan script SQL migrasi yang disediakan di panduan.',

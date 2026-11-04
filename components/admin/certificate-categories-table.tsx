@@ -14,7 +14,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Plus, Edit2, Trash2, Award, Terminal, Copy, Check } from 'lucide-react';
 
 interface CertificateCategoriesTableProps {
@@ -35,8 +34,6 @@ export function CertificateCategoriesTable({
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) UNIQUE NOT NULL,
-    description TEXT,
-    priority INT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE certificate_categories ENABLE ROW LEVEL SECURITY;
@@ -114,23 +111,21 @@ CREATE POLICY "Admin All certificate_categories" ON certificate_categories FOR A
         </Button>
       </div>
 
-      {/* Table */}
+      {/* Table Sesuai Skema Supabase (Hanya Nama & Slug) */}
       <div className="rounded-xl border border-border bg-surface overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
               <TableHead className="font-mono text-xs uppercase text-muted">Nama Kategori</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted">Slug Identifier</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Deskripsi</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Prioritas</TableHead>
               <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {categories.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-10 text-muted text-xs font-mono">
-                  Belum ada kategori sertifikat. Klik tombol "Tambah Kategori" di atas.
+                <TableCell colSpan={3} className="text-center py-10 text-muted text-xs font-mono">
+                  Belum ada kategori sertifikat. Klik tombol &ldquo;Tambah Kategori&rdquo; di atas.
                 </TableCell>
               </TableRow>
             ) : (
@@ -149,16 +144,6 @@ CREATE POLICY "Admin All certificate_categories" ON certificate_categories FOR A
                     <code className="text-[11px] font-mono px-2 py-0.5 rounded bg-surface-raised border border-border text-muted">
                       {cat.slug}
                     </code>
-                  </TableCell>
-
-                  <TableCell className="text-xs text-muted max-w-xs truncate">
-                    {cat.description || '-'}
-                  </TableCell>
-
-                  <TableCell>
-                    <Badge variant="outline" className="font-mono text-[11px]">
-                      #{cat.priority}
-                    </Badge>
                   </TableCell>
 
                   <TableCell className="text-right">

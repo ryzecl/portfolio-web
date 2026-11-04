@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 export default async function CertificateCategoriesPage() {
   const supabase = await createClient();
 
+  // Aman: order by created_at (selalu ada di schema awal user)
   const { data: categories, error } = await supabase
     .from('certificate_categories')
     .select('*')
-    .order('priority', { ascending: true })
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: true });
 
   const isTableMissing = error?.code === 'PGRST205' || Boolean(error?.message?.includes('certificate_categories'));
 
@@ -41,7 +41,7 @@ export default async function CertificateCategoriesPage() {
             </h1>
           </div>
           <p className="text-xs text-muted pl-10">
-            Kelola taksonomi kategori sertifikasi (Frontend Development, Cloud & DevOps, Database, dll.).
+            Kelola taksonomi kategori sertifikasi (Web Development, Artificial Intelligence, Software Engineering, dll.).
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 // components/admin/certificate-category-dialog.tsx
 'use client';
 
-import React, { useActionState, useEffect } from 'react';
+import React, { useActionState, useEffect, useState } from 'react';
 import { CertificateCategory, GenericActionState } from '@/types/credentials';
 import { upsertCertificateCategoryAction } from '@/app/admin/certificates/categories/actions';
 import {
@@ -23,119 +23,137 @@ interface CertificateCategoryDialogProps {
   category?: CertificateCategory | null;
 }
 
-export function CertificateCategoryDialog({
-  open,
-  onOpenChange,
+function CertificateCategoryFormContent({
   category,
-}: CertificateCategoryDialogProps) {
+  onClose,
+}: {
+  category?: CertificateCategory | null;
+  onClose: () => void;
+}) {
   const [state, formAction, isPending] = useActionState<GenericActionState | null, FormData>(
     upsertCertificateCategoryAction,
     null
   );
 
+  const [name, setName] = useState(category?.name || '');
+  const [slug, setSlug] = useState(category?.slug || '');
+  const [isSlugManual, setIsSlugManual] = useState(Boolean(category?.slug));
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setName(val);
+    if (!isSlugManual) {
+      setSlug(
+        val
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '')
+      );
+    }
+  };
+
   useEffect(() => {
     if (state?.success) {
-      onOpenChange(false);
+      onClose();
     }
-  }, [state, onOpenChange]);
+  }, [state, onClose]);
 
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle className="font-mono text-foreground">
+          {category ? 'Edit Kategori Sertifikat' : 'Tambah Kategori Sertifikat'}
+        </DialogTitle>
+        <DialogDescription className="text-muted text-xs">
+          Kelompokkan sertifikat berdasarkan taksonomi (e.g. Web Development, Artificial Intelligence).
+        </DialogDescription>
+      </DialogHeader>
+
+      <form action={formAction} className="space-y-4 pt-2">
+        {category?.id && <input type="hidden" name="id" value={category.id} />}
+
+        {state?.error && (
+          <div className="flex items-center gap-2 p-3 text-xs rounded-lg bg-destructive/10 border border-destructive/20 text-destructive font-medium">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{state.error}</span>
+          </div>
+        )}
+
+        <div className="space-y-1.5">
+          <Label htmlFor="cat-name" className="text-xs font-mono text-muted">
+            Nama Kategori *
+          </Label>
+          <Input
+            id="cat-name"
+            name="name"
+            value={name}
+            onChange={handleNameChange}
+            placeholder="e.g. Web Development"
+            required
+            className="bg-surface-raised border-border text-xs"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="cat-slug" className="text-xs font-mono text-muted">
+            Slug Identifier (Unik) *
+          </Label>
+          <Input
+            id="cat-slug"
+            name="slug"
+            value={slug}
+            onChange={(e) => {
+              setSlug(e.target.value);
+              setIsSlugManual(true);
+            }}
+            placeholder="e.g. web-development"
+            required
+            className="bg-surface-raised border-border font-mono text-xs"
+          />
+          <p className="text-[11px] text-muted">
+            Digunakan sebagai identifier unik di database.
+          </p>
+        </div>
+
+        <DialogFooter className="pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isPending}
+          >
+            Batal
+          </Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
+                Menyimpan...
+              </>
+            ) : (
+              'Simpan Kategori'
+            )}
+          </Button>
+        </DialogFooter>
+      </form>
+    </>
+  );
+}
+
+export function CertificateCategoryDialog({
+  open,
+  onOpenChange,
+  category,
+}: CertificateCategoryDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-surface border-border sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-mono text-foreground">
-            {category ? 'Edit Kategori Sertifikat' : 'Tambah Kategori Sertifikat'}
-          </DialogTitle>
-          <DialogDescription className="text-muted text-xs">
-            Kelompokkan sertifikat berdasarkan domain kompetensi (e.g. Frontend Development, Cloud & DevOps, Database).
-          </DialogDescription>
-        </DialogHeader>
-
-        <form action={formAction} className="space-y-4 pt-2">
-          {category?.id && <input type="hidden" name="id" value={category.id} />}
-
-          {state?.error && (
-            <div className="flex items-center gap-2 p-3 text-xs rounded-lg bg-destructive/10 border border-destructive/20 text-destructive font-medium">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{state.error}</span>
-            </div>
-          )}
-
-          <div className="space-y-1.5">
-            <Label htmlFor="cat-name" className="text-xs font-mono text-muted">
-              Nama Kategori *
-            </Label>
-            <Input
-              id="cat-name"
-              name="name"
-              defaultValue={category?.name || ''}
-              placeholder="e.g. Frontend Development"
-              required
-              className="bg-surface-raised border-border text-xs"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="cat-slug" className="text-xs font-mono text-muted">
-              Slug URL / Identifier *
-            </Label>
-            <Input
-              id="cat-slug"
-              name="slug"
-              defaultValue={category?.slug || ''}
-              placeholder="e.g. frontend-development"
-              required
-              className="bg-surface-raised border-border font-mono text-xs"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="cat-desc" className="text-xs font-mono text-muted">
-              Deskripsi Singkat (Opsional)
-            </Label>
-            <Input
-              id="cat-desc"
-              name="description"
-              defaultValue={category?.description || ''}
-              placeholder="e.g. Lisensi & keahlian rekayasa antarmuka modern"
-              className="bg-surface-raised border-border text-xs"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="cat-priority" className="text-xs font-mono text-muted">
-              Urutan Prioritas (Urutan Tampil)
-            </Label>
-            <Input
-              id="cat-priority"
-              name="priority"
-              type="number"
-              defaultValue={category?.priority ?? 0}
-              className="bg-surface-raised border-border font-mono text-xs"
-            />
-          </div>
-
-          <DialogFooter className="pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-            >
-              Batal
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                  Menyimpan...
-                </>
-              ) : (
-                'Simpan Kategori'
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
+        {open && (
+          <CertificateCategoryFormContent
+            category={category}
+            onClose={() => onOpenChange(false)}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

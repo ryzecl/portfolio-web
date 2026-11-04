@@ -117,8 +117,6 @@ CREATE TABLE IF NOT EXISTS certificate_categories (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) UNIQUE NOT NULL,
-    description TEXT,
-    priority INT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -127,14 +125,16 @@ CREATE TABLE IF NOT EXISTS certificates (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     issuer VARCHAR(255) NOT NULL,
-    issue_date VARCHAR(50) NOT NULL,
+    issue_date DATE NOT NULL,
     category VARCHAR(100) NOT NULL,
+    category_id UUID REFERENCES certificate_categories(id) ON DELETE SET NULL,
     credential_id VARCHAR(150),
     credential_url TEXT,
     summary TEXT,
     skills TEXT[] DEFAULT '{}',
-    featured BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    priority INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- 4.3 Pengalaman Kerja (Career History)
