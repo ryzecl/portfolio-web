@@ -6,24 +6,27 @@ import {
   getAllCertificates,
   getCertificateCategories,
   getAllSkillGroups,
+  getSiteData,
 } from '@/lib/data';
 import { CertificateItem, SkillGroup } from '@/lib/types';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { Badge } from '@/components/ui/badge';
+import { DotBackground } from '@/components/ui/dot-background';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { CertificateCard } from '@/components/credentials/certificate-card';
 import { TechStackCatalog } from '@/components/credentials/tech-stack-catalog';
 import { CredentialDialog } from '@/components/credentials/credential-dialog';
+import { ContactCta } from '@/components/sections/contact-cta';
 import {
   Award,
   Layers,
-  ArrowLeft,
   Search,
   Filter,
   Cpu,
 } from 'lucide-react';
 
 export default function CredentialsPage() {
+  const site = useMemo(() => getSiteData(), []);
   const allCertificates = useMemo(() => getAllCertificates(), []);
   const allSkillGroups = useMemo(() => getAllSkillGroups(), []);
   const certCategories = useMemo(() => getCertificateCategories(), []);
@@ -83,26 +86,20 @@ export default function CredentialsPage() {
   }, [allCertificates, selectedCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen pt-28 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-      {/* Top Breadcrumb & Navigation */}
-      <div className="mb-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-xs font-mono text-muted hover:text-accent transition-colors py-1.5 px-3 rounded-full bg-surface/60 border border-border"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Home</span>
-        </Link>
-      </div>
-
-      {/* Page Header */}
-      <div className="mb-12 space-y-4">
-        <SectionHeading
-          eyebrow="CREDENTIALS & TECH STACK"
-          title="Verified Licenses & Technical Tooling"
-          description="A curated catalog of verified technical certifications, competitive cohorts, and engineering competencies achieved by Ferry Noer Hendriawan."
-          className="mb-4"
-        />
+    <div className="relative min-h-screen pt-32 sm:pt-40 pb-12 sm:pb-16 bg-background text-foreground overflow-hidden">
+      <DotBackground />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+        {/* Page Header */}
+        <div className="mb-12 space-y-4">
+          <SectionHeading
+            breadcrumb={[
+              { label: 'Home', href: '/' },
+              { label: 'Credentials' },
+            ]}
+            title="Verified Licenses & Technical Tooling"
+            description="A curated catalog of verified technical certifications, competitive cohorts, and engineering competencies achieved by Ferry Noer Hendriawan."
+            className="mb-4"
+          />
 
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted font-mono">
           <Badge variant="outline" className="border-border bg-surface text-foreground font-mono">
@@ -298,6 +295,23 @@ export default function CredentialsPage() {
           />
         </TabsContent>
       </Tabs>
+      </div>
+
+      {/* CTA Section */}
+      <div className="relative z-10">
+        <ContactCta
+          contact={site.contact}
+          identity={site.identity}
+          badgeNumber={null}
+          badgeLabel="Collaboration & Opportunities"
+          title="Interested in working together?"
+          description="Whether you have an upcoming project, an engineering opening, or want to discuss technical architectures, my inbox is always open."
+          primaryButtonText="Get in touch"
+          primaryButtonHref="/contact"
+          secondaryButtonText="Explore all projects"
+          secondaryButtonHref="/projects"
+        />
+      </div>
 
       {/* Modal Dialog */}
       <CredentialDialog

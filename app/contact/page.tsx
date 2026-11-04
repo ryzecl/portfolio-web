@@ -73,8 +73,10 @@ export default function ContactPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 relative z-10">
         <SectionHeading
-          number="CONTACT"
-          eyebrow="Initiate Conversation"
+          breadcrumb={[
+            { label: 'Home', href: '/' },
+            { label: 'Contact' },
+          ]}
           title="Get In Touch"
           description="Let’s discuss internship opportunities, software engineering challenges, or collaborative web projects."
         />
