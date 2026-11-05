@@ -1,19 +1,21 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
 @plugin "daisyui";
 
 @theme {
-  --color-background: #ffffff;
-  --color-surface: #ffffff;
-  --color-surface-raised: #f8f9fa;
-  --color-surface-muted: #f1f3f5;
-  --color-foreground: #09090b;
-  --color-muted: #52525b;
-  --color-muted-dark: #71717a;
-  --color-border: #e4e4e7;
-  --color-border-subtle: #f4f4f5;
-  --color-accent: #2563eb;
-  --color-accent-strong: #1d4ed8;
-  --color-accent-subtle: rgba(37, 99, 235, 0.08);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-dark: var(--muted-dark);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-subtle: var(--accent-subtle);
 
   /* Shadcn Semantic Tokens for Tailwind v4 */
   --color-card: var(--card);
@@ -30,6 +32,16 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -39,11 +51,7 @@
   --font-jakarta: var(--font-sans), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
-:root,
-[data-theme],
-:root:has(input.theme-controller:checked),
-[data-theme="light"],
-[data-theme="dark"] {
+:root {
   --background: #ffffff;
   --surface: #ffffff;
   --surface-raised: #f8f9fa;
@@ -57,10 +65,10 @@
   --accent-strong: #1d4ed8;
   --accent-subtle: rgba(37, 99, 235, 0.08);
 
-  --color-accent: #2563eb !important;
-  --color-accent-strong: #1d4ed8 !important;
-  --color-accent-content: #ffffff !important;
-  --color-accent-subtle: rgba(37, 99, 235, 0.08) !important;
+  --color-accent: #2563eb;
+  --color-accent-strong: #1d4ed8;
+  --color-accent-content: #ffffff;
+  --color-accent-subtle: rgba(37, 99, 235, 0.08);
 
   /* Shadcn UI Variables (Light) */
   --card: #ffffff;
@@ -78,32 +86,71 @@
   --input: #e4e4e7;
   --ring: #18181b;
   --radius: 0.5rem;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #09090b;
+  --sidebar-primary: #18181b;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #2563eb;
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #09090b;
-  --card-foreground: #fafafa;
-  --popover: #09090b;
-  --popover-foreground: #fafafa;
+  --background: #08090b;
+  --surface: #101216;
+  --surface-raised: #171a20;
+  --surface-muted: #20232b;
+  --foreground: #f4f5f7;
+  --muted: #a1a6b0;
+  --muted-dark: #71717a;
+  --border: #292d35;
+  --border-subtle: #1f2229;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-subtle: rgba(37, 99, 235, 0.15);
+
+  --color-accent: #2563eb;
+  --color-accent-strong: #1d4ed8;
+  --color-accent-content: #ffffff;
+  --color-accent-subtle: rgba(37, 99, 235, 0.15);
+
+  /* Shadcn UI Variables (Dark) */
+  --card: #101216;
+  --card-foreground: #f4f5f7;
+  --popover: #101216;
+  --popover-foreground: #f4f5f7;
   --primary: #fafafa;
   --primary-foreground: #18181b;
-  --secondary: #27272a;
-  --secondary-foreground: #fafafa;
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa;
-  --accent: #27272a;
+  --secondary: #171a20;
+  --secondary-foreground: #f4f5f7;
+  --muted-foreground: #a1a6b0;
   --accent-foreground: #fafafa;
   --destructive: #7f1d1d;
   --destructive-foreground: #fafafa;
-  --border: #27272a;
-  --input: #27272a;
+  --input: #292d35;
   --ring: #d4d4d8;
+
+  --sidebar: #0e1015;
+  --sidebar-foreground: #f4f5f7;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #171a20;
+  --sidebar-accent-foreground: #f4f5f7;
+  --sidebar-border: #292d35;
+  --sidebar-ring: #2563eb;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html:not(.dark) {
   color-scheme: light;
 }
 
@@ -162,16 +209,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: var(--border);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: var(--muted);
 }
 
 /* Magic UI Marquee Animations */
@@ -203,7 +250,7 @@ body {
 
 /* Tech Dot Matrix Grid Pattern */
 .bg-tech-dots {
-  background-image: radial-gradient(circle, rgba(9, 9, 11, 0.16) 1.5px, transparent 1.5px);
+  background-image: radial-gradient(circle, rgba(120, 120, 130, 0.2) 1.5px, transparent 1.5px);
   background-size: 24px 24px;
 }
 

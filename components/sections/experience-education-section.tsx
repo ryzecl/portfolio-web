@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ExperienceItem, EducationItem } from '@/lib/types';
+import { formatExperienceDate } from '@/lib/utils';
 import { Plus, Minus, ArrowUpRight, Award, CheckCircle2 } from 'lucide-react';
+import { FormattedPoint } from '@/components/ui/dynamic-point-list';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -158,9 +160,12 @@ export function ExperienceEducationSection({
           <div className="border-t border-border divide-y divide-border">
             {experiences.map((exp, index) => {
               const isOpen = !!openExp[index];
-              const dateRange = exp.current
-                ? `${exp.startDate} - Present`
-                : `${exp.startDate} - ${exp.endDate}`;
+              const rawStart = exp.startDate || (exp as any).start_date;
+              const rawEnd = exp.endDate || (exp as any).end_date;
+              const isCurrent = exp.current ?? ((exp as any).is_current || !rawEnd);
+              const startFormatted = formatExperienceDate(rawStart);
+              const endFormatted = isCurrent || !rawEnd ? 'Present' : formatExperienceDate(rawEnd);
+              const dateRange = startFormatted ? `${startFormatted} – ${endFormatted}` : endFormatted;
 
               return (
                 <div key={index} className="transition-colors">
@@ -182,13 +187,10 @@ export function ExperienceEducationSection({
                         <span className="text-foreground/80 font-medium">
                           {exp.organization}
                         </span>
-                        {exp.type && (
-                          <>
-                            <span className="text-border hidden sm:inline">·</span>
-                            <span className="text-muted/70 text-xs hidden sm:inline">
-                              {exp.type}
-                            </span>
-                          </>
+                        {(exp.industry || exp.type) && (
+                          <span className="text-muted/70 text-xs">
+                            {exp.industry || exp.type}
+                          </span>
                         )}
                       </p>
                     </div>
@@ -237,7 +239,7 @@ export function ExperienceEducationSection({
                             {exp.responsibilities.map((resp, rIdx) => (
                               <li key={rIdx} className="flex items-start gap-2.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
-                                <span className="leading-relaxed">{resp}</span>
+                                <FormattedPoint text={resp} className="leading-relaxed" />
                               </li>
                             ))}
                           </ul>
@@ -293,7 +295,17 @@ export function ExperienceEducationSection({
           <div className="border-t border-border divide-y divide-border">
             {education.map((edu, index) => {
               const isOpen = !!openEdu[index];
-              const dateRange = `${edu.startDate} - ${edu.endDate}`;
+              const rawStart = edu.startDate || (edu as any).start_date;
+              const rawEnd = edu.endDate || (edu as any).end_date;
+              const isCurrent = edu.current ?? ((edu as any).is_current || !rawEnd);
+              const startFormatted = formatExperienceDate(rawStart);
+              const endFormatted = isCurrent || !rawEnd ? 'Present' : formatExperienceDate(rawEnd);
+              const dateRange = startFormatted ? `${startFormatted} – ${endFormatted}` : endFormatted;
+              const baseMajor = edu.major || (edu as any).role || 'Program Studi';
+              const programDegree = edu.program && edu.program !== baseMajor ? edu.program : '';
+              const instName = edu.institution || (edu as any).organization || 'Institusi';
+              const descriptionText = edu.description || edu.note;
+              const achievementsList = edu.achievements || (edu as any).highlights || [];
 
               return (
                 <div key={index} className="transition-colors">
@@ -307,14 +319,19 @@ export function ExperienceEducationSection({
                   >
                     <div className="space-y-1.5 pr-2">
                       <h3 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground group-hover:text-accent transition-colors">
-                        {edu.program}
+                        {baseMajor}
                       </h3>
                       <p className="text-xs sm:text-sm font-mono text-muted flex flex-wrap items-center gap-1.5">
                         <span>{dateRange}</span>
                         <span className="text-border">/</span>
                         <span className="text-foreground/80 font-medium">
-                          {edu.institution}
+                          {instName}
                         </span>
+                        {programDegree && (
+                          <span className="text-muted/70 text-xs">
+                            {programDegree}
+                          </span>
+                        )}
                       </p>
                     </div>
 
@@ -353,24 +370,24 @@ export function ExperienceEducationSection({
                         </div>
                       )}
 
-                      {/* Note */}
-                      {edu.note && (
+                      {/* Note / Description */}
+                      {descriptionText && (
                         <p className="text-sm sm:text-base text-foreground/80 leading-relaxed max-w-3xl text-pretty">
-                          {edu.note}
+                          {descriptionText}
                         </p>
                       )}
 
                       {/* Achievements / Honors */}
-                      {edu.achievements && edu.achievements.length > 0 && (
+                      {achievementsList && achievementsList.length > 0 && (
                         <div className="space-y-2 pt-1">
                           <span className="text-[11px] font-mono uppercase tracking-wider text-muted font-semibold block">
                             Key Distinctions &amp; Honors:
                           </span>
                           <ul className="space-y-2 text-xs sm:text-sm text-foreground/90 max-w-3xl">
-                            {edu.achievements.map((ach, aIdx) => (
+                            {achievementsList.map((ach: string, aIdx: number) => (
                               <li key={aIdx} className="flex items-start gap-2.5">
                                 <Award className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                                <span className="leading-relaxed">{ach}</span>
+                                <FormattedPoint text={ach} className="leading-relaxed" />
                               </li>
                             ))}
                           </ul>

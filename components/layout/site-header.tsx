@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { House, FolderGit2, SendHorizontal, ArrowUpRight, Award } from 'lucide-react';
 import { SiteData } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 interface SiteHeaderProps {
   site: SiteData;
@@ -69,10 +70,10 @@ export function SiteHeader({ site }: SiteHeaderProps) {
 
   return (
     <>
-      {/* Mobile Top Header Bar (Glass Acrylic Look, Wordmark Only) */}
+      {/* Mobile Top Header Bar (Glass Acrylic Look with Wordmark & Theme Toggle - Justify Between) */}
       <header
         className={cn(
-          'fixed top-0 inset-x-0 z-40 sm:hidden flex items-center justify-between px-5 py-3.5 bg-white/40 dark:bg-background/50 backdrop-blur-xl backdrop-saturate-180 border-b border-white/40 dark:border-white/10 shadow-[inset_0_-1px_0_rgba(255,255,255,0.4)] transition-all duration-300'
+          'fixed top-0 inset-x-0 z-40 sm:hidden flex items-center justify-between px-5 py-3 bg-surface/80 backdrop-blur-xl backdrop-saturate-180 border-b border-border shadow-2xs transition-all duration-300'
         )}
       >
         <Link
@@ -81,7 +82,18 @@ export function SiteHeader({ site }: SiteHeaderProps) {
         >
           {site.identity.wordmark || 'FNH.'}
         </Link>
+        <ThemeToggle className="size-8" />
       </header>
+
+      {/* Desktop Top-Right Floating Theme Toggle */}
+      <div
+        className={cn(
+          'fixed top-5 right-6 lg:right-10 z-50 hidden sm:flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+          scrolled && 'top-3.5'
+        )}
+      >
+        <ThemeToggle />
+      </div>
 
       {/* Desktop Floating Capsule Header (sm and up) */}
       <header

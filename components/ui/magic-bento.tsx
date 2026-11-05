@@ -11,6 +11,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode
 } from 'react';
+import { useTheme } from 'next-themes';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   FigmaIcon,
@@ -120,25 +121,25 @@ type Spring = ['rx' | 'ry' | 'tx' | 'ty', 'vrx' | 'vry' | 'vtx' | 'vty'];
 
 const THEMES: Record<'dark' | 'light', Record<string, string | number>> = {
   dark: {
-    '--mb-surface': 'linear-gradient(180deg, #1a1820 0%, #121116 100%)',
-    '--mb-edge': 'rgba(255, 255, 255, 0.07)',
+    '--mb-surface': 'linear-gradient(180deg, #13161c 0%, #0d0f14 100%)',
+    '--mb-edge': 'rgba(255, 255, 255, 0.08)',
     '--mb-highlight': 'rgba(255, 255, 255, 0.06)',
     '--mb-shadow': '0 24px 48px -28px rgba(0, 0, 0, 0.85), 0 8px 18px -12px rgba(0, 0, 0, 0.6)',
-    '--mb-tile': 'linear-gradient(180deg, #3a3644 0%, #27242f 100%)',
-    '--mb-tile-edge': 'rgba(255, 255, 255, 0.07)',
+    '--mb-tile': 'linear-gradient(180deg, #171a20 0%, #121419 100%)',
+    '--mb-tile-edge': 'rgba(255, 255, 255, 0.08)',
     '--mb-tile-highlight': 'rgba(255, 255, 255, 0.12)',
     '--mb-tile-shadow': '0 4px 10px -4px rgba(0, 0, 0, 0.7)',
     '--mb-well': 'rgba(255, 255, 255, 0.03)',
     '--mb-well-edge': 'rgba(255, 255, 255, 0.06)',
-    '--mb-ink': '#f4f4f5',
-    '--mb-muted': 'rgba(244, 244, 245, 0.6)',
-    '--mb-faint': 'rgba(244, 244, 245, 0.3)',
-    '--mb-line': 'rgba(244, 244, 245, 0.1)',
-    '--mb-secondary': '#a1a1aa',
-    '--mb-secondary-ink': '#121016',
+    '--mb-ink': '#f4f5f7',
+    '--mb-muted': 'rgba(244, 245, 247, 0.6)',
+    '--mb-faint': 'rgba(244, 245, 247, 0.3)',
+    '--mb-line': 'rgba(244, 245, 247, 0.1)',
+    '--mb-secondary': '#a1a6b0',
+    '--mb-secondary-ink': '#0e1015',
     '--mb-cursor-stroke': 'rgba(18, 16, 22, 0.9)',
     '--mb-ring': 'rgba(18, 16, 22, 0.85)',
-    '--mb-focus': 'rgba(244, 244, 245, 0.5)',
+    '--mb-focus': 'rgba(244, 245, 247, 0.5)',
     '--mb-glow-alpha': 0.85,
     '--mb-spot-alpha': 0.07
   },
@@ -749,7 +750,7 @@ const MagicBento = ({
   rowHeight = 200,
   gap = 12,
   radius = 20,
-  theme = 'dark',
+  theme,
   glowColor,
   textAutoHide = true,
   enableBorderGlow = true,
@@ -766,6 +767,12 @@ const MagicBento = ({
   className = '',
   style
 }: MagicBentoProps) => {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const rootRef = useRef<HTMLDivElement>(null);
   const cellRefs = useRef<(HTMLDivElement | null)[]>([]);
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
@@ -773,7 +780,8 @@ const MagicBento = ({
   const engineRef = useRef<{ sync: () => void } | null>(null);
   const [cols, setCols] = useState(Math.max(1, Math.round(columns)));
 
-  const palette = theme === 'light' ? 'light' : 'dark';
+  const activeTheme = theme || (resolvedTheme === 'light' ? 'light' : 'dark');
+  const palette = activeTheme === 'light' ? 'light' : 'dark';
   const glow = parseRgb(glowColor) ?? INK[palette];
   const settings: Settings = {
     items,

@@ -1,11 +1,11 @@
+// app/layout.tsx (Metadata & Schema 100% Terjaga)
 import type { Metadata, Viewport } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { getSiteData } from '@/lib/data';
-import { SiteHeader } from '@/components/layout/site-header';
-import { SiteFooter } from '@/components/layout/site-footer';
 import { JsonLd } from '@/components/ui/json-ld';
-import { PagePreloader } from '@/components/ui/page-preloader';
+import { Analytics } from '@vercel/analytics/next';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const viewport: Viewport = {
   themeColor: '#2563eb',
@@ -159,15 +159,17 @@ export default function RootLayout({
   ];
 
   return (
-    <html lang="en" className={plusJakartaSans.variable}>
-      <body className="font-sans bg-background text-foreground min-h-screen flex flex-col">
-        <PagePreloader brandName="FNH ." />
-        {structuredSchemas.map((schema, i) => (
-          <JsonLd key={i} data={schema} />
-        ))}
-        <SiteHeader site={site} />
-        <main className="grow">{children}</main>
-        <SiteFooter site={site} />
+    <html lang="en" className={plusJakartaSans.variable} suppressHydrationWarning>
+      <body className="font-sans bg-background text-foreground min-h-screen selection:bg-accent selection:text-white antialiased">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {/* Schema JSON-LD tetap aktif untuk seluruh website */}
+          {structuredSchemas.map((schema, i) => (
+            <JsonLd key={i} data={schema} />
+          ))}
+          {/* Konten halaman dirender di sini tanpa navbar/footer publik menimpa dashboard */}
+          {children}
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

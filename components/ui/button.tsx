@@ -1,17 +1,19 @@
 import React from 'react';
 import Link from 'next/link';
+import { Slot } from 'radix-ui';
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  asChild?: boolean;
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
   href?: string;
   external?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', href, external, children, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', href, external, asChild = false, children, ...props }, ref) => {
     const baseStyles =
       'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 disabled:pointer-events-none select-none';
 
@@ -24,15 +26,26 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         'border border-border text-foreground hover:bg-surface-raised active:translate-y-[1px]',
       ghost:
         'text-muted hover:text-foreground hover:bg-surface-raised active:translate-y-[1px]',
+      destructive:
+        'bg-red-600 text-white hover:bg-red-700 font-semibold shadow-sm active:translate-y-[1px]',
     };
 
     const sizes = {
       sm: 'text-xs px-3.5 py-2 min-h-[36px] rounded-full gap-1.5',
       md: 'text-sm px-5 py-2.5 min-h-[44px] rounded-full gap-2',
       lg: 'text-base px-6 py-3 min-h-[48px] rounded-full gap-2.5',
+      icon: 'size-9 p-0 rounded-lg flex items-center justify-center shrink-0',
     };
 
     const combinedClassName = cn(baseStyles, variants[variant], sizes[size], className);
+
+    if (asChild) {
+      return (
+        <Slot.Root className={combinedClassName} {...(props as any)}>
+          {children}
+        </Slot.Root>
+      );
+    }
 
     if (href) {
       if (external) {

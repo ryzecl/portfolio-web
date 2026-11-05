@@ -12,6 +12,7 @@ export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,6 +22,11 @@ export function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot.trim()) {
+      // Bot detection: silent rejection to save API quota and discard spam
+      setSubmitted(true);
+      return;
+    }
     setLoading(true);
     setErrorMessage(null);
 
@@ -40,6 +46,7 @@ export function ContactForm() {
           subject: `[Portfolio Inquiry] ${formData.subject} · ${formData.name}`,
           message: formData.message,
           from_name: 'Ferry Portfolio Contact Form',
+          botcheck: '',
         }),
       });
 
@@ -114,7 +121,6 @@ export function ContactForm() {
           enableMagnetism={false}
           clickEffect={false}
           enableStars={false}
-          theme="light"
           className="w-full"
         />
       </div>
@@ -140,6 +146,17 @@ export function ContactForm() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4 pt-1">
+                  {/* Honeypot field to trap spam bots silently */}
+                  <div className="hidden" aria-hidden="true">
+                    <input
+                      type="text"
+                      name="botcheck"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
                   {errorMessage && (
                     <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-800 flex items-start gap-2.5">
                       <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
@@ -273,7 +290,6 @@ export function ContactForm() {
         enableMagnetism={false}
         clickEffect={false}
         enableStars={false}
-        theme="light"
         className="w-full"
       />
     </div>

@@ -53,11 +53,15 @@ export interface AboutData {
 export interface EducationItem {
   institution: string;
   program: string;
+  major?: string;
   startDate: string;
   endDate: string;
+  current?: boolean;
+  is_current?: boolean;
   gpa?: string;
   achievements?: string[];
   note?: string;
+  description?: string;
 }
 
 export interface ContactData {
@@ -144,7 +148,8 @@ export interface ProjectItem {
 export interface ExperienceItem {
   organization: string;
   role: string;
-  type: string;
+  type?: string;
+  industry?: string;
   startDate: string;
   endDate: string;
   current: boolean;
