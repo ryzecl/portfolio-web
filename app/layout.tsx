@@ -5,6 +5,7 @@ import './globals.css';
 import { getSiteData } from '@/lib/data';
 import { JsonLd } from '@/components/ui/json-ld';
 import { Analytics } from '@vercel/analytics/next';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const viewport: Viewport = {
   themeColor: '#2563eb',
@@ -158,15 +159,17 @@ export default function RootLayout({
   ];
 
   return (
-    <html lang="en" className={plusJakartaSans.variable}>
+    <html lang="en" className={plusJakartaSans.variable} suppressHydrationWarning>
       <body className="font-sans bg-background text-foreground min-h-screen selection:bg-accent selection:text-white antialiased">
-        {/* Schema JSON-LD tetap aktif untuk seluruh website */}
-        {structuredSchemas.map((schema, i) => (
-          <JsonLd key={i} data={schema} />
-        ))}
-        {/* Konten halaman dirender di sini tanpa navbar/footer publik menimpa dashboard */}
-        {children}
-        <Analytics />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {/* Schema JSON-LD tetap aktif untuk seluruh website */}
+          {structuredSchemas.map((schema, i) => (
+            <JsonLd key={i} data={schema} />
+          ))}
+          {/* Konten halaman dirender di sini tanpa navbar/footer publik menimpa dashboard */}
+          {children}
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

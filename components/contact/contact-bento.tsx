@@ -162,7 +162,6 @@ export function ContactBento({ site }: ContactBentoProps) {
         enableMagnetism={false}
         clickEffect={false}
         enableStars={false}
-        theme="light"
         className="w-full"
       />
     </div>

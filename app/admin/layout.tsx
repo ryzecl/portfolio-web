@@ -14,6 +14,7 @@ import { AdminHeaderBreadcrumb } from '@/components/admin/admin-header-breadcrum
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { Toaster } from '@/components/ui/sonner';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export default async function AdminLayout({
   children,
@@ -63,16 +64,19 @@ export default async function AdminLayout({
             <AdminHeaderBreadcrumb />
           </div>
 
-          {/* Quick Action: Buka Website Publik di Tab Baru */}
-          <Link
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg border border-border bg-surface text-muted hover:text-foreground hover:border-accent/40 transition-colors shadow-2xs"
-          >
-            <span>Live Portfolio</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </Link>
+          {/* Quick Actions: Theme Toggle & Live Portfolio */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="size-8 rounded-lg" />
+            <Link
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg border border-border bg-surface text-muted hover:text-foreground hover:border-accent/40 transition-colors shadow-2xs"
+            >
+              <span>Live Portfolio</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </header>
 
         {/* 4. Canvas Halaman Admin */}

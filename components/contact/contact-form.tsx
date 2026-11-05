@@ -114,7 +114,6 @@ export function ContactForm() {
           enableMagnetism={false}
           clickEffect={false}
           enableStars={false}
-          theme="light"
           className="w-full"
         />
       </div>
@@ -273,7 +272,6 @@ export function ContactForm() {
         enableMagnetism={false}
         clickEffect={false}
         enableStars={false}
-        theme="light"
         className="w-full"
       />
     </div>

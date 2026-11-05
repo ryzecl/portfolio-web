@@ -202,7 +202,6 @@ export function CredentialsTeaser({
           enableMagnetism={false}
           clickEffect={false}
           enableStars={false}
-          theme="light"
           className="w-full"
         />
       </div>
