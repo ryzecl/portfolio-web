@@ -8,25 +8,7 @@ import { EducationItem } from '@/types/credentials';
 import { formatExperienceDate } from '@/lib/utils';
 import { FormattedPoint } from '@/components/ui/dynamic-point-list';
 import { EducationDetailActions } from '@/components/admin/education-detail-actions';
-import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  ArrowLeft,
-  GraduationCap,
-  Calendar,
-  Building2,
-  Clock,
-  Award,
-  BookOpen,
-  Info,
-  CheckCircle2,
-} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -96,209 +78,114 @@ export default async function AdminEducationDetailPage({ params }: PageProps) {
   const achievementsList = edu.achievements || edu.highlights || [];
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Top Breadcrumb & Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-4">
+    <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Top Bar: Navigation & Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-3">
         <Link
           href="/admin/education"
           className="inline-flex items-center text-xs font-mono text-muted hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="w-3.5 h-3.5 mr-1.5 transition-transform group-hover:-translate-x-0.5" />
-          <span>Back to Education</span>
+          <span>Education</span>
         </Link>
 
         <EducationDetailActions education={edu} />
       </div>
 
-      {/* Main Hero Header Card */}
-      <div className="rounded-2xl border border-border bg-surface p-6 sm:p-8 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline" className="font-mono text-xs border-accent/40 text-accent bg-accent/5">
-              Priority #{edu.priority ?? 1}
-            </Badge>
-
-            {isCurrent ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Present (Enrolled)
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono bg-surface-raised border border-border text-muted">
-                Completed
-              </span>
-            )}
-
-            {edu.program && (
-              <span className="px-2.5 py-1 rounded-full text-xs font-mono bg-accent/10 border border-accent/30 text-accent font-medium">
-                {edu.program}
-              </span>
-            )}
-
-            {edu.gpa && (
-              <span className="px-2.5 py-1 rounded-full text-xs font-mono bg-surface-raised border border-border text-foreground font-semibold">
-                GPA: <span className="text-accent">{edu.gpa}</span>
-              </span>
-            )}
-          </div>
-
-          <div className="text-xs font-mono text-muted flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-accent" />
-            <span className="text-foreground font-medium">{dateRange}</span>
-          </div>
+      {/* Main Education Header */}
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-muted">
+          <span className="font-medium text-foreground">Priority #{edu.priority ?? 1}</span>
+          <span className="text-border">·</span>
+          {isCurrent ? (
+            <span className="text-emerald-400 font-medium">Present (Enrolled)</span>
+          ) : (
+            <span>Completed</span>
+          )}
+          <span className="text-border">·</span>
+          <span>{dateRange}</span>
+          {edu.gpa && (
+            <>
+              <span className="text-border">·</span>
+              <span className="text-foreground">GPA {edu.gpa}</span>
+            </>
+          )}
         </div>
 
-        <div className="space-y-1.5">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-mono flex items-center gap-2.5">
-            <GraduationCap className="w-6 h-6 text-accent shrink-0 hidden sm:block" />
-            <span>{majorName}</span>
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-mono">
+            {majorName}
           </h1>
 
           <div className="flex flex-wrap items-center gap-2 text-sm font-mono text-muted">
-            <Building2 className="w-4 h-4 text-muted/70" />
             <span className="text-foreground font-semibold">{instName}</span>
             {edu.program && (
               <>
                 <span className="text-border">·</span>
-                <span className="text-muted/80">{edu.program}</span>
+                <span>{edu.program}</span>
               </>
             )}
           </div>
         </div>
       </div>
 
-      {/* Detail Content Sections */}
-      <div className="grid gap-6 md:grid-cols-3">
-        {/* Left Column (2 Cols): Description & Honors */}
+      {/* Content Layout */}
+      <div className="grid gap-8 md:grid-cols-3">
+        {/* Left Column (2 Cols): Focus & Highlights */}
         <div className="md:col-span-2 space-y-6">
-          <Card className="bg-surface border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-mono flex items-center gap-2">
-                <Info className="w-4 h-4 text-accent" />
-                <span>Academic Focus &amp; Summary</span>
-              </CardTitle>
-              <CardDescription className="text-xs text-muted">
-                Academic discipline, research, and focus areas during study.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {edu.description ? (
-                <p className="text-sm text-foreground/90 leading-relaxed">
-                  {edu.description}
-                </p>
-              ) : (
-                <p className="text-xs font-mono text-muted italic">
-                  No summary description provided.
-                </p>
-              )}
-            </CardContent>
-          </Card>
+          {edu.description && (
+            <section className="rounded-xl border border-border bg-surface p-6 space-y-2">
+              <h2 className="text-xs font-mono uppercase tracking-wider text-muted">
+                Academic Focus &amp; Summary
+              </h2>
+              <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line">
+                {edu.description}
+              </p>
+            </section>
+          )}
 
-          <Card className="bg-surface border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-mono flex items-center gap-2">
-                <Award className="w-4 h-4 text-amber-500" />
-                <span>Key Distinctions &amp; Honors</span>
-              </CardTitle>
-              <CardDescription className="text-xs text-muted">
-                Academic achievements, awards, and honors displayed on the public accordion.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {achievementsList.length > 0 ? (
-                <ul className="space-y-3">
-                  {achievementsList.map((point: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/90">
-                      <Award className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                      <FormattedPoint text={point} className="leading-relaxed" />
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-xs font-mono text-muted italic">
-                  No honors or distinctions added yet.
-                </p>
-              )}
-            </CardContent>
-          </Card>
+          {achievementsList.length > 0 && (
+            <section className="rounded-xl border border-border bg-surface p-6 space-y-4">
+              <h2 className="text-xs font-mono uppercase tracking-wider text-muted">
+                Academic Achievements &amp; Coursework ({achievementsList.length})
+              </h2>
+              <ul className="space-y-2.5">
+                {achievementsList.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-foreground/90">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
+                    <FormattedPoint text={item} className="leading-relaxed" />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
-        {/* Right Column (1 Col): Academic Summary & Metadata */}
+        {/* Right Column (1 Col): System Record */}
         <div className="space-y-6">
-          <Card className="bg-surface border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-mono flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-accent" />
-                <span>Academic Summary</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-xs font-mono">
+          <section className="rounded-xl border border-border bg-surface p-5 space-y-2.5 font-mono text-xs">
+            <h2 className="text-xs uppercase tracking-wider text-muted">
+              Record Info
+            </h2>
+            <div>
+              <span className="text-muted block text-[10px] uppercase">ID</span>
+              <span className="text-foreground break-all select-all text-[11px]">
+                {edu.id}
+              </span>
+            </div>
+            {edu.created_at && (
               <div>
-                <span className="text-muted block text-[11px]">Degree / Program:</span>
-                <span className="text-foreground font-semibold">
-                  {edu.program || 'Not specified'}
+                <span className="text-muted block text-[10px] uppercase">Created</span>
+                <span className="text-foreground text-[11px]">
+                  {new Date(edu.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
                 </span>
               </div>
-
-              <div>
-                <span className="text-muted block text-[11px]">GPA / Grade:</span>
-                <span className="text-foreground font-semibold">
-                  {edu.gpa ? (
-                    <span className="text-accent">{edu.gpa}</span>
-                  ) : (
-                    '-'
-                  )}
-                </span>
-              </div>
-
-              <div>
-                <span className="text-muted block text-[11px]">Enrollment Status:</span>
-                <span className="text-foreground">
-                  {isCurrent ? (
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
-                      <CheckCircle2 className="w-3 h-3" />
-                      Currently Enrolled
-                    </span>
-                  ) : (
-                    'Completed / Graduated'
-                  )}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-surface border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-mono flex items-center gap-2">
-                <Clock className="w-4 h-4 text-accent" />
-                <span>System Metadata</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-xs font-mono">
-              <div>
-                <span className="text-muted block text-[11px]">Database Record ID:</span>
-                <span className="text-foreground break-all text-[11px] select-all">
-                  {edu.id}
-                </span>
-              </div>
-
-              <div>
-                <span className="text-muted block text-[11px]">Created At:</span>
-                <span className="text-foreground">
-                  {edu.created_at ? new Date(edu.created_at).toLocaleString('en-US') : '-'}
-                </span>
-              </div>
-
-              {edu.updated_at && (
-                <div>
-                  <span className="text-muted block text-[11px]">Last Updated:</span>
-                  <span className="text-foreground">
-                    {new Date(edu.updated_at).toLocaleString('en-US')}
-                  </span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            )}
+          </section>
         </div>
       </div>
     </div>

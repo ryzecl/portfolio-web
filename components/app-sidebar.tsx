@@ -10,7 +10,6 @@ import {
   Briefcase,
   GraduationCap,
   Settings,
-  Sparkles,
 } from 'lucide-react';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -29,7 +28,6 @@ const brandData = {
   teams: [
     {
       name: 'Ferry Portfolio',
-      logo: Sparkles,
       plan: 'Next.js 16 · Supabase',
     },
   ],

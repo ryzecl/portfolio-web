@@ -16,12 +16,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  FolderKanban,
   Plus,
   Edit2,
-  Sparkles,
   Trash2,
-  Tag,
   Eye,
 } from 'lucide-react';
 
@@ -55,24 +52,18 @@ export default async function AdminProjectsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-accent">
-              <FolderKanban className="w-4 h-4" />
-            </div>
-            <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
-              Projects Portfolio Master
-            </h1>
-          </div>
+          <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
+            Projects
+          </h1>
           <p className="text-xs text-muted">
-            Manage featured case studies, architecture blueprints, and live deployment links.
+            Manage portfolio case studies, architecture blueprints, and deployments.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Button asChild variant="outline" size="sm" className="font-mono text-xs">
             <Link href="/admin/projects/categories">
-              <Tag className="w-3.5 h-3.5 mr-1.5 text-accent" />
-              Manage Categories
+              Categories
             </Link>
           </Button>
 
@@ -120,16 +111,13 @@ export default async function AdminProjectsPage() {
                         </div>
                       )}
                       <div className="space-y-0.5">
-                        <div className="font-semibold text-foreground text-sm flex items-center gap-1.5">
+                        <div className="font-medium text-foreground text-sm">
                           <Link
                             href={`/admin/projects/${proj.id}`}
-                            className="hover:text-accent hover:underline transition-colors"
+                            className="hover:text-accent transition-colors"
                           >
                             {proj.title}
                           </Link>
-                          {proj.priority > 0 && proj.priority <= 4 && (
-                            <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
-                          )}
                         </div>
                         <span className="text-[11px] font-mono text-muted block">
                           /{proj.slug} · {proj.year || 'N/A'} · {proj.technologies?.length || 0} Tech
@@ -139,29 +127,29 @@ export default async function AdminProjectsPage() {
                   </TableCell>
 
                   <TableCell>
-                    <Badge variant="outline" className="font-mono text-[11px]">
+                    <span className="font-mono text-xs text-muted">
                       {proj.category?.name || 'Uncategorized'}
-                    </Badge>
+                    </span>
                   </TableCell>
 
                   <TableCell>
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center gap-2 font-mono text-xs">
                       {proj.priority && proj.priority > 0 ? (
                         <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[11px] font-semibold border ${
+                          className={
                             proj.priority <= 4
-                              ? 'bg-accent/15 border-accent/40 text-accent'
-                              : 'bg-surface-raised border-border text-foreground'
-                          }`}
+                              ? 'text-accent font-semibold'
+                              : 'text-foreground'
+                          }
                         >
-                          #{proj.priority} {proj.priority <= 4 ? '★ Featured' : ''}
+                          #{proj.priority} {proj.priority <= 4 ? 'Featured' : ''}
                         </span>
                       ) : (
-                        <span className="text-muted text-[11px] font-mono">Standard</span>
+                        <span className="text-muted">Standard</span>
                       )}
                       <span className="text-border">·</span>
-                      <span className="text-xs font-mono text-emerald-400">
-                        {proj.status}
+                      <span className="text-muted capitalize">
+                        {proj.status || 'Active'}
                       </span>
                     </div>
                   </TableCell>

@@ -2,7 +2,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/server';
-import { Settings } from 'lucide-react';
 import { SiteSettingsForm } from '@/components/admin/site-settings-form';
 import site from '@/data/site.json';
 
@@ -32,16 +31,11 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-accent">
-            <Settings className="w-4 h-4" />
-          </div>
-          <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
-            Site Settings & Metadata
-          </h1>
-        </div>
+        <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
+          Site Settings
+        </h1>
         <p className="text-xs text-muted">
-          Konfigurasi tautan profil sosial, kontak email, dan parameter situs publik.
+          Configure social links, contact coordinates, and public portfolio parameters.
         </p>
       </div>
 

@@ -143,9 +143,9 @@ export function TechStackTable({ categories }: TechStackTableProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="text-[11px] font-mono">
+                    <span className="text-xs font-mono text-muted">
                       {tech.categoryTitle}
-                    </Badge>
+                    </span>
                   </TableCell>
                   <TableCell>
                     <code className="text-xs font-mono px-2 py-0.5 rounded-md bg-surface-raised border border-border text-accent">

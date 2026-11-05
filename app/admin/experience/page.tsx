@@ -2,7 +2,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/server';
-import { Briefcase } from 'lucide-react';
 import { ExperienceClientWrapper } from '@/components/admin/experience-client-wrapper';
 
 export const metadata: Metadata = {
@@ -22,16 +21,11 @@ export default async function AdminExperiencePage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-accent">
-            <Briefcase className="w-4 h-4" />
-          </div>
-          <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
-            Work & Career Experience
-          </h1>
-        </div>
+        <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
+          Work Experience
+        </h1>
         <p className="text-xs text-muted">
-          Kelola riwayat pekerjaan profesional, agensi, dan magang industri.
+          Manage career history, employment milestones, and industry roles.
         </p>
       </div>
 

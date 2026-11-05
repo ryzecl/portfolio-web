@@ -25,7 +25,6 @@ import {
   Edit2,
   Trash2,
   Eye,
-  Award,
 } from 'lucide-react';
 
 interface CertificateClientWrapperProps {
@@ -108,10 +107,10 @@ export function CertificateClientWrapper({
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="font-mono text-xs uppercase text-muted">Sertifikat &amp; Penerbit</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Kategori</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Posisi Bento</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Certificate &amp; Issuer</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Category</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Priority</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -125,48 +124,43 @@ export function CertificateClientWrapper({
               filteredCerts.map((cert) => (
                 <TableRow key={cert.id} className="border-border hover:bg-surface-raised/50">
                   <TableCell>
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-surface-raised border border-border flex items-center justify-center text-accent shrink-0">
-                        <Award className="w-4 h-4" />
+                    <div className="space-y-0.5">
+                      <div className="font-medium text-foreground text-sm flex items-center gap-2">
+                        <Link
+                          href={`/admin/certificates/${cert.id}`}
+                          className="hover:text-accent transition-colors"
+                        >
+                          {cert.title}
+                        </Link>
+                        {cert.priority === 1 && (
+                          <Badge className="bg-accent/15 border-accent/30 text-accent font-mono text-[10px] py-0 px-1.5 h-4">
+                            Spotlight
+                          </Badge>
+                        )}
                       </div>
-                      <div className="space-y-0.5">
-                        <div className="font-semibold text-foreground text-sm flex items-center gap-2">
-                          <Link
-                            href={`/admin/certificates/${cert.id}`}
-                            className="hover:text-accent hover:underline transition-colors"
-                          >
-                            {cert.title}
-                          </Link>
-                          {cert.priority === 1 && (
-                            <Badge className="bg-accent/15 border-accent/30 text-accent font-mono text-[10px] py-0 px-1.5 h-4">
-                              #1 Spotlight
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-[11px] font-mono text-muted">
-                          {cert.issuer} · {formatDateDisplay(cert.issue_date)}
-                        </p>
-                      </div>
+                      <p className="text-[11px] font-mono text-muted">
+                        {cert.issuer} · {formatDateDisplay(cert.issue_date)}
+                      </p>
                     </div>
                   </TableCell>
 
                   <TableCell>
-                    <Badge variant="outline" className="font-mono text-[11px]">
+                    <span className="font-mono text-xs text-muted">
                       {cert.category}
-                    </Badge>
+                    </span>
                   </TableCell>
 
                   <TableCell>
                     {cert.priority === 1 ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-accent font-semibold">
-                        #1 Spotlight (Besar)
+                      <span className="text-[11px] font-mono text-accent font-semibold">
+                        #1 Spotlight
                       </span>
                     ) : cert.priority && cert.priority > 1 ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-foreground/80">
-                        Slot #{cert.priority} Landing Page
+                      <span className="text-[11px] font-mono text-foreground/80">
+                        #{cert.priority} Featured
                       </span>
                     ) : (
-                      <span className="text-[11px] font-mono text-muted">Arsip Saja</span>
+                      <span className="text-[11px] font-mono text-muted">Archive</span>
                     )}
                   </TableCell>
 
@@ -177,7 +171,7 @@ export function CertificateClientWrapper({
                         asChild
                         variant="ghost"
                         size="sm"
-                        title="Lihat Detail Lengkap"
+                        title="View Details"
                         className="h-8 w-8 p-0 text-muted hover:text-foreground"
                       >
                         <Link href={`/admin/certificates/${cert.id}`}>

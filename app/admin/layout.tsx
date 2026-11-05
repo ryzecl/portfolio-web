@@ -10,14 +10,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+import { AdminHeaderBreadcrumb } from '@/components/admin/admin-header-breadcrumb';
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { Toaster } from '@/components/ui/sonner';
@@ -52,7 +45,7 @@ export default async function AdminLayout({
   const userData = {
     name: user.user_metadata?.full_name || 'Ferry N. Hendriawan',
     email: user.email || 'ferry@admin.local',
-    avatar: user.user_metadata?.avatar_url || '/images/avatar.jpg',
+    avatar: user.user_metadata?.avatar_url || '/images/ferry.png',
   };
 
   return (
@@ -67,21 +60,7 @@ export default async function AdminLayout({
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1 text-muted hover:text-foreground" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/admin" className="font-mono text-xs">
-                    CMS Control
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="font-mono text-xs font-semibold text-accent">
-                    Workspace
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <AdminHeaderBreadcrumb />
           </div>
 
           {/* Quick Action: Buka Website Publik di Tab Baru */}

@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit2, Trash2, Calendar, Briefcase, ExternalLink, Eye } from 'lucide-react';
+import { Plus, Edit2, Eye } from 'lucide-react';
 
 interface ExperienceClientWrapperProps {
   experiences: ExperienceItem[];
@@ -73,84 +73,60 @@ export function ExperienceClientWrapper({
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="font-mono text-xs uppercase text-muted w-20">Prioritas</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Posisi &amp; Perusahaan</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Periode</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted">Ringkasan</TableHead>
-              <TableHead className="font-mono text-xs uppercase text-muted text-right">Aksi</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted w-20">Priority</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Role &amp; Company</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted">Period</TableHead>
+              <TableHead className="font-mono text-xs uppercase text-muted text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {workExperiences.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-10 text-muted text-xs font-mono">
-                  Belum ada riwayat pengalaman kerja. Klik &quot;Tambah Pengalaman&quot; untuk menambahkan.
+                <TableCell colSpan={4} className="text-center py-10 text-muted text-xs font-mono">
+                  Belum ada riwayat pengalaman kerja. Klik &quot;Add Experience&quot; di atas untuk menambahkan.
                 </TableCell>
               </TableRow>
             ) : (
               workExperiences.map((exp) => (
                 <TableRow key={exp.id} className="border-border hover:bg-surface-raised/50">
                   <TableCell>
-                    <Badge variant="outline" className="font-mono text-xs">
+                    <span className="font-mono text-xs text-muted font-medium">
                       #{exp.priority ?? 1}
-                    </Badge>
+                    </span>
                   </TableCell>
 
                   <TableCell>
                     <div className="space-y-0.5">
-                      <div className="font-semibold text-foreground text-sm flex items-center gap-1.5">
-                        <Briefcase className="w-3.5 h-3.5 text-accent shrink-0" />
-                        <span>{exp.role}</span>
+                      <div className="font-medium text-foreground text-sm">
+                        <Link
+                          href={`/admin/experience/${exp.id}`}
+                          className="hover:text-accent transition-colors"
+                        >
+                          {exp.role}
+                        </Link>
                       </div>
-                      <div className="text-[11px] font-mono text-muted flex flex-wrap items-center gap-1.5">
-                        <span className="text-foreground/80 font-medium">{exp.organization}</span>
+                      <div className="text-[11px] font-mono text-muted flex items-center gap-1.5">
+                        <span className="text-foreground/80">{exp.organization}</span>
                         {(exp.industry || exp.location) && (
                           <>
                             <span className="text-border">·</span>
-                            <span className="text-muted/80">{exp.industry || exp.location}</span>
+                            <span>{exp.industry || exp.location}</span>
                           </>
-                        )}
-                        {exp.organization_url && (
-                          <a
-                            href={exp.organization_url.startsWith('http') ? exp.organization_url : `https://${exp.organization_url}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-accent hover:underline ml-1"
-                            title="Buka Website"
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
                         )}
                       </div>
                     </div>
                   </TableCell>
 
                   <TableCell>
-                    <div className="text-xs font-mono text-foreground flex items-center gap-1 whitespace-nowrap">
-                      <Calendar className="w-3.5 h-3.5 text-accent" />
+                    <div className="text-xs font-mono text-foreground flex items-center gap-1.5 whitespace-nowrap">
                       <span>{formatExperienceDate(exp.start_date)}</span>
                       <span>–</span>
                       {exp.is_current || !exp.end_date ? (
-                        <span className="text-emerald-400 font-semibold">Present</span>
+                        <span className="text-emerald-400 font-medium">Present</span>
                       ) : (
-                        <span>{formatExperienceDate(exp.end_date)}</span>
+                        <span className="text-muted">{formatExperienceDate(exp.end_date)}</span>
                       )}
                     </div>
-                  </TableCell>
-
-                  <TableCell>
-                    {exp.description ? (
-                      <p
-                        className="text-xs text-muted leading-relaxed max-w-sm line-clamp-2"
-                        title={exp.description}
-                      >
-                        {exp.description.length > 80
-                          ? `${exp.description.slice(0, 80)}...`
-                          : exp.description}
-                      </p>
-                    ) : (
-                      <span className="text-xs text-muted/60 font-mono">-</span>
-                    )}
                   </TableCell>
 
                   <TableCell className="text-right">

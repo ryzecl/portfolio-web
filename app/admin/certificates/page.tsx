@@ -3,7 +3,6 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/server';
 import { Certificate } from '@/types/credentials';
-import { Award } from 'lucide-react';
 import { CertificateClientWrapper } from '@/components/admin/certificate-client-wrapper';
 
 export const metadata: Metadata = {
@@ -36,19 +35,14 @@ export default async function AdminCertificatesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header (Tanpa button Kelola Kategori karena sudah memiliki menu/halaman sendiri) */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-accent">
-              <Award className="w-4 h-4" />
-            </div>
-            <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
-              Certificates & Credentials
-            </h1>
-          </div>
+          <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
+            Certificates
+          </h1>
           <p className="text-xs text-muted">
-            Kelola sertifikasi profesional, lisensi kompetensi industri, dan tautan verifikasi kredensial (Google Drive / Dicoding / vendor resmi).
+            Manage verified credentials, industry licenses, and certificates.
           </p>
         </div>
       </div>

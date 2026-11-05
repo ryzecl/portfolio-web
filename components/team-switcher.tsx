@@ -2,6 +2,7 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -13,7 +14,7 @@ export function TeamSwitcher({
 }: {
   teams: {
     name: string;
-    logo: React.ElementType;
+    logo?: React.ElementType;
     plan: string;
   }[];
 }) {
@@ -26,8 +27,15 @@ export function TeamSwitcher({
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-surface border border-border text-accent">
-            <activeTeam.logo className="size-4" />
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg border border-border overflow-hidden shrink-0 bg-surface">
+            <Image
+              src="/images/ferry.png"
+              alt="Ferry Noer Hendriawan"
+              width={32}
+              height={32}
+              className="size-full object-cover"
+              priority
+            />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-mono font-semibold text-foreground">

@@ -2,7 +2,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/server';
-import { GraduationCap } from 'lucide-react';
 import { EducationTable } from '@/components/admin/education-table';
 
 export const metadata: Metadata = {
@@ -33,16 +32,11 @@ export default async function AdminEducationPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-accent">
-            <GraduationCap className="w-4 h-4" />
-          </div>
-          <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
-            Formal Education & Academics
-          </h1>
-        </div>
+        <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
+          Education History
+        </h1>
         <p className="text-xs text-muted">
-          Kelola riwayat pendidikan formal, universitas, gelar sarjana, dan prestasi akademik.
+          Manage academic degrees, institutions, and educational milestones.
         </p>
       </div>
 

@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createClient } from '@/lib/server';
 import { ProjectCategoriesTable } from '@/components/admin/project-categories-table';
-import { FolderKanban, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
@@ -31,15 +31,12 @@ export default async function ProjectCategoriesPage() {
                 <ArrowLeft className="w-4 h-4 text-muted hover:text-foreground" />
               </Link>
             </Button>
-            <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-accent">
-              <FolderKanban className="w-4 h-4" />
-            </div>
             <h1 className="text-xl font-bold font-mono tracking-tight text-foreground">
               Project Categories
             </h1>
           </div>
           <p className="text-xs text-muted pl-10">
-            Manage project taxonomy and domain classifications (Web Application, Mobile App, Corporate Platform, etc.).
+            Manage project taxonomy and classifications.
           </p>
         </div>
       </div>
