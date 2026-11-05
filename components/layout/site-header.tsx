@@ -14,8 +14,8 @@ interface SiteHeaderProps {
 
 const mobileNavItems = [
   { label: 'Home', href: '/', icon: House },
-  { label: 'Project', href: '/projects', icon: FolderGit2 },
-  { label: 'Credentials', href: '/credentials', icon: Award },
+  { label: 'Projects', href: '/projects', icon: FolderGit2 },
+  { label: 'Resume', href: '/credentials', icon: Award },
   { label: 'Contact', href: '/contact', icon: SendHorizontal },
 ];
 
@@ -199,7 +199,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
         aria-label="Mobile Navigation"
         className="fixed bottom-0 inset-x-0 z-50 sm:hidden bg-white/40 dark:bg-background/50 backdrop-blur-xl backdrop-saturate-180 border-t border-white/50 dark:border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 px-6"
       >
-        <div className="max-w-md mx-auto flex items-center justify-around">
+        <div className="max-w-sm mx-auto grid grid-cols-4 items-center">
           {mobileNavItems.map((item) => {
             const Icon = item.icon;
             const active = isItemActive(item.href);
@@ -208,7 +208,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center justify-center gap-1 py-1 px-4 min-w-[64px] min-h-[46px] transition-all duration-200 active:scale-95"
+                className="flex flex-col items-center justify-center gap-1 py-1 px-1 w-full min-h-[46px] transition-all duration-200 active:scale-95 text-center"
                 aria-current={active ? 'page' : undefined}
               >
                 <Icon
