@@ -6,6 +6,7 @@ import { getSiteData } from '@/lib/data';
 import { JsonLd } from '@/components/ui/json-ld';
 import { Analytics } from '@vercel/analytics/next';
 import { ThemeProvider } from '@/components/theme-provider';
+import NextTopLoader from 'nextjs-toploader';
 
 export const viewport: Viewport = {
   themeColor: '#2563eb',
@@ -162,6 +163,18 @@ export default function RootLayout({
     <html lang="en" className={plusJakartaSans.variable} suppressHydrationWarning>
       <body className="font-sans bg-background text-foreground min-h-screen selection:bg-accent selection:text-white antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <NextTopLoader
+            color="#2563eb"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={2.5}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px rgba(37, 99, 235, 0.6), 0 0 5px rgba(37, 99, 235, 0.4)"
+            zIndex={99999}
+          />
           {/* Schema JSON-LD tetap aktif untuk seluruh website */}
           {structuredSchemas.map((schema, i) => (
             <JsonLd key={i} data={schema} />
