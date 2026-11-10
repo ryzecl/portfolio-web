@@ -7,6 +7,7 @@ import { House, FolderGit2, SendHorizontal, ArrowUpRight, Award } from 'lucide-r
 import { SiteData } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { SpotifyIsland } from '@/components/ui/spotify-island';
 
 interface SiteHeaderProps {
   site: SiteData;
@@ -102,95 +103,100 @@ export function SiteHeader({ site }: SiteHeaderProps) {
           scrolled && 'py-3'
         )}
       >
-        <div
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onFocus={handleMouseEnter}
-          onBlur={(e) => {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-              handleMouseLeave();
-            }
-          }}
-          className={cn(
-            'pointer-events-auto flex items-center rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none',
-            isCollapsed
-              ? 'px-3.5 py-1.5 gap-2 hover:border-foreground/40 cursor-pointer shadow-sm hover:shadow-md'
-              : 'p-1.5 gap-1.5'
-          )}
-        >
-          {/* Brand Wordmark */}
-          <Link
-            href="/"
-            className="text-xs sm:text-sm font-bold font-mono tracking-tight text-foreground px-2.5 py-1 rounded-full hover:bg-surface-raised transition-colors shrink-0"
-          >
-            {site.identity.wordmark || 'FNH.'}
-          </Link>
-
-          {/* 3-dots Loading / Menu indicator (Smooth fluid fade on scroll) */}
+        <div className="flex items-center gap-2.5">
           <div
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onFocus={handleMouseEnter}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget)) {
+                handleMouseLeave();
+              }
+            }}
             className={cn(
-              'flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+              'pointer-events-auto flex items-center rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none',
               isCollapsed
-                ? 'max-w-15 opacity-100 pr-1'
-                : 'max-w-0 opacity-0 pointer-events-none'
-            )}
-            aria-hidden="true"
-            title="Hover to expand menu"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_infinite]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_0.25s_infinite]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_0.5s_infinite]" />
-          </div>
-
-          {/* Navigation Cluster: Desktop expandable links + CTA */}
-          <div
-            className={cn(
-              'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
-              isCollapsed
-                ? 'max-w-0 opacity-0 pointer-events-none -translate-x-1 scale-95 overflow-hidden'
-                : 'max-w-150 opacity-100 translate-x-0 scale-100 overflow-hidden'
+                ? 'px-3.5 py-1.5 gap-2 hover:border-foreground/40 cursor-pointer shadow-sm hover:shadow-md'
+                : 'p-1.5 gap-1.5'
             )}
           >
-            {/* Desktop Nav Links */}
-            <nav
-              aria-label="Desktop Navigation"
-              className="flex items-center gap-0.5 shrink-0"
-            >
-              {primaryNavLinks.map((item) => {
-                const isActive = isItemActive(item.href);
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'text-xs font-medium px-3.5 py-1.5 rounded-full transition-all duration-200',
-                      isActive
-                        ? 'bg-surface-raised text-foreground font-semibold border border-border shadow-2xs'
-                        : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Let's Collaborate Action Button */}
+            {/* Brand Wordmark */}
             <Link
-              href="/contact"
-              className={cn(
-                'inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs shrink-0 ml-1',
-                pathname === '/contact'
-                  ? 'bg-foreground text-background shadow-sm'
-                  : 'bg-foreground text-background hover:opacity-80'
-              )}
-              title="Let's Collaborate"
+              href="/"
+              className="text-xs sm:text-sm font-bold font-mono tracking-tight text-foreground px-2.5 py-1 rounded-full hover:bg-surface-raised transition-colors shrink-0"
             >
-              <span>Let&apos;s Collaborate</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              {site.identity.wordmark || 'FNH.'}
             </Link>
+
+            {/* 3-dots Loading / Menu indicator (Smooth fluid fade on scroll) */}
+            <div
+              className={cn(
+                'flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                isCollapsed
+                  ? 'max-w-15 opacity-100 pr-1'
+                  : 'max-w-0 opacity-0 pointer-events-none'
+              )}
+              aria-hidden="true"
+              title="Hover to expand menu"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_infinite]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_0.25s_infinite]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_0.5s_infinite]" />
+            </div>
+
+            {/* Navigation Cluster: Desktop expandable links + CTA */}
+            <div
+              className={cn(
+                'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                isCollapsed
+                  ? 'max-w-0 opacity-0 pointer-events-none -translate-x-1 scale-95 overflow-hidden'
+                  : 'max-w-150 opacity-100 translate-x-0 scale-100 overflow-hidden'
+              )}
+            >
+              {/* Desktop Nav Links */}
+              <nav
+                aria-label="Desktop Navigation"
+                className="flex items-center gap-0.5 shrink-0"
+              >
+                {primaryNavLinks.map((item) => {
+                  const isActive = isItemActive(item.href);
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        'text-xs font-medium px-3.5 py-1.5 rounded-full transition-all duration-200',
+                        isActive
+                          ? 'bg-surface-raised text-foreground font-semibold border border-border shadow-2xs'
+                          : 'text-muted hover:text-foreground hover:bg-surface-raised/50'
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Let's Collaborate Action Button */}
+              <Link
+                href="/contact"
+                className={cn(
+                  'inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-200 shadow-xs shrink-0 ml-1',
+                  pathname === '/contact'
+                    ? 'bg-foreground text-background shadow-sm'
+                    : 'bg-foreground text-background hover:opacity-80'
+                )}
+                title="Let's Collaborate"
+              >
+                <span>Let&apos;s Collaborate</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
+
+          {/* Apple-style Dynamic Island Spotify Pill */}
+          <SpotifyIsland isNavbarCollapsed={isCollapsed} />
         </div>
       </header>
 

@@ -68,7 +68,8 @@ export interface ContactData {
   email: string;
   github: string;
   linkedin: string;
-  whatsapp: string;
+  whatsapp?: string;
+  instagram?: string;
   cv: string;
 }
 

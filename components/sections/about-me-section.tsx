@@ -73,6 +73,29 @@ export function AboutMeSection({
   const bentoGridRef = useRef<HTMLDivElement>(null);
   const lanyardCardRef = useRef<HTMLDivElement>(null);
   const [shouldLoadLanyard, setShouldLoadLanyard] = useState(false);
+
+  const cleanLinkedin = contact.linkedin
+    ? contact.linkedin.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+    : 'linkedin.com/in/ferry-noer-hendriawan';
+
+  const cleanGithub = contact.github
+    ? contact.github.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+    : 'github.com/ryzecl';
+
+  const cleanInstagram = contact.instagram
+    ? contact.instagram.replace(/^https?:\/\/(www\.)?instagram\.com\//, '@').replace(/\/$/, '')
+    : '@ryzecl';
+
+  const lanyardBadge = {
+    wordmark: identity.wordmark || 'FNH.',
+    name: identity.name || 'Ferry Noer Hendriawan',
+    title: 'Fullstack Developer · System Analyst',
+    email: contact.email || 'ferrynoerhendriawan18@gmail.com',
+    linkedin: cleanLinkedin,
+    github: cleanGithub,
+    instagram: cleanInstagram,
+    passId: 'ID: FNH-2026-ENG',
+  };
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -364,7 +387,7 @@ export function AboutMeSection({
                 </div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] text-muted bg-surface-raised/70 border border-border/60 px-2 py-1 rounded-md select-none">
                   <Move3d className="w-3 h-3 text-accent" />
-                  <span>Drag to Rotate</span>
+                  <span>Click to Flip · Drag to Rotate</span>
                 </div>
               </div>
 
@@ -373,7 +396,7 @@ export function AboutMeSection({
                 {shouldLoadLanyard ? (
                   <Lanyard
                     frontImage="/images/about-photo.png"
-                    backImage="/images/animated-photo.png"
+                    backDetails={lanyardBadge}
                     imageFit="cover"
                     orientation="portrait"
                     finish="glossy"
@@ -382,7 +405,7 @@ export function AboutMeSection({
                     strapText="FERRY NOER HENDRIAWAN • FULLSTACK DEVELOPER"
                     strapLength={isMobile ? 0.26 : 0.4}
                     size={isMobile ? 0.82 : 0.65}
-                    cardColor="#ffffff"
+                    cardColor="#09090b"
                     interactive={true}
                     className="w-full h-full"
                   />

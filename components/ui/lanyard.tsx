@@ -18,9 +18,21 @@ interface PathLike {
   bezierCurveTo(c1x: number, c1y: number, c2x: number, c2y: number, x: number, y: number): unknown;
 }
 
+export interface LanyardBadgeDetails {
+  wordmark?: string;
+  name?: string;
+  title?: string;
+  email?: string;
+  linkedin?: string;
+  github?: string;
+  instagram?: string;
+  passId?: string;
+}
+
 export interface LanyardProps {
   frontImage?: string;
   backImage?: string;
+  backDetails?: LanyardBadgeDetails;
   imageFit?: ImageFit;
   cardColor?: string;
   orientation?: Orientation;
@@ -47,6 +59,7 @@ export interface LanyardProps {
 interface Settings {
   frontImage?: string;
   backImage?: string;
+  backDetails?: LanyardBadgeDetails;
   imageFit: ImageFit;
   cardColor: string;
   orientation: Orientation;
@@ -600,6 +613,155 @@ const paintFace = (canvas: HTMLCanvasElement, image: HTMLImageElement | null, co
   if (image) drawFitted(ctx, image, canvas.width, canvas.height, fit);
 };
 
+const paintBadgeBack = (
+  canvas: HTMLCanvasElement,
+  details: LanyardBadgeDetails
+) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const w = canvas.width;
+  const h = canvas.height;
+
+  ctx.save();
+
+  // 1. Sleek, solid dark background matching app theme (#09090b)
+  ctx.fillStyle = '#09090b';
+  ctx.fillRect(0, 0, w, h);
+
+  // Subtle clean card border
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 2;
+  traceRoundedRect(ctx, 36, 36, w - 72, h - 72, 36);
+  ctx.stroke();
+
+  // 2. FNH. Monogram (Rata Tengah)
+  const wordmark = details.wordmark || 'FNH.';
+  const hasDot = wordmark.endsWith('.');
+  const baseLetters = hasDot ? wordmark.slice(0, -1) : wordmark;
+
+  ctx.font = '900 145px "Plus Jakarta Sans", system-ui, sans-serif';
+  const fullWordmarkWidth = ctx.measureText(wordmark).width;
+  const startMonogramX = w / 2 - fullWordmarkWidth / 2;
+  const monogramY = 530;
+
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(baseLetters, startMonogramX, monogramY);
+
+  if (hasDot) {
+    const lettersWidth = ctx.measureText(baseLetters).width;
+    ctx.fillStyle = '#2563eb'; // Electric cobalt dot
+    ctx.fillText('.', startMonogramX + lettersWidth, monogramY);
+  }
+
+  // 3. Name (Rata Tengah, Lebih Besar & Bold)
+  ctx.textAlign = 'center';
+  ctx.font = '700 42px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(details.name || 'Ferry Noer Hendriawan', w / 2, 605);
+
+  // 4. Subtle Hairline Divider (Rata Tengah)
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(w / 2 - 190, 665);
+  ctx.lineTo(w / 2 + 190, 665);
+  ctx.stroke();
+
+  // 5. Contact Rows (Rata Tengah Horizontal & Vertikal, Lebih Besar & Jelas)
+  const rows = [
+    {
+      type: 'email',
+      val: details.email || 'ferrynoerhendriawan18@gmail.com',
+    },
+    {
+      type: 'linkedin',
+      val: details.linkedin?.replace(/^https?:\/\/(www\.)?/, '') || 'linkedin.com/in/ferry-noer-hendriawan',
+    },
+    {
+      type: 'github',
+      val: details.github?.replace(/^https?:\/\/(www\.)?/, '') || 'github.com/ryzecl',
+    },
+    {
+      type: 'instagram',
+      val: details.instagram?.replace(/^https?:\/\/(www\.)?instagram\.com\//, '@') || '@ryzecl',
+    },
+  ];
+
+  const rowYs = [745, 835, 925, 1015];
+  const iconSize = 28;
+  const gap = 18;
+
+  rows.forEach((row, idx) => {
+    const rowY = rowYs[idx];
+
+    // Measure text to compute exact centering
+    ctx.font = '600 30px "Plus Jakarta Sans", system-ui, sans-serif';
+    const textMetrics = ctx.measureText(row.val);
+    const totalRowWidth = iconSize + gap + textMetrics.width;
+    const rowStartX = w / 2 - totalRowWidth / 2;
+    const iconCenterX = rowStartX + iconSize / 2;
+    const textStartX = rowStartX + iconSize + gap;
+
+    // Draw clean, simple icon
+    if (row.type === 'email') {
+      const ew = 28;
+      const eh = 20;
+      ctx.strokeStyle = '#93c5fd';
+      ctx.lineWidth = 2.4;
+      traceRoundedRect(ctx, iconCenterX - ew / 2, rowY - eh / 2, ew, eh, 4);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(iconCenterX - ew / 2 + 2, rowY - eh / 2 + 2);
+      ctx.lineTo(iconCenterX, rowY + 2);
+      ctx.lineTo(iconCenterX + ew / 2 - 2, rowY - eh / 2 + 2);
+      ctx.stroke();
+    } else if (row.type === 'linkedin') {
+      const lw = 26;
+      const lh = 26;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.2;
+      traceRoundedRect(ctx, iconCenterX - lw / 2, rowY - lh / 2, lw, lh, 5);
+      ctx.stroke();
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '700 15px "Plus Jakarta Sans", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('in', iconCenterX, rowY);
+    } else if (row.type === 'github') {
+      ctx.fillStyle = '#e4e4e7';
+      ctx.font = '800 18px monospace, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('</>', iconCenterX, rowY);
+    } else if (row.type === 'instagram') {
+      const iw = 26;
+      const ih = 26;
+      ctx.strokeStyle = '#f472b6';
+      ctx.lineWidth = 2.2;
+      traceRoundedRect(ctx, iconCenterX - iw / 2, rowY - ih / 2, iw, ih, 7);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(iconCenterX, rowY, 6.5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = '#f472b6';
+      ctx.beginPath();
+      ctx.arc(iconCenterX + 6.5, rowY - 6.5, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Draw text (super clear, larger, high contrast, readable)
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.font = '600 30px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(row.val, textStartX, rowY);
+  });
+
+  ctx.restore();
+};
+
 const paintStrap = (
   canvas: HTMLCanvasElement,
   image: HTMLImageElement | null,
@@ -913,6 +1075,7 @@ const stepSimulation = (sim: Simulation, dt: number, physics: Physics, time: num
 const Lanyard = ({
   frontImage,
   backImage,
+  backDetails,
   imageFit = 'cover',
   cardColor = '#ffffff',
   orientation = 'portrait',
@@ -942,6 +1105,7 @@ const Lanyard = ({
   settingsRef.current = {
     frontImage,
     backImage,
+    backDetails,
     imageFit: imageFit === 'contain' ? 'contain' : 'cover',
     cardColor,
     orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
@@ -1107,7 +1271,11 @@ const Lanyard = ({
         backTexture.dispose();
       }
       paintFace(frontCanvas, images.front, color, s.imageFit);
-      paintFace(backCanvas, images.back || images.front, color, s.imageFit);
+      if (s.backDetails) {
+        paintBadgeBack(backCanvas, s.backDetails);
+      } else {
+        paintFace(backCanvas, images.back || images.front, color, s.imageFit);
+      }
       frontTexture.needsUpdate = true;
       backTexture.needsUpdate = true;
       start();
@@ -1209,7 +1377,8 @@ const Lanyard = ({
           repaintStrap();
         });
       }
-      const faceKey = `${layoutKey}|${s.cardColor}|${s.imageFit}`;
+      const backDetailsKey = JSON.stringify(s.backDetails || null);
+      const faceKey = `${layoutKey}|${s.cardColor}|${s.imageFit}|${backDetailsKey}`;
       if (faceKey !== applied.faceKey) paintFaces();
       if (s.strapColor !== applied.strapColor || s.strapText !== applied.strapText) repaintStrap();
 
