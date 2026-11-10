@@ -67,18 +67,18 @@ export function SpotifyIsland({ isNavbarCollapsed, className }: SpotifyIslandPro
         'shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:shadow-[0_0_20px_rgba(29,185,84,0.25)]',
         'backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
         'select-none overflow-hidden shrink-0 cursor-pointer',
-        isExpanded ? 'w-[155px] sm:w-[168px] px-2.5 gap-2' : 'w-[50px] px-2 justify-between',
+        isExpanded ? 'w-[160px] sm:w-[172px] px-2.5 gap-2' : 'w-[64px] px-2.5 justify-between',
         className
       )}
     >
       {/* Spinning Vinyl Album Artwork */}
-      <div className="relative w-[24px] h-[24px] sm:w-[26px] sm:h-[26px] rounded-full overflow-hidden shrink-0 border border-white/20 shadow-xs">
+      <div className="relative w-[24px] h-[24px] rounded-full overflow-hidden shrink-0 border border-white/20 shadow-xs">
         {track.albumArtUrl ? (
           <Image
             src={track.albumArtUrl}
             alt={`${track.song} album art`}
             fill
-            sizes="26px"
+            sizes="24px"
             unoptimized
             className="object-cover animate-[spin_8s_linear_infinite]"
           />
