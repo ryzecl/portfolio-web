@@ -65,7 +65,7 @@ export function SpotifyIsland({ isNavbarCollapsed, className }: SpotifyIslandPro
         'bg-zinc-950/95 dark:bg-black/95 text-white',
         'border border-white/15 hover:border-[#1DB954]/50',
         'shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:shadow-[0_0_20px_rgba(29,185,84,0.25)]',
-        'backdrop-blur-xl transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+        'backdrop-blur-xl transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
         'select-none overflow-hidden shrink-0 cursor-pointer',
         isExpanded ? 'w-[160px] sm:w-[172px] px-2.5 gap-2' : 'w-[64px] px-2.5 justify-between',
         className
@@ -94,7 +94,7 @@ export function SpotifyIsland({ isNavbarCollapsed, className }: SpotifyIslandPro
       {/* Expandable Track Information (Center) */}
       <div
         className={cn(
-          'flex flex-col min-w-0 text-left transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+          'flex flex-col min-w-0 text-left transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
           isExpanded
             ? 'flex-1 opacity-100 max-w-[88px] sm:max-w-[98px]'
             : 'max-w-0 opacity-0 overflow-hidden pointer-events-none'

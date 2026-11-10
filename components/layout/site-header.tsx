@@ -54,7 +54,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
   const handleMouseLeave = () => {
     hoverTimeoutRef.current = setTimeout(() => {
       setIsHovered(false);
-    }, 150);
+    }, 320);
   };
 
   const navLinks = site.navigation || [];
@@ -89,7 +89,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
       {/* Desktop Top-Right Floating Theme Toggle */}
       <div
         className={cn(
-          'fixed top-5 right-6 lg:right-10 z-50 hidden sm:flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+          'fixed top-5 right-6 lg:right-10 z-50 hidden sm:flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
           scrolled && 'top-3.5'
         )}
       >
@@ -99,7 +99,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
       {/* Desktop Floating Capsule Header (sm and up) */}
       <header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 hidden sm:flex items-center justify-center px-6 py-5 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none',
+          'fixed top-0 left-0 right-0 z-50 hidden sm:flex items-center justify-center px-6 py-5 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none',
           scrolled && 'py-3'
         )}
       >
@@ -114,7 +114,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
               }
             }}
             className={cn(
-              'pointer-events-auto flex items-center rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none',
+              'pointer-events-auto flex items-center rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] select-none',
               isCollapsed
                 ? 'px-3.5 py-1.5 gap-2 hover:border-foreground/40 cursor-pointer shadow-sm hover:shadow-md'
                 : 'p-1.5 gap-1.5'
@@ -131,7 +131,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             {/* 3-dots Loading / Menu indicator (Smooth fluid fade on scroll) */}
             <div
               className={cn(
-                'flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                'flex items-center gap-1.5 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
                 isCollapsed
                   ? 'max-w-15 opacity-100 pr-1'
                   : 'max-w-0 opacity-0 pointer-events-none'
@@ -147,7 +147,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             {/* Navigation Cluster: Desktop expandable links + CTA */}
             <div
               className={cn(
-                'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                'flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
                 isCollapsed
                   ? 'max-w-0 opacity-0 pointer-events-none -translate-x-1 scale-95 overflow-hidden'
                   : 'max-w-150 opacity-100 translate-x-0 scale-100 overflow-hidden'
