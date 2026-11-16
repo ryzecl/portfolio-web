@@ -23,45 +23,70 @@ const mobileNavItems = [
 export function SiteHeader({ site }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastScrollYRef = useRef(0);
+  const isWheelScrollingRef = useRef(false);
+  const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    lastScrollYRef.current = window.scrollY;
+    setScrolled(window.scrollY > 40);
 
-  // Clean up timer on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 40);
+
+      // When user scrolls (up or down), collapse navbar back unless at top of page
+      if (Math.abs(currentScrollY - lastScrollYRef.current) > 2) {
+        setIsHovered(false);
+        lastScrollYRef.current = currentScrollY;
       }
     };
+
+    const handleWheel = () => {
+      isWheelScrollingRef.current = true;
+      setIsHovered(false);
+      if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
+      wheelTimerRef.current = setTimeout(() => {
+        isWheelScrollingRef.current = false;
+      }, 120);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('wheel', handleWheel, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('wheel', handleWheel);
+      if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
+    };
   }, []);
 
+  // Reset hover expanded state when route changes
+  useEffect(() => {
+    setIsHovered(false);
+  }, [pathname]);
+
   const handleMouseEnter = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
+    // Instant expansion on hover with zero delay
     setIsHovered(true);
   };
 
-  const handleMouseLeave = () => {
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsHovered(false);
-    }, 320);
+  const handleMouseMove = () => {
+    if (!isWheelScrollingRef.current) {
+      setIsHovered(true);
+    }
+  };
+
+  const handleClick = () => {
+    setIsHovered(true);
   };
 
   const navLinks = site.navigation || [];
   // Primary navigation for center pill (exclude contact which lives as the action CTA button on desktop)
   const primaryNavLinks = navLinks.filter((item) => item.href !== '/contact');
 
-  // When scrolled down and NOT hovered, desktop pill collapses into minimal logo + 3-dots indicator
+  // When scrolled down and NOT hovered, desktop pill collapses into minimal logo + 3-dots indicator.
+  // Stays expanded on hover and only collapses again when user scrolls up or down.
   const isCollapsed = scrolled && !isHovered;
 
   const isItemActive = (href: string) => {
@@ -89,7 +114,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
       {/* Desktop Top-Right Floating Theme Toggle */}
       <div
         className={cn(
-          'fixed top-5 right-6 lg:right-10 z-50 hidden sm:flex items-center transition-all duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+          'fixed top-5 right-6 lg:right-10 z-50 hidden sm:flex items-center transition-all duration-500 ease-out',
           scrolled && 'top-3.5'
         )}
       >
@@ -99,22 +124,18 @@ export function SiteHeader({ site }: SiteHeaderProps) {
       {/* Desktop Floating Capsule Header (sm and up) */}
       <header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 hidden sm:flex items-center justify-center px-6 py-5 transition-all duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none',
+          'fixed top-0 left-0 right-0 z-50 hidden sm:flex items-center justify-center px-6 py-5 transition-all duration-500 ease-out pointer-events-none',
           scrolled && 'py-3'
         )}
       >
         <div className="flex items-center gap-2.5">
           <div
             onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouseMove}
+            onClick={handleClick}
             onFocus={handleMouseEnter}
-            onBlur={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget)) {
-                handleMouseLeave();
-              }
-            }}
             className={cn(
-              'pointer-events-auto flex items-center h-[42px] rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)] select-none',
+              'pointer-events-auto flex items-center h-[42px] rounded-full bg-surface/90 backdrop-blur-md border border-border shadow-md transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none',
               isCollapsed
                 ? 'px-3.5 gap-2 hover:border-foreground/40 cursor-pointer shadow-sm hover:shadow-md'
                 : 'p-1.5 gap-1.5'
@@ -131,13 +152,13 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             {/* 3-dots Loading / Menu indicator (Smooth fluid fade on scroll) */}
             <div
               className={cn(
-                'flex items-center gap-1.5 overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+                'flex items-center gap-1.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
                 isCollapsed
                   ? 'max-w-15 opacity-100 pr-1'
                   : 'max-w-0 opacity-0 pointer-events-none'
               )}
               aria-hidden="true"
-              title="Hover to expand menu"
+              title="Hover to expand navigation"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_infinite]" />
               <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 animate-[pulse_1.4s_ease-in-out_0.25s_infinite]" />
@@ -147,7 +168,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             {/* Navigation Cluster: Desktop expandable links + CTA */}
             <div
               className={cn(
-                'flex items-center transition-all duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+                'flex items-center transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
                 isCollapsed
                   ? 'max-w-0 opacity-0 pointer-events-none -translate-x-1 scale-95 overflow-hidden'
                   : 'max-w-150 opacity-100 translate-x-0 scale-100 overflow-hidden'
