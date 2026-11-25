@@ -112,7 +112,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   }, [text, isDeleting, wordIndex, greetings]);
 
   const name = hero.name || identity.name;
-  const avatarSrc = hero.avatar || '/images/linkedin-photo.png';
+  const avatarSrc = hero.avatar || '/images/linkedin-new.jpeg';
   const intro = hero.intro || 'I am';
   const headline = hero.headline || 'Fullstack Developer';
 

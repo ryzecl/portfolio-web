@@ -395,7 +395,7 @@ export function AboutMeSection({
               <div className="grow w-full relative flex items-center justify-center min-h-[290px] sm:min-h-[340px] lg:min-h-0">
                 {shouldLoadLanyard ? (
                   <Lanyard
-                    frontImage="/images/about-photo.png"
+                    frontImage="/images/about-photo.jpeg"
                     backDetails={lanyardBadge}
                     imageFit="cover"
                     orientation="portrait"

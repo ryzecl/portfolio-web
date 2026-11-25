@@ -102,14 +102,16 @@ async function run() {
   fs.writeFileSync(path.join(imagesDir, 'project-placeholder.svg'), svgProject.trim());
   console.log('Generated project-placeholder.png (size:', projectPngBuffer.length, 'bytes)');
 
-  // 2. Generate and compress clean, professional, minimalist OG Image (1200x630)
+  // 2. Generate and compress clean, simple, elegant, professional OG Image (1200x630)
   const width = 1200;
   const height = 630;
-  const photoW = 380;
+  const photoW = 340;
   const photoH = 430;
-  const photoRx = 24;
+  const photoRx = 18;
+  const photoX = 780;
+  const photoY = 100;
 
-  const photoPath = path.join(imagesDir, 'linkedin-photo.png');
+  const photoPath = path.join(imagesDir, 'about-photo.jpeg');
   const maskSvg = Buffer.from(`
     <svg width="${photoW}" height="${photoH}">
       <rect x="0" y="0" width="${photoW}" height="${photoH}" rx="${photoRx}" ry="${photoRx}" fill="#ffffff" />
@@ -118,12 +120,12 @@ async function run() {
 
   const borderSvg = Buffer.from(`
     <svg width="${photoW}" height="${photoH}">
-      <rect x="1" y="1" width="${photoW - 2}" height="${photoH - 2}" rx="${photoRx}" fill="none" stroke="#E4E4E7" stroke-width="1.5" />
+      <rect x="0.75" y="0.75" width="${photoW - 1.5}" height="${photoH - 1.5}" rx="${photoRx}" fill="none" stroke="#292D35" stroke-width="1.5" />
     </svg>
   `);
 
   const processedPhoto = await sharp(photoPath)
-    .resize(photoW, photoH, { fit: 'cover', position: 'center' })
+    .resize(photoW, photoH, { fit: 'cover', position: 'north' })
     .composite([
       { input: maskSvg, blend: 'dest-in' },
       { input: borderSvg, blend: 'over' },
@@ -133,93 +135,48 @@ async function run() {
 
   const svgOg = `
 <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="canvasBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="100%" stop-color="#FBFBFD" />
-    </linearGradient>
+  <rect width="${width}" height="${height}" fill="#08090B" />
 
-    <pattern id="cleanDots" width="32" height="32" patternUnits="userSpaceOnUse">
-      <circle cx="2" cy="2" r="1" fill="#09090B" opacity="0.06" />
-    </pattern>
+  <!-- Subtle outer editorial frame -->
+  <rect x="36" y="36" width="1128" height="558" rx="20" fill="#0D0F13" stroke="#1E222B" stroke-width="1" />
 
-    <filter id="softShadow" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.06" />
-      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.04" />
-    </filter>
-  </defs>
-
-  <rect width="${width}" height="${height}" fill="url(#canvasBg)" />
-  <rect width="${width}" height="${height}" fill="url(#cleanDots)" />
-
-  <rect x="32" y="32" width="1136" height="566" rx="20" fill="none" stroke="#E4E4E7" stroke-width="1" />
-
-  <!-- Top Navigation / Brand Anchor -->
-  <g transform="translate(80, 78)">
-    <text x="0" y="0" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="20" font-weight="800" fill="#09090B" letter-spacing="-0.5">
-      FNH<tspan fill="#2563EB">.</tspan>
+  <!-- Top Brand Anchor -->
+  <g transform="translate(84, 92)">
+    <text x="0" y="0" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="22" font-weight="800" fill="#F4F5F7" letter-spacing="-0.5">
+      FNH<tspan fill="#6D83FF">.</tspan>
     </text>
-    <line x1="62" y1="-14" x2="62" y2="2" stroke="#E4E4E7" stroke-width="1" />
-    <text x="76" y="-1" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" font-weight="500" fill="#71717A">
+    <line x1="64" y1="-16" x2="64" y2="3" stroke="#292D35" stroke-width="1" />
+    <text x="80" y="-1" font-family="'JetBrains Mono', Consolas, monospace" font-size="14" font-weight="500" fill="#A1A6B0">
       ferryhendriawan.my.id
     </text>
-
-    <!-- Status pill -->
-    <g transform="translate(730, -14)">
-      <rect x="0" y="0" width="246" height="32" rx="16" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-      <circle cx="16" cy="16" r="4" fill="#10B981" />
-      <text x="28" y="20.5" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#3F3F46">
-        Available for Opportunities
-      </text>
-    </g>
   </g>
 
   <!-- Left Main Content -->
-  <g transform="translate(80, 160)">
-    <text x="0" y="0" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" font-weight="700" fill="#2563EB" letter-spacing="1.5">
-      PORTFOLIO // SOFTWARE DEVELOPER
+  <g transform="translate(84, 218)">
+    <text x="0" y="0" font-family="'JetBrains Mono', Consolas, monospace" font-size="14" font-weight="600" fill="#6D83FF" letter-spacing="1.2">
+      FULL-STACK DEVELOPER
     </text>
 
-    <text x="0" y="60" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="52" font-weight="800" fill="#09090B" letter-spacing="-1.5">
-      Ferry Noer Hendriawan
+    <text x="0" y="64" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="50" font-weight="800" fill="#F4F5F7" letter-spacing="-1.4">
+      Ferry Noer
+    </text>
+    <text x="0" y="120" font-family="'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif" font-size="50" font-weight="800" fill="#F4F5F7" letter-spacing="-1.4">
+      Hendriawan
     </text>
 
-    <text x="0" y="105" font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="22" font-weight="600" fill="#3F3F46" letter-spacing="-0.3">
-      Full-Stack Developer &amp; Information Systems
-    </text>
-
-    <g font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="16" fill="#71717A">
-      <text x="0" y="152">Building clean, scalable web applications and robust digital systems</text>
-      <text x="0" y="178">focused on practical architecture, high performance, and intuitive UX.</text>
-    </g>
-
-    <g transform="translate(0, 224)" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" font-weight="600">
-      <rect x="0" y="0" width="92" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-      <text x="46" y="21.5" fill="#18181B" text-anchor="middle">Next.js</text>
-
-      <rect x="104" y="0" width="116" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-      <text x="162" y="21.5" fill="#18181B" text-anchor="middle">TypeScript</text>
-
-      <rect x="232" y="0" width="94" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-      <text x="279" y="21.5" fill="#18181B" text-anchor="middle">Laravel</text>
-
-      <rect x="338" y="0" width="126" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-      <text x="401" y="21.5" fill="#18181B" text-anchor="middle">Tailwind CSS</text>
-
-      <rect x="476" y="0" width="96" height="34" rx="8" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
-      <text x="524" y="21.5" fill="#18181B" text-anchor="middle">REST API</text>
-    </g>
-
-    <g transform="translate(0, 318)" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" fill="#71717A">
-      <text x="0" y="0">HORIZON UNIVERSITY INDONESIA</text>
-      <circle cx="254" cy="-4" r="2.5" fill="#CBD5E1" />
-      <text x="268" y="0">CO-FOUNDER JDNIRWANA</text>
-      <circle cx="468" cy="-4" r="2.5" fill="#CBD5E1" />
-      <text x="482" y="0">INDONESIA</text>
+    <g font-family="'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="18" fill="#A1A6B0">
+      <text x="0" y="176">Building clean, scalable web applications and</text>
+      <text x="0" y="206">thoughtful digital systems from Indonesia.</text>
     </g>
   </g>
 
-  <rect x="740" y="100" width="${photoW}" height="${photoH}" rx="${photoRx}" fill="#FFFFFF" filter="url(#softShadow)" />
+  <!-- Subtle Bottom Editorial Footer -->
+  <g transform="translate(84, 534)">
+    <line x1="0" y1="-28" x2="632" y2="-28" stroke="#1E222B" stroke-width="1" />
+    <text x="0" y="0" font-family="'JetBrains Mono', Consolas, monospace" font-size="13" fill="#7D8492" letter-spacing="0.5">
+      NEXT.JS · TYPESCRIPT · LARAVEL · SYSTEM ARCHITECTURE
+    </text>
+  </g>
 </svg>
 `;
 
@@ -229,11 +186,11 @@ async function run() {
     .composite([
       {
         input: processedPhoto,
-        top: 100,
-        left: 740,
+        top: photoY,
+        left: photoX,
       },
     ])
-    .png({ quality: 90, compressionLevel: 9, palette: true })
+    .png({ quality: 92, compressionLevel: 9 })
     .toBuffer();
 
   const ogDestination = path.join(imagesDir, 'og-image.png');
