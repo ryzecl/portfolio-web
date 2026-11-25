@@ -112,7 +112,7 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
   }, [text, isDeleting, wordIndex, greetings]);
 
   const name = hero.name || identity.name;
-  const avatarSrc = hero.avatar || '/images/linkedin-new.jpeg';
+  const avatarSrc = hero.avatar || '/images/linkedin-real.jpeg';
   const intro = hero.intro || 'I am';
   const headline = hero.headline || 'Fullstack Developer';
 
@@ -174,8 +174,8 @@ export function HeroSection({ hero, identity }: HeroSectionProps) {
                     src={avatarSrc}
                     alt={name}
                     fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 640px) 32px, (max-width: 768px) 64px, 72px"
+                    className="object-cover object-center"
+                    sizes="(max-width: 640px) 64px, (max-width: 768px) 128px, 144px"
                     priority
                   />
                 </div>
